@@ -1,0 +1,908 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>허위 약속의 민족 — 미루던 약속, 오늘은 정하자</title>
+<meta name="description" content="이름만 입력하고 접속해서 가능한 날짜를 모으고, 가장 많이 겹치는 날을 자동으로 찾아주는 모임 날짜 정하기 앱." />
+
+<!-- 한글 구글폰트: 제목 임팩트체(Black Han Sans) + 본문 가독체(Gowun Dodum, IBM Plex Sans KR) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gowun+Dodum&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<!-- Supabase JS (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<style>
+/* ───────────────────────────────────────────────
+   디자인 토큰: 코랄 강조색 하나로 일관되게
+   ─────────────────────────────────────────────── */
+:root{
+  --coral:#ff6b57;
+  --coral-deep:#e5442e;
+  --coral-soft:#fff1ee;
+  --ink:#241f1d;
+  --ink-soft:#6b615c;
+  --paper:#fffaf7;
+  --card:#ffffff;
+  --line:#f0e6e0;
+  --gold:#f6b73c;
+  --silver:#b9c1cc;
+  --bronze:#cf9160;
+  --ok:#2f9e6f;
+  --shadow:0 10px 30px -12px rgba(80,40,30,.28);
+  --radius:18px;
+  --heat-0:#f5efe9;
+  --heat-1:#ffd9cf;
+  --heat-2:#ffb4a1;
+  --heat-3:#ff8a70;
+  --heat-4:#ff6b57;
+  --heat-5:#e5442e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:
+    radial-gradient(1200px 600px at 100% -10%, #ffe9e2 0%, transparent 55%),
+    radial-gradient(1000px 500px at -10% 0%, #fff4d9 0%, transparent 50%),
+    var(--paper);
+  color:var(--ink);
+  font-family:"IBM Plex Sans KR","Gowun Dodum",system-ui,-apple-system,sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+a{color:inherit}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:960px;margin:0 auto;padding:22px 18px 80px}
+.serif{font-family:"Gowun Dodum",serif}
+.display{font-family:"Black Han Sans",sans-serif;font-weight:400;letter-spacing:-.5px;line-height:1.12}
+
+/* 상단 바 */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 2px 18px}
+.brand{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;background:none;border:0;padding:0}
+.brand .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--coral),var(--gold));
+  display:grid;place-items:center;color:#fff;font-family:"Black Han Sans";font-size:18px;box-shadow:var(--shadow)}
+.brand b{font-family:"Black Han Sans";font-weight:400;font-size:19px}
+.brand small{display:block;color:var(--ink-soft);font-size:11px;margin-top:-3px}
+
+/* 카드/버튼 */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
+.btn{border:0;border-radius:12px;padding:12px 18px;font-weight:700;font-size:15px;transition:transform .12s ease, box-shadow .12s ease, background .12s ease}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--coral);color:#fff;box-shadow:0 8px 18px -8px var(--coral-deep)}
+.btn.primary:hover{background:var(--coral-deep)}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--coral);color:var(--coral-deep)}
+.btn.tiny{padding:8px 12px;font-size:13px;border-radius:10px}
+.btn.block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+label{display:block;font-size:13px;font-weight:600;color:var(--ink-soft);margin:14px 0 6px}
+input[type=text],input[type=password],textarea{
+  width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;font:inherit;background:#fff;color:var(--ink)}
+input:focus,textarea:focus{outline:none;border-color:var(--coral);box-shadow:0 0 0 3px var(--coral-soft)}
+textarea{resize:vertical;min-height:70px}
+.hint{font-size:12px;color:var(--ink-soft);margin-top:6px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+
+/* 토스트 */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;
+  background:var(--ink);color:#fff;padding:11px 18px;border-radius:999px;font-size:14px;font-weight:600;z-index:80;
+  transition:opacity .2s ease, transform .2s ease;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* 화면 전환 */
+.screen{display:none;animation:fadeUp .35s ease both}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ── 랜딩 ── */
+.hero{padding:34px 6px 8px;text-align:center}
+.hero h1{font-size:clamp(38px,9vw,74px);margin:8px 0 6px}
+.hero h1 .pop{color:var(--coral)}
+.hero .sub{font-size:clamp(16px,3.6vw,21px);color:var(--ink-soft)}
+.hero .copy{max-width:520px;margin:14px auto 26px;color:var(--ink-soft)}
+.cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.cta .btn{padding:16px 26px;font-size:16px}
+.landing-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:30px}
+.mini{padding:18px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.mini .em{font-size:22px}
+.mini h4{margin:8px 0 4px;font-size:15px}
+.mini p{margin:0;font-size:13px;color:var(--ink-soft)}
+@media(max-width:560px){.landing-cards{grid-template-columns:1fr}}
+
+/* ── 대시보드 헤더 ── */
+.dash{margin-bottom:16px}
+.dash .head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.dash h2{font-family:"Black Han Sans";font-weight:400;font-size:clamp(22px,5vw,30px);margin:0}
+.dash .desc{color:var(--ink-soft);margin:4px 0 0;font-size:14px;white-space:pre-wrap}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.badge{display:inline-flex;align-items:center;gap:6px;background:var(--coral-soft);color:var(--coral-deep);
+  padding:6px 12px;border-radius:999px;font-size:13px;font-weight:700}
+.badge.count b{font-size:15px}
+.badge.closed{background:#eef0f3;color:#5a6472}
+
+.invite{display:flex;gap:8px;margin-top:14px}
+.invite input{background:#fbf7f4}
+
+/* ── 순위 카드 ── */
+.podium{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.rank{position:relative;border-radius:16px;padding:16px 14px;color:#fff;overflow:hidden;
+  animation:rankIn .5s cubic-bezier(.2,.8,.2,1) both}
+.rank:nth-child(1){animation-delay:.05s}
+.rank:nth-child(2){animation-delay:.14s}
+.rank:nth-child(3){animation-delay:.23s}
+@keyframes rankIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+.rank .medal{font-size:20px}
+.rank .date{font-family:"Black Han Sans";font-weight:400;font-size:22px;margin:6px 0 2px;line-height:1.1}
+.rank .dow{font-size:12px;opacity:.9}
+.rank .meta{margin-top:10px;font-size:12.5px;opacity:.95;display:flex;gap:10px;flex-wrap:wrap}
+.rank .meta b{font-size:15px}
+.rank.g1{background:linear-gradient(140deg,#f7b733,#e58a1a)}
+.rank.g2{background:linear-gradient(140deg,#aeb7c4,#7c8697)}
+.rank.g3{background:linear-gradient(140deg,#d69a63,#a76a38)}
+.rank .big{position:absolute;right:-6px;bottom:-14px;font-family:"Black Han Sans";font-size:66px;opacity:.16;line-height:1}
+@media(max-width:560px){.podium{grid-template-columns:1fr}}
+
+/* ── 탭 ── */
+.tabs{display:flex;gap:6px;margin:22px 0 14px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px}
+.tabs button{flex:1;border:0;background:transparent;padding:10px;border-radius:10px;font-weight:700;color:var(--ink-soft);font-size:14px}
+.tabs button.active{background:var(--coral);color:#fff}
+
+/* ── 참여자 캘린더 ── */
+.namebar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;font-size:14px;color:var(--ink-soft)}
+.namebar .who{font-weight:700;color:var(--ink)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft);margin:2px 0 14px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:12px;height:12px;border-radius:4px;display:inline-block}
+
+.cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:8px}
+.cal-weekdays div{text-align:center;font-size:12px;font-weight:700;color:var(--ink-soft)}
+.cal-weekdays div.sun{color:var(--coral-deep)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.day{border:1px solid var(--line);border-radius:12px;min-height:92px;padding:7px 6px 6px;background:#fff;display:flex;flex-direction:column;gap:5px}
+.day.empty{background:transparent;border:0}
+.day.past{opacity:.4;background:#faf7f5}
+.day .dnum{font-size:12.5px;font-weight:700;color:var(--ink-soft)}
+.day.today .dnum{color:var(--coral-deep)}
+.day .dnum .mon{font-size:10px;font-weight:600;color:var(--coral-deep)}
+.slotbtns{display:flex;flex-direction:column;gap:4px;margin-top:auto}
+.slot{border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 6px;font-size:11.5px;font-weight:700;
+  color:var(--ink-soft);display:flex;align-items:center;justify-content:center;gap:4px;transition:transform .1s ease}
+.slot:active{transform:scale(.96)}
+.slot.on{background:var(--coral);border-color:var(--coral);color:#fff}
+.slot.allday.on{background:var(--coral-deep);border-color:var(--coral-deep)}
+@media(max-width:640px){
+  .day{min-height:auto;padding:6px 4px}
+  .cal,.cal-weekdays{gap:5px}
+  .slot{font-size:10.5px;padding:4px 3px}
+}
+
+/* ── 결과 히트맵 ── */
+.heat-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px}
+.heat{border-collapse:separate;border-spacing:6px 6px;min-width:100%}
+.heat th{font-size:12px;color:var(--ink-soft);font-weight:700;padding:2px 4px;text-align:center;white-space:nowrap}
+.heat td.rowlab{font-size:12px;color:var(--ink-soft);font-weight:700;white-space:nowrap;padding-right:4px;text-align:right}
+.cell{width:44px;height:40px;border-radius:9px;background:var(--heat-0);position:relative;text-align:center;
+  font-size:12.5px;font-weight:700;color:var(--ink-soft);cursor:default;transition:transform .1s ease}
+.cell.has{color:#fff}
+.cell:hover{transform:translateY(-2px)}
+.cell.past{opacity:.35}
+.heat .datecol{font-size:11.5px}
+.heat .datecol .d{font-family:"Black Han Sans";font-size:15px;color:var(--ink)}
+.heat .datecol.sun .d{color:var(--coral-deep)}
+.heatlegend{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12px;color:var(--ink-soft)}
+.heatlegend .scale{display:flex;gap:3px}
+.heatlegend .scale span{width:20px;height:14px;border-radius:4px}
+
+/* 팝오버(가능한 사람) */
+#pop{position:fixed;z-index:70;max-width:240px;background:var(--ink);color:#fff;border-radius:12px;padding:10px 12px;
+  font-size:13px;box-shadow:var(--shadow);display:none;line-height:1.5}
+#pop b{display:block;font-size:12px;color:#ffd7cd;margin-bottom:4px;font-weight:700}
+#pop .none{color:#c9bfb9}
+
+/* ── 관리 ── */
+.manage .danger{color:var(--coral-deep)}
+.divider{height:1px;background:var(--line);margin:18px 0}
+
+/* 상태/에러 화면 */
+.center-screen{min-height:60vh;display:grid;place-items:center;text-align:center}
+.center-screen .box{max-width:460px}
+.center-screen .em{font-size:44px}
+.center-screen h3{font-family:"Black Han Sans";font-weight:400;font-size:24px;margin:10px 0 8px}
+.center-screen p{color:var(--ink-soft);margin:0 0 18px}
+.codeblock{text-align:left;background:#241f1d;color:#ffe;border-radius:12px;padding:14px;font-size:12.5px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;overflow-x:auto;white-space:pre;line-height:1.5;margin:12px 0}
+
+.spinner{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--coral);
+  animation:spin .8s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.footer{margin-top:40px;text-align:center;color:var(--ink-soft);font-size:12.5px}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <button class="brand" onclick="go('landing')" aria-label="홈으로">
+      <span class="logo">약</span>
+      <span><b>허위 약속의 민족</b><small>미루고 미룬 약속, 오늘은 정하자</small></span>
+    </button>
+  </div>
+
+  <!-- ─────────── 설정 필요(키 미입력) ─────────── -->
+  <section id="screen-setup" class="screen center-screen">
+    <div class="box">
+      <div class="em">🔧</div>
+      <h3>설정이 필요해요</h3>
+      <p>Supabase 키가 아직 비어 있어요. <code>index.html</code> 상단의
+        <code>SUPABASE_URL</code>·<code>SUPABASE_ANON_KEY</code>를 채우면 바로 작동합니다.
+        방법은 함께 있는 <b>README.md</b>를 참고하세요.</p>
+      <div class="codeblock">// index.html 상단 &lt;script&gt; 안
+const SUPABASE_URL      = 'https://xxxx.supabase.co';  // ← 여기
+const SUPABASE_ANON_KEY = 'eyJhbGciOi...';             // ← 여기</div>
+    </div>
+  </section>
+
+  <!-- ─────────── 랜딩 ─────────── -->
+  <section id="screen-landing" class="screen">
+    <div class="hero">
+      <h1 class="display">미루던 약속,<br><span class="pop">오늘은 정하자.</span></h1>
+      <div class="sub serif">이름만 적고 들어와서, 되는 날에 도장 쾅.</div>
+      <p class="copy">“언제 한번 보자”로 반년을 흘려보낸 우리를 위한 날짜 정하기.
+        모두의 가능한 날을 모아, 가장 많이 겹치는 하루를 알아서 찾아드려요.</p>
+      <div class="cta">
+        <button class="btn primary" onclick="go('create')">모임 만들기</button>
+        <button class="btn ghost" onclick="promptJoinCode()">링크로 참여하기</button>
+      </div>
+    </div>
+    <div class="landing-cards">
+      <div class="mini"><div class="em">🗳️</div><h4>이름만 있으면 끝</h4><p>가입도 로그인도 없이, 링크 열고 이름만.</p></div>
+      <div class="mini"><div class="em">🥇</div><h4>겹치는 날 자동 순위</h4><p>가장 많이 되는 날 1·2·3위를 금·은·동으로.</p></div>
+      <div class="mini"><div class="em">🔥</div><h4>한눈에 보는 히트맵</h4><p>점심·저녁까지 진하기로 겹침을 표시.</p></div>
+      <div class="mini"><div class="em">🔒</div><h4>주최자 비번</h4><p>모임 마감·삭제는 만든 사람만.</p></div>
+    </div>
+  </section>
+
+  <!-- ─────────── 모임 만들기 ─────────── -->
+  <section id="screen-create" class="screen">
+    <div class="card">
+      <h2 class="display" style="font-size:26px;margin:0 0 4px">모임 만들기</h2>
+      <p class="hint" style="margin:0 0 6px">날짜 범위는 <b id="create-range">오늘 ~ 다음 달 말일</b>로 자동 설정돼요.</p>
+      <label for="c-title">모임 제목</label>
+      <input id="c-title" type="text" maxlength="80" placeholder="예: OO 동창회 날짜 정하기" />
+      <label for="c-desc">설명 <span style="font-weight:400">(선택)</span></label>
+      <textarea id="c-desc" maxlength="500" placeholder="예: 저녁 위주로 봐요. 주말이면 더 좋고!"></textarea>
+      <label for="c-pw">주최자 비밀번호</label>
+      <input id="c-pw" type="password" maxlength="60" placeholder="모임 마감·삭제에 필요해요" />
+      <p class="hint">비밀번호는 기기에서 해시(SHA-256) 후 저장돼요. 원문은 저장·전송하지 않아요.</p>
+      <div class="row" style="margin-top:18px">
+        <button class="btn primary grow" id="c-submit" onclick="createMeeting()">만들고 링크 받기</button>
+        <button class="btn ghost" onclick="go('landing')">취소</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── 로딩 ─────────── -->
+  <section id="screen-loading" class="screen center-screen">
+    <div class="box"><div class="spinner"></div><p style="margin-top:16px">불러오는 중…</p></div>
+  </section>
+
+  <!-- ─────────── 에러 ─────────── -->
+  <section id="screen-error" class="screen center-screen">
+    <div class="box">
+      <div class="em">🕵️</div>
+      <h3 id="err-title">모임을 찾지 못했어요</h3>
+      <p id="err-msg">링크가 잘못됐거나 삭제된 모임일 수 있어요.</p>
+      <button class="btn primary" onclick="go('landing')">처음으로</button>
+    </div>
+  </section>
+
+  <!-- ─────────── 모임(참여+결과+관리) ─────────── -->
+  <section id="screen-meeting" class="screen">
+    <div class="card dash">
+      <div class="head">
+        <div style="min-width:0">
+          <h2 id="m-title">모임 제목</h2>
+          <p class="desc" id="m-desc"></p>
+          <div class="badges">
+            <span class="badge count">👥 <b id="m-count">0</b>명 참여</span>
+            <span class="badge" id="m-daterange">📅</span>
+            <span class="badge closed" id="m-closedbadge" style="display:none">🔒 마감됨</span>
+          </div>
+        </div>
+      </div>
+      <div class="invite">
+        <input id="m-link" class="grow" type="text" readonly />
+        <button class="btn ghost tiny" onclick="copyLink()">링크 복사</button>
+      </div>
+
+      <!-- 순위 -->
+      <div class="podium" id="m-podium"></div>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button id="tab-avail" class="active" onclick="switchTab('avail')">내 가능일 입력</button>
+      <button id="tab-result" onclick="switchTab('result')">결과 히트맵</button>
+      <button id="tab-manage" onclick="switchTab('manage')">관리</button>
+    </div>
+
+    <!-- 탭: 입력 -->
+    <div id="pane-avail" class="card">
+      <div id="avail-locked" style="display:none;text-align:center;padding:16px 0">
+        <div class="em" style="font-size:32px">🔒</div>
+        <p style="color:var(--ink-soft);margin:8px 0 0">마감된 모임이에요. 결과만 확인할 수 있어요.</p>
+      </div>
+      <div id="avail-live">
+        <div class="namebar">
+          <span>지금 <span class="who" id="me-name">—</span> 님으로 입력 중</span>
+          <button class="btn ghost tiny" onclick="changeName()">이름 바꾸기</button>
+          <span id="save-state" style="margin-left:auto;color:var(--ok);font-weight:700;opacity:0;transition:opacity .3s">저장됨 ✓</span>
+        </div>
+        <div class="legend">
+          <span><i class="dot" style="background:var(--coral)"></i> 점심 / 저녁</span>
+          <span><i class="dot" style="background:var(--coral-deep)"></i> 종일(점심+저녁)</span>
+          <span>칸을 눌러 켜고 끄세요. 저장은 자동이에요.</span>
+        </div>
+        <div class="cal-weekdays">
+          <div class="sun">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
+        </div>
+        <div class="cal" id="cal"></div>
+      </div>
+    </div>
+
+    <!-- 탭: 결과 -->
+    <div id="pane-result" class="card" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px">
+        <p class="hint" style="margin:0">칸에 마우스를 올리거나 탭하면 가능한 사람이 보여요.</p>
+        <button class="btn ghost tiny" onclick="refreshAll()">새로고침</button>
+      </div>
+      <div class="heat-scroll">
+        <table class="heat" id="heat"></table>
+      </div>
+      <div class="heatlegend">
+        <span>적게 겹침</span>
+        <span class="scale">
+          <span style="background:var(--heat-1)"></span>
+          <span style="background:var(--heat-2)"></span>
+          <span style="background:var(--heat-3)"></span>
+          <span style="background:var(--heat-4)"></span>
+          <span style="background:var(--heat-5)"></span>
+        </span>
+        <span>많이 겹침</span>
+      </div>
+    </div>
+
+    <!-- 탭: 관리 -->
+    <div id="pane-manage" class="card manage" style="display:none">
+      <p style="margin-top:0;color:var(--ink-soft)">주최자 비밀번호를 입력하면 모임을 <b>마감</b>하거나 <b>삭제</b>할 수 있어요.</p>
+      <label for="mg-pw">주최자 비밀번호</label>
+      <input id="mg-pw" type="password" placeholder="만들 때 정한 비밀번호" />
+      <div class="row" style="margin-top:16px">
+        <button class="btn ghost grow" id="mg-toggle" onclick="toggleClose()">모임 마감하기</button>
+        <button class="btn ghost danger" onclick="deleteMeeting()" style="border-color:var(--coral)">모임 삭제</button>
+      </div>
+      <div class="divider"></div>
+      <p class="hint">마감하면 새 입력을 받지 않고 결과만 공개돼요. 삭제하면 모든 참여 기록이 사라지고 되돌릴 수 없어요.</p>
+    </div>
+  </section>
+
+  <div class="footer">허위 약속의 민족 · 지인 모임용 · 데이터는 Supabase에 저장돼요.</div>
+</div>
+
+<div id="pop"></div>
+<div id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   ① 여기에 Supabase 키를 넣으세요 (README 참고)
+   Project Settings → Data API / API Keys 에서 복사
+   ═══════════════════════════════════════════════════════════════ */
+const SUPABASE_URL      = ''; // 예: 'https://abcd.supabase.co'
+const SUPABASE_ANON_KEY = ''; // 예: 'eyJhbGciOiJIUzI1NiIsInR5cCI6...'
+/* ═══════════════════════════════════════════════════════════════ */
+
+// ── 로컬 편의 저장 (메인 저장소 아님. 내 이름/최근 접속만) ──
+const LS = {
+  nameFor:(mid)=>localStorage.getItem('hwa:name:'+mid) || '',
+  setName:(mid,n)=>localStorage.setItem('hwa:name:'+mid, n),
+  pidFor:(mid)=>localStorage.getItem('hwa:pid:'+mid) || '',
+  setPid:(mid,p)=>localStorage.setItem('hwa:pid:'+mid, p),
+};
+
+const SLOTS = ['lunch','dinner']; // 카운트 기준 슬롯
+const SLOT_KO = {lunch:'점심', dinner:'저녁', allday:'종일'};
+
+let sb = null;                 // supabase client
+const state = {
+  meeting:null,                // 현재 모임
+  participants:[],             // [{id,name}]
+  availabilities:[],           // [{participant_id,date,slot}]
+  me:null,                     // {id,name}
+  mySel:{},                    // { 'YYYY-MM-DD': Set('lunch'|'dinner') }  (allday = 둘 다)
+  channel:null,
+  saveTimer:null,
+};
+
+/* ── 유틸 ── */
+const $ = (id)=>document.getElementById(id);
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2200); }
+function esc(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function pad(n){ return String(n).padStart(2,'0'); }
+function ymd(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function parseYmd(s){ const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+const DOW = ['일','월','화','수','목','금','토'];
+function dowKo(dateStr){ return DOW[parseYmd(dateStr).getDay()]; }
+function fmtDate(dateStr){ const d=parseYmd(dateStr); return (d.getMonth()+1)+'월 '+d.getDate()+'일'; }
+
+// 접속일 기준: 오늘 ~ 다음 달 말일
+function defaultRange(){
+  const today=new Date(); today.setHours(0,0,0,0);
+  const end=new Date(today.getFullYear(), today.getMonth()+2, 0); // 다음 달의 0일 = 다음 달 말일
+  return { start:ymd(today), end:ymd(end) };
+}
+function eachDate(startStr,endStr){
+  const out=[]; let d=parseYmd(startStr); const end=parseYmd(endStr);
+  while(d<=end){ out.push(ymd(d)); d=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1); }
+  return out;
+}
+
+// SHA-256 해시 (Web Crypto)
+async function sha256(text){
+  const buf=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+/* ── 화면 라우팅 ── */
+function go(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $('screen-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showError(title,msg){ $('err-title').textContent=title; $('err-msg').textContent=msg; go('error'); }
+
+function getMeetingId(){ return new URLSearchParams(location.search).get('m'); }
+function meetingUrl(id){ return location.origin+location.pathname+'?m='+id; }
+
+/* ── 초기화 ── */
+async function init(){
+  if(!SUPABASE_URL || !SUPABASE_ANON_KEY){ go('setup'); return; }
+  try{ sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
+  catch(e){ go('setup'); return; }
+
+  const rng = defaultRange();
+  $('create-range').textContent = `${fmtDate(rng.start)} ~ ${fmtDate(rng.end)}`;
+
+  const mid = getMeetingId();
+  if(mid){ await openMeeting(mid); }
+  else { go('landing'); }
+}
+
+/* ── 모임 만들기 ── */
+async function createMeeting(){
+  const title=$('c-title').value.trim();
+  const desc=$('c-desc').value.trim();
+  const pw=$('c-pw').value;
+  if(!title){ toast('모임 제목을 입력해 주세요'); $('c-title').focus(); return; }
+  if(!pw){ toast('주최자 비밀번호를 정해 주세요'); $('c-pw').focus(); return; }
+
+  const btn=$('c-submit'); btn.disabled=true; btn.textContent='만드는 중…';
+  try{
+    const rng=defaultRange();
+    const hash=await sha256(pw);
+    const { data, error } = await sb.from('meetings').insert({
+      title, description:desc, host_password_hash:hash,
+      date_start:rng.start, date_end:rng.end, is_closed:false
+    }).select().single();
+    if(error) throw error;
+    // 주소 갱신 후 모임 화면으로
+    history.replaceState(null,'', meetingUrl(data.id));
+    toast('모임이 만들어졌어요! 링크를 공유하세요 🎉');
+    await openMeeting(data.id);
+  }catch(e){
+    console.error(e);
+    toast('모임 생성 실패: '+friendly(e));
+  }finally{
+    btn.disabled=false; btn.textContent='만들고 링크 받기';
+  }
+}
+
+function friendly(e){
+  const m=(e&&e.message)||'';
+  if(/Failed to fetch|NetworkError/i.test(m)) return '네트워크 연결을 확인해 주세요';
+  if(/relation .* does not exist|schema/i.test(m)) return '테이블이 아직 없어요. README의 SQL을 실행했나요?';
+  if(/row-level security|permission|policy/i.test(m)) return '권한 정책(RLS)을 확인해 주세요';
+  return m || '알 수 없는 오류';
+}
+
+/* ── 모임 열기 ── */
+async function openMeeting(mid){
+  go('loading');
+  try{
+    const { data:meeting, error } = await sb.from('meetings').select('*').eq('id',mid).maybeSingle();
+    if(error) throw error;
+    if(!meeting){ showError('모임을 찾지 못했어요','링크가 잘못됐거나 삭제된 모임일 수 있어요.'); return; }
+    state.meeting=meeting;
+    await loadParticipantsAndAvail();
+    await ensureMe();          // 내 이름 확보(로컬 or 프롬프트)
+    renderMeeting();
+    subscribeRealtime();
+    go('meeting');
+  }catch(e){
+    console.error(e);
+    showError('불러오기 실패', friendly(e));
+  }
+}
+
+async function loadParticipantsAndAvail(){
+  const mid=state.meeting.id;
+  const [p,a] = await Promise.all([
+    sb.from('participants').select('id,name').eq('meeting_id',mid).order('created_at'),
+    sb.from('availabilities').select('participant_id,date,slot').eq('meeting_id',mid),
+  ]);
+  if(p.error) throw p.error;
+  if(a.error) throw a.error;
+  state.participants=p.data||[];
+  state.availabilities=a.data||[];
+}
+
+/* ── 내 참여자 확보 ── */
+async function ensureMe(){
+  const mid=state.meeting.id;
+  const savedPid=LS.pidFor(mid);
+  if(savedPid){
+    const found=state.participants.find(p=>p.id===savedPid);
+    if(found){ setMe(found); return; }
+  }
+  // 마감된 모임은 이름 없이 결과만 봐도 됨
+  if(state.meeting.is_closed){ state.me=null; return; }
+  await promptName();
+}
+
+function setMe(p){
+  state.me=p;
+  LS.setPid(state.meeting.id, p.id);
+  LS.setName(state.meeting.id, p.name);
+  // 내 기존 선택 로드
+  state.mySel={};
+  state.availabilities.filter(a=>a.participant_id===p.id).forEach(a=>{
+    if(a.slot==='allday'){ ensureSet(a.date).add('lunch'); ensureSet(a.date).add('dinner'); }
+    else ensureSet(a.date).add(a.slot);
+  });
+}
+function ensureSet(date){ if(!state.mySel[date]) state.mySel[date]=new Set(); return state.mySel[date]; }
+
+async function promptName(){
+  const mid=state.meeting.id;
+  const suggested=LS.nameFor(mid);
+  let name=(prompt('참여할 이름을 입력하세요', suggested)||'').trim();
+  if(!name){ // 이름 안 넣으면 결과만 보기
+    state.me=null; toast('이름 없이 결과만 볼 수 있어요. 입력하려면 이름을 넣어주세요.'); return;
+  }
+  const dup=state.participants.find(p=>p.name===name);
+  if(dup){
+    const mine=confirm(`이미 '${name}' 님이 있어요.\n\n[확인] 본인이에요 — 이어서 수정할게요\n[취소] 다른 이름으로 참여할게요`);
+    if(mine){ setMe(dup); return; }
+    // 다른 이름
+    let alt=(prompt('다른 이름을 입력하세요', name+'2')||'').trim();
+    if(!alt){ state.me=null; return; }
+    if(state.participants.some(p=>p.name===alt)){ toast('그 이름도 이미 있어요. 다시 시도해 주세요.'); return promptName(); }
+    name=alt;
+  }
+  // 새 참여자 생성
+  try{
+    const { data, error } = await sb.from('participants').insert({ meeting_id:mid, name }).select().single();
+    if(error) throw error;
+    state.participants.push({id:data.id, name:data.name});
+    setMe({id:data.id, name:data.name});
+  }catch(e){ console.error(e); toast('참여 실패: '+friendly(e)); state.me=null; }
+}
+
+async function changeName(){
+  if(!state.me){ await promptName(); renderMeeting(); return; }
+  const cur=state.me.name;
+  const nn=(prompt('바꿀 이름을 입력하세요', cur)||'').trim();
+  if(!nn || nn===cur) return;
+  if(state.participants.some(p=>p.name===nn && p.id!==state.me.id)){ toast('이미 있는 이름이에요.'); return; }
+  try{
+    const { error } = await sb.from('participants').update({name:nn}).eq('id',state.me.id);
+    if(error) throw error;
+    state.me.name=nn;
+    const p=state.participants.find(x=>x.id===state.me.id); if(p)p.name=nn;
+    LS.setName(state.meeting.id, nn);
+    renderMeeting(); toast('이름을 바꿨어요');
+  }catch(e){ toast('이름 변경 실패: '+friendly(e)); }
+}
+
+/* ── 참여자로 이름 새로 잡기(랜딩의 "링크로 참여") ── */
+function promptJoinCode(){
+  const v=(prompt('참여할 모임 링크 또는 코드를 붙여넣으세요')||'').trim();
+  if(!v) return;
+  let id=v;
+  const m=v.match(/[?&]m=([\w-]+)/); if(m) id=m[1];
+  history.replaceState(null,'', meetingUrl(id));
+  openMeeting(id);
+}
+
+/* ═══════════ 렌더링 ═══════════ */
+function renderMeeting(){
+  const m=state.meeting;
+  $('m-title').textContent=m.title;
+  $('m-desc').textContent=m.description||'';
+  $('m-desc').style.display=m.description?'block':'none';
+  $('m-count').textContent=state.participants.length;
+  $('m-daterange').textContent='📅 '+fmtDate(m.date_start)+' ~ '+fmtDate(m.date_end);
+  $('m-link').value=meetingUrl(m.id);
+  $('me-name').textContent=state.me?state.me.name:'(이름 없음)';
+  $('mg-toggle').textContent = m.is_closed ? '마감 해제하기' : '모임 마감하기';
+
+  const closed=!!m.is_closed;
+  $('m-closedbadge').style.display=closed?'inline-flex':'none';
+  $('avail-locked').style.display=(closed||!state.me)?'block':'none';
+  $('avail-live').style.display=(closed||!state.me)?'none':'block';
+  if(!state.me && !closed){ $('avail-locked').style.display='block';
+    $('avail-locked').querySelector('p').textContent='결과만 보는 중이에요. 상단 “이름 바꾸기”로 참여할 수 있어요.'; }
+
+  renderPodium();
+  if(!closed && state.me) renderCalendar();
+  renderHeatmap();
+}
+
+/* 날짜별 점수 계산: lunchCount + dinnerCount (allday는 둘 다) */
+function computeStats(){
+  const dates=eachDate(state.meeting.date_start, state.meeting.date_end);
+  const nameById={}; state.participants.forEach(p=>nameById[p.id]=p.name);
+  // per date per slot -> Set(participantId)
+  const map={}; dates.forEach(d=>map[d]={lunch:new Set(),dinner:new Set()});
+  state.availabilities.forEach(a=>{
+    if(!map[a.date]) return;
+    if(a.slot==='allday'){ map[a.date].lunch.add(a.participant_id); map[a.date].dinner.add(a.participant_id); }
+    else if(map[a.date][a.slot]) map[a.date][a.slot].add(a.participant_id);
+  });
+  const perDate=dates.map(d=>{
+    const l=map[d].lunch, di=map[d].dinner;
+    return { date:d, lunch:l, dinner:di, score:l.size+di.size };
+  });
+  return { dates, perDate, nameById, map };
+}
+
+function renderPodium(){
+  const { perDate } = computeStats();
+  const ranked=perDate.filter(x=>x.score>0)
+    .sort((a,b)=> b.score-a.score || a.date.localeCompare(b.date))
+    .slice(0,3);
+  const wrap=$('m-podium');
+  if(ranked.length===0){
+    wrap.innerHTML=`<div class="mini" style="grid-column:1/-1;text-align:center">
+      <div class="em">🫥</div><p style="margin-top:6px">아직 아무도 날짜를 안 골랐어요. 첫 도장을 찍어보세요!</p></div>`;
+    return;
+  }
+  const medals=['🥇','🥈','🥉']; const cls=['g1','g2','g3'];
+  wrap.innerHTML=ranked.map((r,i)=>{
+    const both=[...r.lunch].filter(x=>r.dinner.has(x)).length;
+    return `<div class="rank ${cls[i]}">
+      <div class="medal">${medals[i]} ${i+1}위</div>
+      <div class="date">${fmtDate(r.date)}</div>
+      <div class="dow">(${dowKo(r.date)})</div>
+      <div class="meta"><span>가능 <b>${r.score}</b></span><span>점심 ${r.lunch.size}</span><span>저녁 ${r.dinner.size}</span></div>
+      <div class="big">${i+1}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ── 참여자 캘린더 ── */
+function renderCalendar(){
+  const cal=$('cal'); cal.innerHTML='';
+  const dates=eachDate(state.meeting.date_start, state.meeting.date_end);
+  const todayStr=ymd(new Date());
+  // 시작 요일만큼 빈칸
+  const firstDow=parseYmd(dates[0]).getDay();
+  for(let i=0;i<firstDow;i++){ const e=document.createElement('div'); e.className='day empty'; cal.appendChild(e); }
+
+  dates.forEach(dateStr=>{
+    const d=parseYmd(dateStr);
+    const cell=document.createElement('div');
+    cell.className='day'+(dateStr===todayStr?' today':'');
+    const first = d.getDate()===1;
+    cell.innerHTML=`<div class="dnum">${first?`<span class="mon">${d.getMonth()+1}월</span> `:''}${d.getDate()}</div>`;
+    const box=document.createElement('div'); box.className='slotbtns';
+    const sel=state.mySel[dateStr]||new Set();
+    ['lunch','dinner','allday'].forEach(slot=>{
+      const b=document.createElement('button');
+      b.className='slot'+(slot==='allday'?' allday':'');
+      const on = slot==='allday' ? (sel.has('lunch')&&sel.has('dinner')) : sel.has(slot);
+      if(on) b.classList.add('on');
+      b.textContent=SLOT_KO[slot];
+      b.onclick=()=>toggleSlot(dateStr, slot);
+      box.appendChild(b);
+    });
+    cell.appendChild(box);
+    cal.appendChild(cell);
+  });
+}
+
+function toggleSlot(date, slot){
+  const s=ensureSet(date);
+  if(slot==='allday'){
+    const both=s.has('lunch')&&s.has('dinner');
+    if(both){ s.delete('lunch'); s.delete('dinner'); }
+    else { s.add('lunch'); s.add('dinner'); }
+  }else{
+    if(s.has(slot)) s.delete(slot); else s.add(slot);
+  }
+  if(s.size===0) delete state.mySel[date];
+  renderCalendar();
+  scheduleSave();
+}
+
+/* 자동 저장(디바운스) → 내 행 전체 교체(upsert 대체: delete+insert, 마지막 저장 우선) */
+function scheduleSave(){
+  if(!state.me) return;
+  clearTimeout(state.saveTimer);
+  state.saveTimer=setTimeout(saveMine, 500);
+}
+async function saveMine(){
+  if(!state.me) return;
+  const mid=state.meeting.id, pid=state.me.id;
+  // mySel(set of lunch/dinner) → 행으로 변환. 둘 다면 allday 하나로.
+  const rows=[];
+  Object.keys(state.mySel).forEach(date=>{
+    const s=state.mySel[date];
+    if(s.has('lunch')&&s.has('dinner')) rows.push({meeting_id:mid,participant_id:pid,date,slot:'allday'});
+    else { if(s.has('lunch')) rows.push({meeting_id:mid,participant_id:pid,date,slot:'lunch'});
+           if(s.has('dinner')) rows.push({meeting_id:mid,participant_id:pid,date,slot:'dinner'}); }
+  });
+  try{
+    const del=await sb.from('availabilities').delete().eq('meeting_id',mid).eq('participant_id',pid);
+    if(del.error) throw del.error;
+    if(rows.length){ const ins=await sb.from('availabilities').insert(rows); if(ins.error) throw ins.error; }
+    // 로컬 상태 반영
+    state.availabilities=state.availabilities.filter(a=>a.participant_id!==pid).concat(rows.map(r=>({participant_id:pid,date:r.date,slot:r.slot})));
+    flashSaved();
+    renderPodium(); renderHeatmap();
+  }catch(e){ console.error(e); toast('저장 실패: '+friendly(e)); }
+}
+function flashSaved(){ const el=$('save-state'); el.style.opacity='1'; clearTimeout(el._t); el._t=setTimeout(()=>el.style.opacity='0',1400); }
+
+/* ── 히트맵 ── */
+function renderHeatmap(){
+  const { dates, map, nameById } = computeStats();
+  const total=state.participants.length||1;
+  const todayStr=ymd(new Date());
+  const t=$('heat');
+  // 헤더: 날짜 열
+  let head='<tr><th></th>';
+  dates.forEach(d=>{
+    const dd=parseYmd(d); const sun=dd.getDay()===0;
+    head+=`<th class="datecol${sun?' sun':''}"><div class="d">${dd.getDate()}</div><div>${DOW[dd.getDay()]}</div></th>`;
+  });
+  head+='</tr>';
+  let rows='';
+  [['lunch','점심'],['dinner','저녁']].forEach(([slot,label])=>{
+    rows+=`<tr><td class="rowlab">${label}</td>`;
+    dates.forEach(d=>{
+      const set=map[d][slot]; const c=set.size;
+      const lvl=heatLevel(c,total);
+      const past=d<todayStr;
+      const names=[...set].map(id=>nameById[id]);
+      rows+=`<td><div class="cell ${c>0?'has':''}${past?' past':''}" style="background:${heatColor(lvl)}"
+        data-date="${d}" data-slot="${label}" data-names="${esc(names.join(', '))}" data-count="${c}"
+        onmouseenter="showPop(event)" onmouseleave="hidePop()" onclick="showPop(event,true)">${c||''}</div></td>`;
+    });
+    rows+='</tr>';
+  });
+  t.innerHTML=head+rows;
+}
+function heatLevel(c,total){ if(c<=0) return 0; const r=c/total; if(r>=1)return 5; if(r>=.75)return 4; if(r>=.5)return 3; if(r>=.34)return 2; return 1; }
+function heatColor(l){ return getComputedStyle(document.documentElement).getPropertyValue('--heat-'+l).trim(); }
+
+/* 팝오버 */
+function showPop(ev, sticky){
+  const el=ev.currentTarget;
+  const names=el.dataset.names, count=+el.dataset.count;
+  const pop=$('pop');
+  pop.innerHTML=`<b>${fmtDate(el.dataset.date)} (${dowKo(el.dataset.date)}) · ${el.dataset.slot} · ${count}명</b>`+
+    (count? esc(names) : `<span class="none">아직 없어요</span>`);
+  pop.style.display='block';
+  const r=el.getBoundingClientRect(); const pr=pop.getBoundingClientRect();
+  let left=r.left+r.width/2-pr.width/2; let top=r.top-pr.height-8;
+  left=Math.max(8,Math.min(left, innerWidth-pr.width-8));
+  if(top<8) top=r.bottom+8;
+  pop.style.left=left+'px'; pop.style.top=top+'px';
+  if(sticky){ clearTimeout(pop._t); pop._t=setTimeout(hidePop,2200); }
+}
+function hidePop(){ $('pop').style.display='none'; }
+
+/* ── 탭 ── */
+function switchTab(name){
+  ['avail','result','manage'].forEach(t=>{
+    $('tab-'+t).classList.toggle('active', t===name);
+    $('pane-'+t).style.display = (t===name)?'block':'none';
+  });
+  if(name==='result') renderHeatmap();
+}
+
+/* ── 링크 복사 ── */
+async function copyLink(){
+  const link=$('m-link').value;
+  try{ await navigator.clipboard.writeText(link); toast('초대 링크를 복사했어요 🔗'); }
+  catch{ $('m-link').select(); document.execCommand('copy'); toast('초대 링크를 복사했어요 🔗'); }
+}
+
+/* ── 관리: 마감 토글 / 삭제 ── */
+async function verifyHost(){
+  const pw=$('mg-pw').value;
+  if(!pw){ toast('비밀번호를 입력해 주세요'); return false; }
+  const hash=await sha256(pw);
+  if(hash!==state.meeting.host_password_hash){ toast('비밀번호가 일치하지 않아요'); return false; }
+  return true;
+}
+async function toggleClose(){
+  if(!await verifyHost()) return;
+  const next=!state.meeting.is_closed;
+  try{
+    const { error }=await sb.from('meetings').update({is_closed:next}).eq('id',state.meeting.id);
+    if(error) throw error;
+    state.meeting.is_closed=next;
+    renderMeeting();
+    toast(next?'모임을 마감했어요 🔒':'마감을 해제했어요');
+  }catch(e){ toast('실패: '+friendly(e)); }
+}
+async function deleteMeeting(){
+  if(!await verifyHost()) return;
+  if(!confirm('정말 삭제할까요? 모든 참여 기록이 사라지고 되돌릴 수 없어요.')) return;
+  try{
+    // 자식부터 삭제(외래키 CASCADE가 있으면 meetings만 지워도 됨. 안전하게 순서대로)
+    const mid=state.meeting.id;
+    await sb.from('availabilities').delete().eq('meeting_id',mid);
+    await sb.from('participants').delete().eq('meeting_id',mid);
+    const { error }=await sb.from('meetings').delete().eq('id',mid);
+    if(error) throw error;
+    // 로컬 정리
+    localStorage.removeItem('hwa:pid:'+mid); localStorage.removeItem('hwa:name:'+mid);
+    toast('모임을 삭제했어요');
+    history.replaceState(null,'', location.origin+location.pathname);
+    if(state.channel){ sb.removeChannel(state.channel); state.channel=null; }
+    go('landing');
+  }catch(e){ toast('삭제 실패: '+friendly(e)); }
+}
+
+/* ── 새로고침 ── */
+async function refreshAll(){
+  try{ await loadParticipantsAndAvail(); if(state.me) setMe(state.me); renderMeeting(); toast('최신 상태로 새로고침했어요'); }
+  catch(e){ toast('새로고침 실패: '+friendly(e)); }
+}
+
+/* ── 실시간 반영 ── */
+function subscribeRealtime(){
+  if(state.channel){ sb.removeChannel(state.channel); state.channel=null; }
+  const mid=state.meeting.id;
+  try{
+    state.channel=sb.channel('m:'+mid)
+      .on('postgres_changes',{event:'*',schema:'public',table:'participants',filter:'meeting_id=eq.'+mid}, onRemote)
+      .on('postgres_changes',{event:'*',schema:'public',table:'availabilities',filter:'meeting_id=eq.'+mid}, onRemote)
+      .on('postgres_changes',{event:'*',schema:'public',table:'meetings',filter:'id=eq.'+mid}, onRemoteMeeting)
+      .subscribe();
+  }catch(e){ /* realtime 미설정이어도 앱은 동작(수동 새로고침) */ }
+}
+let remoteTimer=null;
+function onRemote(){ clearTimeout(remoteTimer); remoteTimer=setTimeout(async()=>{
+  try{ await loadParticipantsAndAvail(); if(state.me){ const keep=state.mySel; setMe(state.me); state.mySel=keep; } renderPodium(); renderHeatmap(); $('m-count').textContent=state.participants.length; }catch(e){}
+},400); }
+function onRemoteMeeting(payload){
+  if(payload && payload.eventType==='DELETE'){ showError('모임이 삭제됐어요','주최자가 이 모임을 삭제했어요.'); return; }
+  if(payload && payload.new){ state.meeting=payload.new; renderMeeting(); }
+}
+
+window.addEventListener('DOMContentLoaded', init);
+window.addEventListener('scroll', hidePop, {passive:true});
+</script>
+</body>
+</html>
