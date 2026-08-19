@@ -80,8 +80,9 @@ button{font-family:inherit;cursor:pointer}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 
 label{display:block;font-size:13px;font-weight:600;color:var(--ink-soft);margin:14px 0 6px}
-input[type=text],input[type=password],textarea{
+input[type=text],input[type=password],input[type=date],textarea{
   width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;font:inherit;background:#fff;color:var(--ink)}
+input[type=date]{min-height:46px}
 input:focus,textarea:focus{outline:none;border-color:var(--coral);box-shadow:0 0 0 3px var(--coral-soft)}
 textarea{resize:vertical;min-height:70px}
 .hint{font-size:12px;color:var(--ink-soft);margin-top:6px}
@@ -104,7 +105,11 @@ textarea{resize:vertical;min-height:70px}
 .hero h1{font-size:clamp(38px,9vw,74px);margin:8px 0 6px}
 .hero h1 .pop{color:var(--coral)}
 .hero .sub{font-size:clamp(16px,3.6vw,21px);color:var(--ink-soft)}
-.hero .copy{max-width:520px;margin:14px auto 26px;color:var(--ink-soft)}
+.hero .intro-img{display:block;max-width:min(460px,88vw);width:100%;height:auto;margin:20px auto 6px;
+  border-radius:18px;box-shadow:var(--shadow);border:3px solid #fff}
+.hero .punch{font-size:clamp(16px,3.4vw,19px);color:var(--ink);margin:12px auto 4px;max-width:520px;font-weight:600}
+.hero .punch b{color:var(--coral-deep)}
+.hero .copy{max-width:520px;margin:10px auto 26px;color:var(--ink-soft)}
 .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 .cta .btn{padding:16px 26px;font-size:16px}
 .landing-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:30px}
@@ -255,8 +260,12 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOi...';             // ← 여기</div>
   <section id="screen-landing" class="screen">
     <div class="hero">
       <h1 class="display">미루던 약속,<br><span class="pop">오늘은 정하자.</span></h1>
-      <div class="sub serif">이름만 적고 들어와서, 되는 날에 도장 쾅.</div>
-      <p class="copy">“언제 한번 보자”로 반년을 흘려보낸 우리를 위한 날짜 정하기.
+      <img class="intro-img" src="intro.jpg" alt="밥 한 끼를 함께 해야지!"
+           onerror="this.style.display='none'" />
+      <div class="sub serif">밥 한번 먹자는 거짓말, 다들 해보셨잖아요…?</div>
+      <p class="punch">더 이상 우리의 모임, 미룰 수 없다.<br>
+        이름만 적고 들어와서 <b>되는 날에 도장 쾅!</b></p>
+      <p class="copy">거짓 약속으로 도배된 우리를 위한 날짜 정하기.
         모두의 가능한 날을 모아, 가장 많이 겹치는 하루를 알아서 찾아드려요.</p>
       <div class="cta">
         <button class="btn primary" onclick="go('create')">모임 만들기</button>
@@ -275,11 +284,17 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOi...';             // ← 여기</div>
   <section id="screen-create" class="screen">
     <div class="card">
       <h2 class="display" style="font-size:26px;margin:0 0 4px">모임 만들기</h2>
-      <p class="hint" style="margin:0 0 6px">날짜 범위는 <b id="create-range">오늘 ~ 다음 달 말일</b>로 자동 설정돼요.</p>
       <label for="c-title">모임 제목</label>
       <input id="c-title" type="text" maxlength="80" placeholder="예: OO 동창회 날짜 정하기" />
       <label for="c-desc">설명 <span style="font-weight:400">(선택)</span></label>
       <textarea id="c-desc" maxlength="500" placeholder="예: 저녁 위주로 봐요. 주말이면 더 좋고!"></textarea>
+      <label>날짜 범위</label>
+      <div class="row">
+        <div class="grow"><input id="c-start" type="date" /></div>
+        <div style="align-self:center;color:var(--ink-soft)">~</div>
+        <div class="grow"><input id="c-end" type="date" /></div>
+      </div>
+      <p class="hint">기본값은 <b>오늘 ~ 다음 달 말일</b>이에요. 원하는 기간으로 바꿀 수 있어요. (최대 90일)</p>
       <label for="c-pw">주최자 비밀번호</label>
       <input id="c-pw" type="password" maxlength="60" placeholder="모임 마감·삭제에 필요해요" />
       <p class="hint">비밀번호는 기기에서 해시(SHA-256) 후 저장돼요. 원문은 저장·전송하지 않아요.</p>
@@ -394,7 +409,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOi...';             // ← 여기</div>
     </div>
   </section>
 
-  <div class="footer">허위 약속의 민족 · 지인 모임용 · 데이터는 Supabase에 저장돼요. <span style="opacity:.6">(build 3 · key ✓)</span></div>
+  <div class="footer">허위 약속의 민족 · 지인 모임용 · 데이터는 Supabase에 저장돼요. <span style="opacity:.6">(build 4 · key ✓)</span></div>
 </div>
 
 <div id="pop"></div>
@@ -484,8 +499,13 @@ async function init(){
   try{ sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
   catch(e){ showError('초기화 실패', friendly(e)); return; }
 
+  // 모임 만들기 날짜 입력 기본값(오늘~다음 달 말일) + 최소/최대 제한
   const rng = defaultRange();
-  $('create-range').textContent = `${fmtDate(rng.start)} ~ ${fmtDate(rng.end)}`;
+  const todayStr = ymd(new Date());
+  const cs=$('c-start'), ce=$('c-end');
+  cs.value=rng.start; cs.min=todayStr;
+  ce.value=rng.end;   ce.min=todayStr;
+  cs.onchange=()=>{ if(ce.value && ce.value<cs.value) ce.value=cs.value; ce.min=cs.value; };
 
   const mid = getMeetingId();
   if(mid){ await openMeeting(mid); }
@@ -500,9 +520,18 @@ async function createMeeting(){
   if(!title){ toast('모임 제목을 입력해 주세요'); $('c-title').focus(); return; }
   if(!pw){ toast('주최자 비밀번호를 정해 주세요'); $('c-pw').focus(); return; }
 
+  // 날짜 범위 검증
+  const start=$('c-start').value, end=$('c-end').value;
+  const todayStr=ymd(new Date());
+  if(!start || !end){ toast('날짜 범위를 골라 주세요'); return; }
+  if(start>end){ toast('끝 날짜가 시작보다 빨라요'); return; }
+  if(end<todayStr){ toast('이미 지난 기간이에요'); return; }
+  const days=eachDate(start,end).length;
+  if(days>90){ toast('기간이 너무 길어요 (최대 90일)'); return; }
+
   const btn=$('c-submit'); btn.disabled=true; btn.textContent='만드는 중…';
   try{
-    const rng=defaultRange();
+    const rng={start, end};
     const hash=await sha256(pw);
     const { data, error } = await sb.from('meetings').insert({
       title, description:desc, host_password_hash:hash,
