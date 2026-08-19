@@ -394,7 +394,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOi...';             // ← 여기</div>
     </div>
   </section>
 
-  <div class="footer">허위 약속의 민족 · 지인 모임용 · 데이터는 Supabase에 저장돼요.</div>
+  <div class="footer">허위 약속의 민족 · 지인 모임용 · 데이터는 Supabase에 저장돼요. <span style="opacity:.6">(build 3 · key ✓)</span></div>
 </div>
 
 <div id="pop"></div>
@@ -473,9 +473,16 @@ function meetingUrl(id){ return location.origin+location.pathname+'?m='+id; }
 
 /* ── 초기화 ── */
 async function init(){
+  // 키 미입력 → 설정 화면
   if(!SUPABASE_URL || !SUPABASE_ANON_KEY){ go('setup'); return; }
+  // 라이브러리(CDN) 로딩 실패는 "설정 필요"와 구분해서 안내
+  if(typeof supabase==='undefined' || !supabase.createClient){
+    showError('연결 라이브러리를 못 불러왔어요',
+      'Supabase 스크립트(CDN)가 차단됐을 수 있어요. 네트워크/광고차단을 확인하고 새로고침(Ctrl/⌘+Shift+R)해 주세요.');
+    return;
+  }
   try{ sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
-  catch(e){ go('setup'); return; }
+  catch(e){ showError('초기화 실패', friendly(e)); return; }
 
   const rng = defaultRange();
   $('create-range').textContent = `${fmtDate(rng.start)} ~ ${fmtDate(rng.end)}`;
