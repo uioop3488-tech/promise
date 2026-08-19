@@ -278,12 +278,12 @@ textarea{resize:vertical;min-height:70px}
     <div class="box">
       <div class="em">🔧</div>
       <h3>설정이 필요해요</h3>
-      <p>Supabase 키가 아직 비어 있어요. <code>index.html</code> 상단의
-        <code>SUPABASE_URL</code>·<code>SUPABASE_ANON_KEY</code>를 채우면 바로 작동합니다.
-        방법은 함께 있는 <b>README.md</b>를 참고하세요.</p>
-      <div class="codeblock">// index.html 상단 &lt;script&gt; 안
-const SUPABASE_URL      = 'https://xxxx.supabase.co';  // ← 여기
-const SUPABASE_ANON_KEY = 'eyJhbGciOi...';             // ← 여기</div>
+      <p>이 화면이 보이면 실행 중인 파일에 Supabase 키가 안 들어있는 거예요.
+        아래는 <b>이미 채워진 값(예시)</b>이며, 실제 실행 설정은 파일 아래쪽 <code>&lt;script&gt;</code> 안에 들어 있어요.
+        이 화면이 계속 뜨면 <b>옛 파일을 열고 있는 것</b>이니, 최신 파일로 다시 열어주세요.</p>
+      <div class="codeblock">// index.html 아래쪽 &lt;script&gt; 안 (이미 설정됨)
+const SUPABASE_URL      = 'https://opacjpkjczihmtarmzrf.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_48yhlhoQGF-6qcb7PbWDMQ_P2fU_NZ7';</div>
       <div class="codeblock" id="setup-diag" style="background:#2a1f1a">진단 로딩 중…</div>
     </div>
   </section>
@@ -507,7 +507,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOi...';             // ← 여기</div>
     </div>
   </section>
 
-  <div class="footer">허위 약속의 민족 · 지인 모임용 · 데이터는 Supabase에 저장돼요. <span style="opacity:.6">(build 9 · key ✓)</span></div>
+  <div class="footer">허위 약속의 민족 · 지인 모임용 · 데이터는 Supabase에 저장돼요. <span style="opacity:.6">(build 10 · key ✓)</span></div>
 </div>
 
 <div id="pop"></div>
