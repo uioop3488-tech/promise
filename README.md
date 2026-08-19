@@ -53,6 +53,7 @@ create table if not exists public.meetings (
   date_start         date not null,
   date_end           date not null,
   is_closed          boolean not null default false,
+  code               text unique,               -- 짧은 초대 코드 (앱이 자동 생성)
   created_at         timestamptz not null default now()
 );
 
@@ -107,6 +108,19 @@ alter publication supabase_realtime add table public.meetings;
 alter publication supabase_realtime add table public.participants;
 alter publication supabase_realtime add table public.availabilities;
 ```
+
+### 짧은 모임 코드 (이미 SQL을 실행했다면, 이 한 줄만 추가로 실행)
+
+모임을 **짧은 코드/URL**로 공유하려면 `meetings`에 `code` 컬럼이 필요해요.
+처음 만드는 프로젝트면 위 SQL의 `meetings` 정의에 이미 `code`가 없으니, 아래를 **한 번** 실행하세요:
+
+```sql
+alter table public.meetings add column if not exists code text unique;
+```
+
+- `code`는 6자리 짧은 코드(예: `k7m2xq`)로, 앱이 자동 생성합니다.
+- 초대 링크가 `...?m=k7m2xq` 처럼 짧아지고, 랜딩의 **“코드·링크로 참여”**에서 코드만 입력해도 들어갈 수 있어요.
+- 이 컬럼 없이도 앱은 동작하지만(옛 UUID 링크로), 짧은 코드를 쓰려면 위 한 줄이 필요합니다.
 
 > **참고 — 보안 수준**: anon key는 공개돼도 되는 키입니다. 위 정책은 “아는 사람끼리
 > 쓰는 공개 모임” 수준의 최소 보안입니다. 모임 **삭제·마감**은 앱에서 주최자
