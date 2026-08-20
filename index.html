@@ -9,7 +9,7 @@
 <!-- 한글 구글폰트: 제목 임팩트체(Black Han Sans) + 본문 가독체(Gowun Dodum, IBM Plex Sans KR) -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@400;500;700;800;900&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gothic+A1:wght@400;500;700;800;900&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
 <!-- Supabase JS (CDN) -->
 <!-- Supabase JS (파일에 내장 — CDN 불필요, 오프라인/차단 상황에서도 로드) -->
@@ -64,21 +64,21 @@ body{
   color:var(--ink);
   font-family:"Gothic A1","IBM Plex Sans KR",system-ui,-apple-system,sans-serif;
   line-height:1.6;
-  -webkit-font-smoothing:antialiased;
+  -webkit-font-smoothing:antialiased;word-break:keep-all;
   min-height:100vh;
 }
 a{color:inherit}
 button{font-family:inherit;cursor:pointer}
 .wrap{max-width:720px;margin:0 auto;padding:14px 18px 90px}
 .serif{font-family:inherit}
-.display{font-family:"Gothic A1",sans-serif;font-weight:900;letter-spacing:-.035em;line-height:1.14}
+.display{font-family:"Jua","Gothic A1",sans-serif;font-weight:400;letter-spacing:-.02em;line-height:1.14}
 
 /* 상단 바 */
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 2px 16px}
 .brand{display:flex;align-items:center;gap:11px;cursor:pointer;user-select:none;background:none;border:0;padding:0}
 .brand .logo{width:40px;height:40px;border-radius:13px;background:linear-gradient(140deg,#ff8a72,#ff6b57);
   display:grid;place-items:center;color:#fff;box-shadow:0 8px 16px -8px rgba(236,74,52,.6)}
-.brand b{font-family:"Gothic A1";font-weight:900;font-size:18px;letter-spacing:-.02em}
+.brand b{font-family:"Jua","Gothic A1";font-weight:900;font-size:18px;letter-spacing:-.02em}
 .brand small{display:block;color:var(--ink-soft);font-size:11.5px;margin-top:-2px;font-weight:500}
 
 /* 카드/버튼 */
@@ -148,7 +148,7 @@ textarea{resize:vertical;min-height:74px}
 /* ── 대시보드 헤더 ── */
 .dash{margin-bottom:14px}
 .dash .head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.dash h2{font-family:"Gothic A1";font-weight:900;letter-spacing:-.03em;font-size:clamp(22px,5vw,28px);margin:0}
+.dash h2{font-family:"Jua","Gothic A1";font-weight:900;letter-spacing:-.03em;font-size:clamp(22px,5vw,28px);margin:0}
 .dash .desc{color:var(--ink-soft);margin:6px 0 0;font-size:14px;white-space:pre-wrap;font-weight:500}
 .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .badge{display:inline-flex;align-items:center;gap:6px;background:#f4f6f9;color:var(--ink);
@@ -169,14 +169,14 @@ textarea{resize:vertical;min-height:74px}
 .rank:nth-child(3){animation-delay:.23s}
 @keyframes rankIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
 .rank .medal{font-size:15px;font-weight:800;letter-spacing:-.02em}
-.rank .date{font-family:"Gothic A1";font-weight:900;font-size:22px;margin:8px 0 2px;line-height:1.05;letter-spacing:-.03em}
+.rank .date{font-family:"Jua","Gothic A1";font-weight:900;font-size:22px;margin:8px 0 2px;line-height:1.05;letter-spacing:-.03em}
 .rank .dow{font-size:12px;opacity:.92;font-weight:600}
 .rank .meta{margin-top:12px;font-size:12px;opacity:.96;display:flex;gap:9px;flex-wrap:wrap;font-weight:600}
 .rank .meta b{font-size:15px}
 .rank.g1{background:linear-gradient(140deg,#ffd152,#ffa62e)}
 .rank.g2{background:linear-gradient(140deg,#c3ccd6,#9aa5b3)}
 .rank.g3{background:linear-gradient(140deg,#eaa46e,#d07b40)}
-.rank .big{position:absolute;right:-4px;bottom:-16px;font-family:"Gothic A1";font-weight:900;font-size:64px;opacity:.18;line-height:1}
+.rank .big{position:absolute;right:-4px;bottom:-16px;font-family:"Jua","Gothic A1";font-weight:900;font-size:64px;opacity:.18;line-height:1}
 @media(max-width:560px){.podium{grid-template-columns:1fr}.rank{display:flex;align-items:center;gap:14px;padding:16px 18px}
   .rank .date{margin:0;font-size:20px}.rank .meta{margin-top:2px}.rank .big{display:none}
   .rank>div:nth-child(2){margin-left:auto;text-align:right}}
@@ -226,7 +226,7 @@ textarea{resize:vertical;min-height:74px}
 .cell:hover{transform:translateY(-2px)}
 .cell.past{opacity:.35}
 .heat .datecol{font-size:11.5px;font-weight:600}
-.heat .datecol .d{font-family:"Gothic A1";font-weight:900;font-size:15px;color:var(--ink)}
+.heat .datecol .d{font-family:"Jua","Gothic A1";font-weight:900;font-size:15px;color:var(--ink)}
 .heat .datecol.sun .d{color:var(--accent-deep)}
 .heatlegend{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:12px;color:var(--ink-soft);font-weight:600}
 .heatlegend .scale{display:flex;gap:3px}
@@ -246,7 +246,7 @@ textarea{resize:vertical;min-height:74px}
 .center-screen{min-height:62vh;place-items:center;text-align:center}
 .center-screen .box{max-width:440px}
 .center-screen .em{font-size:48px}
-.center-screen h3{font-family:"Gothic A1";font-weight:900;letter-spacing:-.03em;font-size:24px;margin:12px 0 8px}
+.center-screen h3{font-family:"Jua","Gothic A1";font-weight:900;letter-spacing:-.03em;font-size:24px;margin:12px 0 8px}
 .center-screen p{color:var(--ink-soft);margin:0 0 20px;font-weight:500}
 .codeblock{text-align:left;background:#191f28;color:#eaf0f6;border-radius:14px;padding:15px;font-size:12.5px;
   font-family:ui-monospace,SFMono-Regular,Menlo,monospace;overflow-x:auto;white-space:pre;line-height:1.55;margin:12px 0}
@@ -302,62 +302,83 @@ const SUPABASE_ANON_KEY = 'sb_publishable_48yhlhoQGF-6qcb7PbWDMQ_P2fU_NZ7';</div
   <section id="screen-landing" class="screen">
     <div class="hero">
       <h1 class="display">미루던 약속,<br><span class="pop">오늘은 정하자.</span></h1>
-      <div class="intro-illust" role="img" aria-label="약속을 지키는 귀여운 밥풀 캐릭터">
-        <svg viewBox="0 0 300 250" xmlns="http://www.w3.org/2000/svg">
+      <div class="intro-illust" role="img" aria-label="달력을 들고 시계를 가리키는 귀여운 캐릭터">
+        <svg viewBox="0 0 320 250" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <radialGradient id="body" cx="38%" cy="30%" r="80%">
-              <stop offset="0" stop-color="#fff6f2"/><stop offset="1" stop-color="#ffb3a3"/>
+            <radialGradient id="body" cx="38%" cy="30%" r="82%">
+              <stop offset="0" stop-color="#ff8f79"/><stop offset=".55" stop-color="#ff6a52"/><stop offset="1" stop-color="#ec4a34"/>
+            </radialGradient>
+            <radialGradient id="clockface" cx="40%" cy="35%" r="75%">
+              <stop offset="0" stop-color="#fff8f4"/><stop offset="1" stop-color="#ffe7df"/>
             </radialGradient>
           </defs>
-          <!-- 배경 파스텔 블롭 -->
-          <ellipse cx="150" cy="128" rx="120" ry="112" fill="#fff0ed"/>
-          <circle cx="60" cy="70" r="16" fill="#eef3ff"/>
-          <circle cx="244" cy="86" r="12" fill="#fff2d6"/>
-          <!-- 반짝이 -->
-          <g class="il-spark" fill="#ffc23c">
-            <path d="M232 150l3 9 9 3-9 3-3 9-3-9-9-3 9-3z"/>
-            <path d="M58 150l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/>
-          </g>
           <!-- 바닥 그림자 -->
-          <ellipse cx="150" cy="222" rx="66" ry="12" fill="#191f28" opacity=".07"/>
+          <ellipse cx="162" cy="238" rx="58" ry="9" fill="#191f28" opacity=".06"/>
 
           <g class="il-float1">
-            <!-- 새싹(성장) -->
-            <path d="M150 66c0-12-9-20-9-20s-2 12 9 16z" fill="#4bc0a9"/>
-            <path d="M150 66c0-12 9-20 9-20s2 12-9 16z" fill="#5ecfb8"/>
-            <line x1="150" y1="58" x2="150" y2="76" stroke="#3aa892" stroke-width="3" stroke-linecap="round"/>
-            <!-- 팔 -->
-            <path d="M92 150c-14 2-22 12-22 24l12 1c1-9 6-14 14-16z" fill="#ff9c8a"/>
-            <path d="M208 150c14 2 22 12 22 24l-12 1c-1-9-6-14-14-16z" fill="#ff9c8a"/>
-            <!-- 몸통 -->
-            <path d="M150 74C112 74 96 108 96 150c0 44 24 64 54 64s54-20 54-64c0-42-16-76-54-76z" fill="url(#body)"/>
-            <!-- 볼터치 -->
-            <ellipse cx="122" cy="162" rx="9" ry="6" fill="#ff8f7a" opacity=".55"/>
-            <ellipse cx="178" cy="162" rx="9" ry="6" fill="#ff8f7a" opacity=".55"/>
-            <!-- 눈 -->
-            <g class="il-blink" fill="#2b2320">
-              <circle cx="132" cy="148" r="6"/>
-              <circle cx="168" cy="148" r="6"/>
-            </g>
-            <!-- 눈 하이라이트 -->
-            <circle cx="130" cy="146" r="2" fill="#fff"/>
-            <circle cx="166" cy="146" r="2" fill="#fff"/>
-            <!-- 입 -->
-            <path d="M143 166q7 8 14 0" fill="none" stroke="#2b2320" stroke-width="3" stroke-linecap="round"/>
-          </g>
+            <!-- 귀 -->
+            <circle cx="126" cy="104" r="17" fill="#ec4a34"/>
+            <circle cx="198" cy="104" r="17" fill="#ec4a34"/>
 
-          <!-- 약속 체크 배지 -->
-          <g class="il-float2">
-            <circle cx="222" cy="120" r="19" fill="#fff" stroke="#ffdfd7" stroke-width="2"/>
-            <path d="M214 120l5 6 11-13" fill="none" stroke="#ff6b57" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- 시계 (오른쪽 위) -->
+            <g class="il-float2">
+              <circle cx="256" cy="120" r="30" fill="#ff6b57"/>
+              <circle cx="256" cy="120" r="23" fill="url(#clockface)"/>
+              <g stroke="#ec4a34" stroke-width="2" stroke-linecap="round" opacity=".5">
+                <line x1="256" y1="101" x2="256" y2="105"/><line x1="256" y1="135" x2="256" y2="139"/>
+                <line x1="237" y1="120" x2="241" y2="120"/><line x1="271" y1="120" x2="275" y2="120"/>
+              </g>
+              <line x1="256" y1="120" x2="256" y2="106" stroke="#d23f2b" stroke-width="3.5" stroke-linecap="round"/>
+              <line x1="256" y1="120" x2="268" y2="126" stroke="#d23f2b" stroke-width="3.5" stroke-linecap="round"/>
+              <circle cx="256" cy="120" r="3" fill="#d23f2b"/>
+            </g>
+
+            <!-- 몸통 -->
+            <circle cx="162" cy="152" r="62" fill="url(#body)"/>
+
+            <!-- 다리 -->
+            <ellipse cx="146" cy="220" rx="9" ry="14" fill="#ec4a34"/>
+            <ellipse cx="178" cy="220" rx="9" ry="14" fill="#ec4a34"/>
+
+            <!-- 얼굴 -->
+            <g class="il-blink" fill="#3a1e18">
+              <ellipse cx="147" cy="147" rx="4.6" ry="6.2"/>
+              <ellipse cx="177" cy="147" rx="4.6" ry="6.2"/>
+            </g>
+            <path d="M148 160q14 12 28 0" fill="none" stroke="#3a1e18" stroke-width="4" stroke-linecap="round"/>
+            <ellipse cx="132" cy="162" rx="8" ry="5" fill="#ff8f7a" opacity=".5"/>
+            <ellipse cx="192" cy="162" rx="8" ry="5" fill="#ff8f7a" opacity=".5"/>
+
+            <!-- 오른팔: 시계 가리키기 -->
+            <path d="M214 172q20 4 34-10l7 9q-15 20-43 16z" fill="#f2593f"/>
+            <circle cx="222" cy="150" r="7" fill="#f2593f"/>
+
+            <!-- 왼팔 -->
+            <path d="M112 176q-14 6-20 20l14 7q5-11 16-15z" fill="#f2593f"/>
+
+            <!-- 달력 -->
+            <g>
+              <rect x="60" y="152" width="60" height="52" rx="10" fill="#fff3ee" stroke="#ffd9cf" stroke-width="2"/>
+              <path d="M60 165a10 10 0 0 1 10-10h40a10 10 0 0 1 10 10v3H60z" fill="#ff6b57"/>
+              <rect x="72" y="147" width="5" height="15" rx="2.5" fill="#ec4a34"/>
+              <rect x="103" y="147" width="5" height="15" rx="2.5" fill="#ec4a34"/>
+              <g fill="#ffccbe">
+                <circle cx="74" cy="180" r="3"/><circle cx="88" cy="180" r="3"/><circle cx="102" cy="180" r="3"/>
+                <circle cx="74" cy="192" r="3"/><circle cx="88" cy="192" r="3"/>
+              </g>
+              <!-- + 배지 -->
+              <circle cx="112" cy="194" r="14" fill="#ff5a44" stroke="#fff" stroke-width="2.5"/>
+              <path d="M112 187v14M105 194h14" stroke="#fff" stroke-width="3.6" stroke-linecap="round"/>
+            </g>
+            <!-- 왼손(달력 잡기) -->
+            <circle cx="72" cy="196" r="8" fill="#f2593f"/>
           </g>
         </svg>
       </div>
       <div class="sub serif">밥 한번 먹자는 거짓말, 다들 해보셨잖아요…?</div>
       <p class="punch">더 이상 우리의 모임, 미룰 수 없다.<br>
         이름만 적고 들어와서 <b>되는 날에 도장 쾅!</b></p>
-      <p class="copy">거짓 약속으로 도배된 우리를 위한 날짜 정하기.
-        모두의 가능한 날을 모아, 가장 많이 겹치는 하루를 알아서 찾아드려요.</p>
+      <p class="copy">거짓 약속으로 도배된 우리를 위한 날짜 정하기.<br>모두의 가능한 날을 모아, 가장 많이 겹치는 하루를 알아서 찾아드려요.</p>
       <div class="cta">
         <button class="btn primary" onclick="go('create')">모임 만들기</button>
         <button class="btn ghost" onclick="promptJoinCode()">코드·링크로 참여</button>
@@ -501,7 +522,7 @@ const SUPABASE_ANON_KEY = 'sb_publishable_48yhlhoQGF-6qcb7PbWDMQ_P2fU_NZ7';</div
     </div>
   </section>
 
-  <div class="footer">허위 약속의 민족 · 지인 모임용 · 데이터는 Supabase에 저장돼요. <span style="opacity:.6">(build 12 · key ✓)</span></div>
+  <div class="footer">허위 약속의 민족 · 지인 모임용 · 데이터는 Supabase에 저장돼요. <span style="opacity:.6">(build 13 · key ✓)</span></div>
 </div>
 
 <div id="pop"></div>
