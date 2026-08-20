@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>허위 약속의 민족 — 미루던 약속, 오늘은 정하자</title>
 <meta name="description" content="이름만 입력하고 접속해서 가능한 날짜를 모으고, 가장 많이 겹치는 날을 자동으로 찾아주는 모임 날짜 정하기 앱." />
+<!-- 링크 미리보기(공유 카드): 모임 접속 시 JS가 모임 이름으로 갱신 -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="허위 약속의 민족" />
+<meta property="og:title" content="허위 약속의 민족" />
+<meta property="og:description" content="미루던 약속, 오늘은 정하자 — 되는 날 모아 자동으로 정해주는 모임 날짜 정하기." />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="허위 약속의 민족" />
+<meta name="twitter:description" content="미루던 약속, 오늘은 정하자 — 되는 날 모아 자동으로 정해주는 모임 날짜 정하기." />
 
 <!-- 한글 구글폰트: 제목 임팩트체(Black Han Sans) + 본문 가독체(Gowun Dodum, IBM Plex Sans KR) -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -637,7 +645,7 @@ async function init(){
 
   const mid = getMeetingId();
   if(mid){ await openMeeting(mid); }
-  else { go('landing'); }
+  else { setShareMeta(DEFAULT_TITLE, DEFAULT_DESC); go('landing'); }
 }
 
 /* ── 모임 만들기 ── */
@@ -826,8 +834,21 @@ function promptJoinCode(){
 }
 
 /* ═══════════ 렌더링 ═══════════ */
+// 공유 카드/브라우저 탭 제목을 모임 이름으로 갱신
+function setMeta(sel,val){ const el=document.querySelector(sel); if(el) el.setAttribute('content', val); }
+function setShareMeta(title, desc){
+  document.title = title;
+  setMeta('meta[property="og:title"]', title);
+  setMeta('meta[name="twitter:title"]', title);
+  if(desc){ setMeta('meta[property="og:description"]', desc); setMeta('meta[name="twitter:description"]', desc); setMeta('meta[name="description"]', desc); }
+}
+const DEFAULT_TITLE='허위 약속의 민족 — 미루던 약속, 오늘은 정하자';
+const DEFAULT_DESC='미루던 약속, 오늘은 정하자 — 되는 날 모아 자동으로 정해주는 모임 날짜 정하기.';
+
 function renderMeeting(){
   const m=state.meeting;
+  // 링크 공유 시 모임(약속) 이름이 보이도록
+  setShareMeta(m.title, (m.description||'').trim() || `${fmtDate(m.date_start)} ~ ${fmtDate(m.date_end)} 중 되는 날, 같이 정해요!`);
   $('m-title').textContent=m.title;
   $('m-desc').textContent=m.description||'';
   $('m-desc').style.display=m.description?'block':'none';
