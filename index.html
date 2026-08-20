@@ -181,6 +181,13 @@ textarea{resize:vertical;min-height:74px}
   .rank .date{margin:0;font-size:20px}.rank .meta{margin-top:2px}.rank .big{display:none}
   .rank>div:nth-child(2){margin-left:auto;text-align:right}}
 
+/* ── 마감 확정 배너 ── */
+.final{margin-top:6px;background:linear-gradient(135deg,#fff4ef,#ffe1d8);border:1.5px solid #ffd4c8;
+  border-radius:20px;padding:18px;text-align:center;animation:rankIn .5s cubic-bezier(.2,.8,.2,1) both}
+.final .lab{font-size:13px;font-weight:800;color:var(--accent-deep);letter-spacing:-.02em}
+.final .d{font-family:"Jua","Gothic A1";font-size:28px;color:var(--ink);margin-top:6px;line-height:1.12}
+.final .sub{font-size:12.5px;color:var(--ink-soft);font-weight:600;margin-top:5px}
+
 /* ── 탭 ── */
 .tabs{display:flex;gap:5px;margin:22px 0 14px;background:#e9edf2;border-radius:15px;padding:5px}
 .tabs button{flex:1;border:0;background:transparent;padding:11px;border-radius:11px;font-weight:800;color:var(--ink-soft);font-size:13.5px;letter-spacing:-.02em;transition:.15s}
@@ -451,6 +458,8 @@ const SUPABASE_ANON_KEY = 'sb_publishable_48yhlhoQGF-6qcb7PbWDMQ_P2fU_NZ7';</div
         <button class="btn ghost tiny" onclick="copyLink()">링크 복사</button>
       </div>
 
+      <!-- 마감 시 최종 확정 배너 -->
+      <div id="m-final" class="final" style="display:none"></div>
       <!-- 순위 -->
       <div class="podium" id="m-podium"></div>
     </div>
@@ -521,7 +530,7 @@ const SUPABASE_ANON_KEY = 'sb_publishable_48yhlhoQGF-6qcb7PbWDMQ_P2fU_NZ7';</div
     </div>
   </section>
 
-  <div class="footer">허위 약속의 민족 · 지인 모임용 · 데이터는 Supabase에 저장돼요. <span style="opacity:.6">(build 14 · key ✓)</span></div>
+  <div class="footer">허위 약속의 민족 · 지인 모임용 · 데이터는 Supabase에 저장돼요. <span style="opacity:.6">(build 15 · key ✓)</span></div>
 </div>
 
 <div id="pop"></div>
@@ -537,12 +546,9 @@ const SUPABASE_ANON_KEY = 'sb_publishable_48yhlhoQGF-6qcb7PbWDMQ_P2fU_NZ7';
 /* ═══════════════════════════════════════════════════════════════ */
 
 // ── 로컬 편의 저장 (메인 저장소 아님. 내 이름/최근 접속만) ──
-const LS = {
-  nameFor:(mid)=>localStorage.getItem('hwa:name:'+mid) || '',
-  setName:(mid,n)=>localStorage.setItem('hwa:name:'+mid, n),
-  pidFor:(mid)=>localStorage.getItem('hwa:pid:'+mid) || '',
-  setPid:(mid,p)=>localStorage.setItem('hwa:pid:'+mid, p),
-};
+// 로컬 저장 사용 안 함: 재접속 시 기억하지 않아요. 모임 입장은 오직 URL(?m=)로만,
+// 첫 화면은 항상 '새 모임 만들기' 랜딩. (이름은 접속할 때마다 입력 → 같은 이름이면 이어서 수정)
+const LS = { nameFor:()=>'', setName:()=>{}, pidFor:()=>'', setPid:()=>{} };
 
 const SLOTS = ['lunch','dinner']; // 카운트 기준 슬롯
 const SLOT_KO = {lunch:'점심', dinner:'저녁', allday:'종일'};
@@ -841,6 +847,26 @@ function renderMeeting(){
   $('avail-live').style.display=(closed||!state.me)?'none':'block';
   if(!state.me && !closed){ $('avail-locked').style.display='block';
     $('avail-locked').querySelector('p').textContent='결과만 보는 중이에요. 상단 “이름 바꾸기”로 참여할 수 있어요.'; }
+
+  // 마감 시: 입력 탭 숨기고 1~3위 결과 중심으로
+  const finalEl=$('m-final');
+  $('tab-avail').style.display = closed ? 'none' : '';
+  if(closed){
+    const { perDate } = computeStats();
+    const top = perDate.filter(x=>x.score>0).sort((a,b)=> b.score-a.score || a.date.localeCompare(b.date))[0];
+    if(top){
+      finalEl.innerHTML = `<div class="lab">🎉 약속 날짜 확정!</div>
+        <div class="d">${fmtDate(top.date)} <span style="font-size:.7em">(${dowKo(top.date)})</span></div>
+        <div class="sub">가능 ${top.score}명 · 점심 ${top.lunch.size} · 저녁 ${top.dinner.size} · 아래에서 1~3위 확인</div>`;
+    }else{
+      finalEl.innerHTML = `<div class="lab">🔒 마감됐어요</div><div class="sub" style="margin-top:6px">아직 아무도 날짜를 안 골라 순위가 없어요.</div>`;
+    }
+    finalEl.style.display='block';
+    // 숨겨진 입력 탭에 있었다면 결과로 이동
+    if($('tab-avail').classList.contains('active')) switchTab('result');
+  }else{
+    finalEl.style.display='none';
+  }
 
   renderPodium();
   if(!closed && state.me) renderCalendar();
