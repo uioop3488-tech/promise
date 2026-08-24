@@ -511,6 +511,7 @@ const SUPABASE_ANON_KEY = 'sb_publishable_48yhlhoQGF-6qcb7PbWDMQ_P2fU_NZ7';</div
           <div class="sun">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
         </div>
         <div class="cal" id="cal"></div>
+        <button class="btn primary block" style="margin-top:18px" onclick="saveAndSeeResults()">저장하고 결과 보기</button>
       </div>
     </div>
 
@@ -999,6 +1000,14 @@ function scheduleSave(){
   if(!state.me) return;
   clearTimeout(state.saveTimer);
   state.saveTimer=setTimeout(saveMine, 500);
+}
+// 저장 버튼: 즉시 저장 후 결과 히트맵으로 이동
+async function saveAndSeeResults(){
+  if(!state.me){ toast('먼저 이름을 입력해 주세요'); await changeName(); return; }
+  clearTimeout(state.saveTimer);
+  await saveMine();
+  switchTab('result');
+  toast('저장했어요! 다른 사람 선택도 확인해 보세요 👀');
 }
 async function saveMine(){
   if(!state.me) return;
