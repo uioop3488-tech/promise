@@ -494,7 +494,8 @@ const SUPABASE_ANON_KEY = 'sb_publishable_48yhlhoQGF-6qcb7PbWDMQ_P2fU_NZ7';</div
     <div id="pane-avail" class="card">
       <div id="avail-locked" style="display:none;text-align:center;padding:16px 0">
         <div class="em" style="font-size:32px">🔒</div>
-        <p style="color:var(--ink-soft);margin:8px 0 0">마감된 모임이에요. 결과만 확인할 수 있어요.</p>
+        <p style="color:var(--ink-soft);margin:8px 0 14px">마감된 모임이에요. 결과만 확인할 수 있어요.</p>
+        <button id="avail-join" class="btn primary" style="display:none" onclick="changeName()">이름 입력하고 참여하기</button>
       </div>
       <div id="avail-live">
         <div class="namebar">
@@ -900,8 +901,11 @@ function renderMeeting(){
   $('m-closedbadge').style.display=closed?'inline-flex':'none';
   $('avail-locked').style.display=(closed||!state.me)?'block':'none';
   $('avail-live').style.display=(closed||!state.me)?'none':'block';
+  const joinBtn=$('avail-join');
   if(!state.me && !closed){ $('avail-locked').style.display='block';
-    $('avail-locked').querySelector('p').textContent='결과만 보는 중이에요. 상단 “이름 바꾸기”로 참여할 수 있어요.'; }
+    $('avail-locked').querySelector('p').textContent='아직 참여 전이에요. 이름을 넣으면 날짜를 고를 수 있어요.';
+    if(joinBtn) joinBtn.style.display='inline-block';
+  } else if(joinBtn){ joinBtn.style.display='none'; }
 
   // 마감 시: 입력 탭 숨기고 1~3위 결과 중심으로
   const finalEl=$('m-final');
