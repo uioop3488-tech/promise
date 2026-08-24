@@ -568,9 +568,15 @@ const SUPABASE_ANON_KEY = 'sb_publishable_48yhlhoQGF-6qcb7PbWDMQ_P2fU_NZ7';
 /* ═══════════════════════════════════════════════════════════════ */
 
 // ── 로컬 편의 저장 (메인 저장소 아님. 내 이름/최근 접속만) ──
-// 로컬 저장 사용 안 함: 재접속 시 기억하지 않아요. 모임 입장은 오직 URL(?m=)로만,
-// 첫 화면은 항상 '새 모임 만들기' 랜딩. (이름은 접속할 때마다 입력 → 같은 이름이면 이어서 수정)
-const LS = { nameFor:()=>'', setName:()=>{}, pidFor:()=>'', setPid:()=>{} };
+// 내 이름은 전역으로 기억(다음 접속 때 자동 참여). 모임 세션 자체는 저장 안 하며
+// 첫 화면은 항상 '새 모임 만들기', 모임 입장은 URL(?m=)로만.
+const LS = {
+  nameFor:()=>{ try{ return localStorage.getItem('hwa:name')||''; }catch{ return ''; } },
+  setName:(_mid,n)=>{ try{ localStorage.setItem('hwa:name', n); }catch{} },
+  pidFor:(mid)=>{ try{ return localStorage.getItem('hwa:pid:'+mid)||''; }catch{ return ''; } },
+  setPid:(mid,p)=>{ try{ localStorage.setItem('hwa:pid:'+mid, p); }catch{} },
+  forget:(mid)=>{ try{ localStorage.removeItem('hwa:pid:'+mid); localStorage.removeItem('hwa:name'); }catch{} },
+};
 
 const SLOTS = ['lunch','dinner']; // 카운트 기준 슬롯
 const SLOT_KO = {lunch:'점심', dinner:'저녁', allday:'종일'};
@@ -779,6 +785,20 @@ async function ensureMe(){
   }
   // 마감된 모임은 이름 없이 결과만 봐도 됨
   if(state.meeting.is_closed){ state.me=null; return; }
+  // 기억된 내 이름이 있으면 자동 참여(다시 안 물어봄).
+  const myName=LS.nameFor(mid);
+  if(myName){
+    const existing=state.participants.find(p=>p.name===myName);
+    if(existing){ setMe(existing); return; }      // 같은 이름 있으면 이어서
+    // 동명이 없으면 그 이름으로 조용히 참여자 생성
+    try{
+      const { data, error } = await sb.from('participants').insert({ meeting_id:mid, name:myName }).select().single();
+      if(error) throw error;
+      state.participants.push({id:data.id, name:data.name});
+      setMe({id:data.id, name:data.name});
+      return;
+    }catch(e){ /* 실패하면 아래 프롬프트로 */ }
+  }
   await promptName();
 }
 
