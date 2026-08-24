@@ -247,6 +247,18 @@ textarea{resize:vertical;min-height:74px}
 .heatlegend .scale{display:flex;gap:3px}
 .heatlegend .scale span{width:22px;height:14px;border-radius:5px}
 
+/* 참여자별 선택 */
+.section-title{font-family:"Jua","Gothic A1";font-size:16px;margin:22px 0 6px;color:var(--ink)}
+.section-sub{font-size:12.5px;color:var(--ink-soft);font-weight:500;margin:0 0 12px}
+.prow{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line);align-items:flex-start}
+.prow:first-of-type{border-top:0}
+.pname{flex:0 0 68px;font-weight:800;font-size:14px;color:var(--ink);word-break:keep-all;line-height:1.9}
+.pchips{display:flex;flex-wrap:wrap;gap:6px;flex:1}
+.pchip{background:var(--accent-soft);color:var(--accent-deep);border-radius:10px;padding:5px 10px;font-size:12px;font-weight:700}
+.pchip b{font-weight:800}
+.pchip .st{opacity:.75;margin-left:3px}
+.pchip.none{background:#f0f2f5;color:var(--ink-soft)}
+
 /* 팝오버 */
 #pop{position:fixed;z-index:70;max-width:240px;background:#191f28;color:#fff;border-radius:14px;padding:11px 13px;
   font-size:13px;box-shadow:var(--shadow);display:none;line-height:1.55;font-weight:600}
@@ -522,6 +534,8 @@ const SUPABASE_ANON_KEY = 'sb_publishable_48yhlhoQGF-6qcb7PbWDMQ_P2fU_NZ7';</div
         </span>
         <span>많이 겹침</span>
       </div>
+      <!-- 참여자별 선택 -->
+      <div id="by-person"></div>
     </div>
 
     <!-- 탭: 관리 -->
@@ -1037,6 +1051,33 @@ function renderHeatmap(){
     rows+='</tr>';
   });
   t.innerHTML=head+rows;
+  renderByPerson();
+}
+
+/* ── 참여자별 선택 (누가·언제·뭘) ── */
+function renderByPerson(){
+  const wrap=$('by-person'); if(!wrap) return;
+  const parts=state.participants;
+  if(parts.length===0){ wrap.innerHTML=''; return; }
+  // participant_id -> date -> Set(slot)
+  const byP={}; parts.forEach(p=>byP[p.id]={});
+  state.availabilities.forEach(a=>{
+    const d=byP[a.participant_id]; if(!d) return;
+    if(!d[a.date]) d[a.date]=new Set(); d[a.date].add(a.slot);
+  });
+  const slotText=(s)=> (s.has('allday')||(s.has('lunch')&&s.has('dinner'))) ? '종일'
+                     : s.has('lunch') ? '점심' : s.has('dinner') ? '저녁' : '';
+  let html='<h3 class="section-title">🙋 누가 언제 골랐나</h3>'+
+           '<p class="section-sub">참여자별로 고른 날짜와 시간대예요.</p>';
+  html+=parts.map(p=>{
+    const dmap=byP[p.id]||{};
+    const dates=Object.keys(dmap).sort();
+    let chips;
+    if(dates.length===0){ chips='<span class="pchip none">아직 선택 안 함</span>'; }
+    else chips=dates.map(d=>`<span class="pchip"><b>${fmtDate(d)}</b><span class="st">${slotText(dmap[d])}</span></span>`).join('');
+    return `<div class="prow"><div class="pname">${esc(p.name)}</div><div class="pchips">${chips}</div></div>`;
+  }).join('');
+  wrap.innerHTML=html;
 }
 function heatLevel(c,total){ if(c<=0) return 0; const r=c/total; if(r>=1)return 5; if(r>=.75)return 4; if(r>=.5)return 3; if(r>=.34)return 2; return 1; }
 function heatColor(l){ return getComputedStyle(document.documentElement).getPropertyValue('--heat-'+l).trim(); }
