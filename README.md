@@ -216,3 +216,15 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOi...';                // ← anon public key
 ---
 
 즐거운 약속 되세요. 이번엔 진짜 잡히길. 🫶
+
+---
+
+## 💌 청첩장 (`wedding/`)
+
+모바일 청첩장 페이지입니다. `wedding/` 폴더째 Netlify에 올리면 됩니다.
+
+- 내용(이름·일시·장소·계좌)은 `wedding/index.html` 아래쪽 스크립트의 `CONFIG`에서 수정합니다.
+- **방명록**은 위 약속 앱과 같은 Supabase 프로젝트를 씁니다.
+  SQL Editor에서 `wedding/guestbook.sql` 전문을 한 번 실행하세요. (재실행해도 안전)
+  - 글을 남길 때 정한 비밀번호가 맞아야 삭제되며, 비밀번호는 서버에서 bcrypt 해시로 저장됩니다.
+  - 부적절한 글은 Supabase **Table Editor → guestbook** 에서 직접 지울 수 있습니다.
