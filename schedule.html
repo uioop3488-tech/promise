@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>내 근무 일정</title>
+<meta name="description" content="평일 출근·퇴근 시간 확인용 개인 근무 일정 페이지." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --line: #ececf1;
+    --text: #0f1222;
+    --sub: #5b6075;
+    --muted: #9aa0b4;
+    --accent: #ec1c6b;
+    --accent-soft: #fdeef4;
+    --shadow: 0 1px 2px rgba(15, 18, 34, .04);
+    /* 요일별 색상 (레퍼런스의 카드별 컬러 패널) */
+    --mon: #ec1c6b; --mon-bg: #fff3f7;
+    --tue: #7c3aed; --tue-bg: #f7f3ff;
+    --wed: #ea580c; --wed-bg: #fff7f1;
+    --thu: #16a34a; --thu-bg: #f2faf4;
+    --fri: #2563eb; --fri-bg: #f1f6ff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e0f16; --surface: #161824; --line: #262a3a;
+      --text: #f2f3f8; --sub: #b4b8ca; --muted: #7c8198;
+      --accent-soft: #3a1426; --shadow: none;
+      --mon-bg: #2a1520; --tue-bg: #1f1a33; --wed-bg: #2a1c12; --thu-bg: #132219; --fri-bg: #131c30;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: "Gothic A1", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+    word-break: keep-all; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+
+  header { border-bottom: 1px solid var(--line); }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+  .logo { font-size: 24px; font-weight: 900; letter-spacing: -.5px; }
+  .logo b { color: var(--accent); font-weight: 900; }
+  .today-chip { font-size: 14px; color: var(--sub); font-weight: 500; }
+
+  .hero { padding: 48px 0 28px; }
+  .hero h1 { font-size: 52px; font-weight: 900; letter-spacing: -1.5px; line-height: 1.1; }
+  .hero p { margin-top: 12px; color: var(--sub); font-size: 15px; }
+
+  .next {
+    display: flex; flex-wrap: wrap; gap: 8px 28px; align-items: center;
+    margin-bottom: 20px; padding: 18px 22px; border-radius: 14px;
+    background: var(--accent-soft); color: var(--text);
+  }
+  .next .label { font-size: 13px; font-weight: 700; color: var(--accent); }
+  .next .when { font-size: 17px; font-weight: 800; }
+  .next .nt { font-size: 15px; color: var(--sub); font-weight: 600; }
+  .next .nt strong { color: var(--text); font-size: 18px; font-weight: 800; }
+
+  .filters {
+    display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between;
+    padding: 14px; border: 1px solid var(--line); border-radius: 14px; margin-bottom: 24px;
+  }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tab {
+    border: 1px solid var(--line); background: var(--surface); color: var(--text);
+    font: inherit; font-size: 14px; font-weight: 600; padding: 10px 16px; border-radius: 10px; cursor: pointer;
+  }
+  .tab[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .switch { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: var(--sub); cursor: pointer; user-select: none; }
+  .switch input { position: absolute; opacity: 0; pointer-events: none; }
+  .switch .track { width: 40px; height: 22px; border-radius: 99px; background: #c9ccd8; position: relative; transition: background .15s; }
+  .switch .track::after {
+    content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%;
+    background: #fff; transition: transform .15s;
+  }
+  .switch input:checked + .track { background: var(--accent); }
+  .switch input:checked + .track::after { transform: translateX(18px); }
+  .switch input:focus-visible + .track { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .week { margin-bottom: 36px; }
+  .week-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; margin-bottom: 14px; gap: 12px; }
+  .week-head h2 { font-size: 18px; font-weight: 800; white-space: nowrap; }
+  .week-head span { font-size: 14px; color: var(--sub); font-weight: 600; }
+  .week-head span em { font-style: normal; color: var(--accent); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+  .card {
+    display: flex; min-height: 168px; border: 1px solid var(--line); border-radius: 12px;
+    background: var(--surface); overflow: hidden; box-shadow: var(--shadow);
+  }
+  .card.today { border-color: var(--c); box-shadow: 0 0 0 2px var(--c); }
+  .card.past { opacity: .5; }
+  .date {
+    width: 104px; flex-shrink: 0; padding: 22px 0 18px; text-align: center;
+    background: var(--cbg); color: var(--c); display: flex; flex-direction: column; align-items: center;
+  }
+  .date .dow { font-size: 15px; font-weight: 800; }
+  .date .day { font-size: 40px; font-weight: 900; line-height: 1.15; margin-top: 2px; }
+  .date .bar { width: 44px; height: 2px; background: var(--c); margin: 12px 0 10px; border-radius: 2px; }
+  .date .md { font-size: 13px; color: var(--sub); font-weight: 600; }
+  .body { flex: 1; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .body .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .badge {
+    display: inline-block; font-size: 12px; font-weight: 700; padding: 5px 9px; border-radius: 6px;
+    background: var(--cbg); color: var(--c);
+  }
+  .badge.early { background: var(--accent-soft); color: var(--accent); }
+  .now { font-size: 12px; font-weight: 800; color: #fff; background: var(--c); padding: 4px 8px; border-radius: 99px; }
+  .times { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .t .k { font-size: 12px; color: var(--muted); font-weight: 700; display: flex; align-items: center; gap: 5px; }
+  .t .k svg { width: 14px; height: 14px; }
+  .t .v { font-size: 28px; font-weight: 900; letter-spacing: -.5px; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .hours { font-size: 13px; color: var(--sub); font-weight: 600; }
+
+  .empty { padding: 40px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 12px; }
+  footer { border-top: 1px solid var(--line); padding: 28px 0 40px; margin-top: 20px; color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 16px; }
+    .hero { padding: 32px 0 20px; }
+    .hero h1 { font-size: 38px; }
+    .grid { grid-template-columns: 1fr; gap: 14px; }
+    .date { width: 88px; }
+    .date .day { font-size: 34px; }
+    .t .v { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="logo">My<b>Work</b>Hub</div>
+    <div class="today-chip" id="todayChip"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>내 근무 일정</h1>
+    <p>평일 출근 · 퇴근 시간을 한눈에 확인하세요. (선택적근로제)</p>
+  </section>
+
+  <div class="next" id="next" hidden></div>
+
+  <div class="filters">
+    <div class="tabs" id="tabs" role="group" aria-label="주 선택"></div>
+    <label class="switch">
+      <input type="checkbox" id="earlyOnly" />
+      <span class="track"></span>
+      조기 퇴근일만
+    </label>
+  </div>
+
+  <div id="list"></div>
+</main>
+
+<footer>
+  <div class="wrap">일정은 <code>schedule.html</code> 안의 <code>SCHEDULE</code> 목록에서 수정할 수 있어요.</div>
+</footer>
+
+<script>
+  // 근무 일정 (평일만). hours는 회사 시스템 기준 근무시간(점심 제외)
+  const SCHEDULE = [
+    { date: "2026-10-19", start: "9:00", end: "17:30", hours: 7.5 },
+    { date: "2026-10-20", start: "8:30", end: "17:30", hours: 8 },
+    { date: "2026-10-21", start: "8:30", end: "17:30", hours: 8 },
+    { date: "2026-10-22", start: "8:30", end: "16:00", hours: 6.5 },
+    { date: "2026-10-23", start: "8:30", end: "17:30", hours: 8 },
+    { date: "2026-10-26", start: "9:00", end: "17:30", hours: 7.5 },
+    { date: "2026-10-27", start: "9:00", end: "17:30", hours: 7.5 },
+    { date: "2026-10-28", start: "8:30", end: "17:30", hours: 8 },
+    { date: "2026-10-29", start: "8:30", end: "17:30", hours: 8 },
+    { date: "2026-10-30", start: "8:30", end: "16:00", hours: 6.5 },
+  ];
+  const WEEKLY_TARGET = 40;
+  const NORMAL_END = "17:30";
+
+  const DOW = ["일", "월", "화", "수", "목", "금", "토"];
+  const DOW_KEY = ["", "mon", "tue", "wed", "thu", "fri", ""];
+  const ICON_IN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>';
+  const ICON_OUT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>';
+
+  const pad = (n) => String(n).padStart(2, "0");
+  const toKey = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const parse = (s) => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+  const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
+  const fmtH = (h) => `${+h.toFixed(1)}H`;
+
+  const now = new Date();
+  const todayKey = toKey(now);
+  document.getElementById("todayChip").textContent =
+    `오늘 ${now.getMonth() + 1}월 ${now.getDate()}일 (${DOW[now.getDay()]})`;
+
+  // 월요일 기준으로 주 묶기 (주말 데이터는 제외)
+  const days = SCHEDULE
+    .map((s) => ({ ...s, d: parse(s.date) }))
+    .filter((s) => s.d.getDay() >= 1 && s.d.getDay() <= 5)
+    .sort((a, b) => a.d - b.d);
+  const weeks = [];
+  for (const s of days) {
+    const mon = new Date(s.d); mon.setDate(mon.getDate() - (mon.getDay() - 1));
+    const key = toKey(mon);
+    let w = weeks.find((x) => x.key === key);
+    if (!w) { w = { key, mon, days: [] }; weeks.push(w); }
+    w.days.push(s);
+  }
+
+  // 다음 출근 (오늘 아직 퇴근 전이면 오늘)
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  const next = days.find((s) => s.date > todayKey || (s.date === todayKey && nowMin < toMin(s.end)));
+  if (next) {
+    const el = document.getElementById("next");
+    const isToday = next.date === todayKey;
+    const label = isToday ? (nowMin >= toMin(next.start) ? "지금 근무 중" : "오늘 출근") : "다음 출근";
+    el.innerHTML = `
+      <span class="label">${label}</span>
+      <span class="when">${next.d.getMonth() + 1}월 ${next.d.getDate()}일 (${DOW[next.d.getDay()]})</span>
+      <span class="nt">출근 <strong>${next.start}</strong> · 퇴근 <strong>${next.end}</strong></span>`;
+    el.hidden = false;
+  }
+
+  // 기본 선택: 오늘이 속한 주(없으면 전체)
+  const currentWeek = weeks.find((w) => w.days.some((s) => s.date >= todayKey));
+  let selected = currentWeek ? currentWeek.key : "all";
+
+  const tabs = document.getElementById("tabs");
+  const tabDefs = [{ key: "all", label: "전체" }].concat(weeks.map((w) => {
+    const fri = new Date(w.mon); fri.setDate(fri.getDate() + 4);
+    return { key: w.key, label: `${w.mon.getMonth() + 1}/${w.mon.getDate()} ~ ${fri.getMonth() + 1}/${fri.getDate()}` };
+  }));
+  tabs.innerHTML = tabDefs.map((t) => `<button class="tab" data-key="${t.key}">${t.label}</button>`).join("");
+  tabs.addEventListener("click", (e) => {
+    const b = e.target.closest(".tab"); if (!b) return;
+    selected = b.dataset.key; render();
+  });
+  document.getElementById("earlyOnly").addEventListener("change", render);
+
+  function card(s) {
+    const dow = s.d.getDay(), k = DOW_KEY[dow];
+    const early = toMin(s.end) < toMin(NORMAL_END);
+    const isToday = s.date === todayKey;
+    const cls = ["card", isToday ? "today" : "", s.date < todayKey ? "past" : ""].join(" ");
+    return `
+      <article class="${cls}" style="--c:var(--${k});--cbg:var(--${k}-bg)">
+        <div class="date">
+          <div class="dow">${DOW[dow]}요일</div>
+          <div class="day">${s.d.getDate()}</div>
+          <div class="bar"></div>
+          <div class="md">${s.d.getFullYear()}.${pad(s.d.getMonth() + 1)}</div>
+        </div>
+        <div class="body">
+          <div class="top">
+            <span class="badge ${early ? "early" : ""}">${early ? "조기 퇴근" : "선택적근로제"}</span>
+            ${isToday ? '<span class="now">TODAY</span>' : ""}
+          </div>
+          <div class="times">
+            <div class="t"><div class="k">${ICON_IN}출근</div><div class="v">${s.start}</div></div>
+            <div class="t"><div class="k">${ICON_OUT}퇴근</div><div class="v">${s.end}</div></div>
+          </div>
+          <div class="hours">근무 ${fmtH(s.hours)}</div>
+        </div>
+      </article>`;
+  }
+
+  function render() {
+    tabs.querySelectorAll(".tab").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.key === selected)));
+    const earlyOnly = document.getElementById("earlyOnly").checked;
+    const html = weeks
+      .filter((w) => selected === "all" || w.key === selected)
+      .map((w) => {
+        const list = w.days.filter((s) => !earlyOnly || toMin(s.end) < toMin(NORMAL_END));
+        if (!list.length) return "";
+        const total = w.days.reduce((a, s) => a + s.hours, 0);
+        const last = w.days[w.days.length - 1].d;
+        return `
+          <section class="week">
+            <div class="week-head">
+              <h2>${w.mon.getMonth() + 1}월 ${w.mon.getDate()}일 ~ ${last.getMonth() + 1}월 ${last.getDate()}일</h2>
+              <span>주 근로시간 <em>${fmtH(total)}</em> / ${WEEKLY_TARGET}H</span>
+            </div>
+            <div class="grid">${list.map(card).join("")}</div>
+          </section>`;
+      }).join("");
+    document.getElementById("list").innerHTML = html || '<div class="empty">해당하는 일정이 없어요.</div>';
+  }
+  render();
+</script>
+</body>
+</html>
