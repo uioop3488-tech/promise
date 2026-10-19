@@ -27,12 +27,18 @@
     --fri: #2563eb; --fri-bg: #f1f6ff;
   }
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="light"]) {
       --bg: #0e0f16; --surface: #161824; --line: #262a3a;
       --text: #f2f3f8; --sub: #b4b8ca; --muted: #7c8198;
       --accent-soft: #3a1426; --shadow: none;
       --mon-bg: #2a1520; --tue-bg: #1f1a33; --wed-bg: #2a1c12; --thu-bg: #132219; --fri-bg: #131c30;
     }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e0f16; --surface: #161824; --line: #262a3a;
+    --text: #f2f3f8; --sub: #b4b8ca; --muted: #7c8198;
+    --accent-soft: #3a1426; --shadow: none;
+    --mon-bg: #2a1520; --tue-bg: #1f1a33; --wed-bg: #2a1c12; --thu-bg: #132219; --fri-bg: #131c30;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
