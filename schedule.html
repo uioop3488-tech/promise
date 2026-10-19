@@ -25,20 +25,21 @@
     --wed: #ea580c; --wed-bg: #fff7f1;
     --thu: #16a34a; --thu-bg: #f2faf4;
     --fri: #2563eb; --fri-bg: #f1f6ff;
+    --leave: #0d9488; --leave-bg: #eefaf8;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #0e0f16; --surface: #161824; --line: #262a3a;
       --text: #f2f3f8; --sub: #b4b8ca; --muted: #7c8198;
       --accent-soft: #3a1426; --shadow: none;
-      --mon-bg: #2a1520; --tue-bg: #1f1a33; --wed-bg: #2a1c12; --thu-bg: #132219; --fri-bg: #131c30;
+      --mon-bg: #2a1520; --tue-bg: #1f1a33; --wed-bg: #2a1c12; --thu-bg: #132219; --fri-bg: #131c30; --leave: #2dd4bf; --leave-bg: #10272a;
     }
   }
   :root[data-theme="dark"] {
     --bg: #0e0f16; --surface: #161824; --line: #262a3a;
     --text: #f2f3f8; --sub: #b4b8ca; --muted: #7c8198;
     --accent-soft: #3a1426; --shadow: none;
-    --mon-bg: #2a1520; --tue-bg: #1f1a33; --wed-bg: #2a1c12; --thu-bg: #132219; --fri-bg: #131c30;
+    --mon-bg: #2a1520; --tue-bg: #1f1a33; --wed-bg: #2a1c12; --thu-bg: #132219; --fri-bg: #131c30; --leave: #2dd4bf; --leave-bg: #10272a;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -78,6 +79,7 @@
     font: inherit; font-size: 14px; font-weight: 600; padding: 10px 16px; border-radius: 10px; cursor: pointer;
   }
   .tab[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .switches { display: flex; flex-wrap: wrap; gap: 12px 20px; }
   .switch { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: var(--sub); cursor: pointer; user-select: none; }
   .switch input { position: absolute; opacity: 0; pointer-events: none; }
   .switch .track { width: 40px; height: 22px; border-radius: 99px; background: #c9ccd8; position: relative; transition: background .15s; }
@@ -117,6 +119,10 @@
     background: var(--cbg); color: var(--c);
   }
   .badge.early { background: var(--accent-soft); color: var(--accent); }
+  .badge.nine { background: var(--cbg); color: var(--c); }
+  .badge.leave { background: var(--leave-bg); color: var(--leave); }
+  .leave-v { font-size: 28px; font-weight: 900; letter-spacing: -.5px; color: var(--leave); }
+  .leave-v small { display: block; font-size: 13px; font-weight: 600; color: var(--sub); letter-spacing: 0; margin-top: 4px; }
   .now { font-size: 12px; font-weight: 800; color: #fff; background: var(--c); padding: 4px 8px; border-radius: 99px; }
   .times { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .t .k { font-size: 12px; color: var(--muted); font-weight: 700; display: flex; align-items: center; gap: 5px; }
@@ -156,11 +162,18 @@
 
   <div class="filters">
     <div class="tabs" id="tabs" role="group" aria-label="주 선택"></div>
-    <label class="switch">
-      <input type="checkbox" id="earlyOnly" />
-      <span class="track"></span>
-      조기 퇴근일만
-    </label>
+    <div class="switches">
+      <label class="switch">
+        <input type="checkbox" id="nineOnly" />
+        <span class="track"></span>
+        9시 출근
+      </label>
+      <label class="switch">
+        <input type="checkbox" id="earlyOnly" />
+        <span class="track"></span>
+        조기 퇴근
+      </label>
+    </div>
   </div>
 
   <div id="list"></div>
@@ -171,13 +184,13 @@
 </footer>
 
 <script>
-  // 근무 일정 (평일만). hours는 회사 시스템 기준 근무시간(점심 제외)
+  // 근무 일정 (평일만). hours는 회사 시스템 기준 근무시간(점심 제외), leave: true는 연차
   const SCHEDULE = [
     { date: "2026-10-19", start: "9:00", end: "17:30", hours: 7.5 },
-    { date: "2026-10-20", start: "8:30", end: "17:30", hours: 8 },
+    { date: "2026-10-20", leave: true, hours: 8 },
     { date: "2026-10-21", start: "8:30", end: "17:30", hours: 8 },
     { date: "2026-10-22", start: "8:30", end: "16:00", hours: 6.5 },
-    { date: "2026-10-23", start: "8:30", end: "17:30", hours: 8 },
+    { date: "2026-10-23", leave: true, hours: 8 },
     { date: "2026-10-26", start: "9:00", end: "17:30", hours: 7.5 },
     { date: "2026-10-27", start: "9:00", end: "17:30", hours: 7.5 },
     { date: "2026-10-28", start: "8:30", end: "17:30", hours: 8 },
@@ -186,6 +199,9 @@
   ];
   const WEEKLY_TARGET = 40;
   const NORMAL_END = "17:30";
+  const NINE = "9:00";
+  const isEarly = (s) => !s.leave && toMin(s.end) < toMin(NORMAL_END);
+  const isNine = (s) => !s.leave && toMin(s.start) === toMin(NINE);
 
   const DOW = ["일", "월", "화", "수", "목", "금", "토"];
   const DOW_KEY = ["", "mon", "tue", "wed", "thu", "fri", ""];
@@ -219,7 +235,7 @@
 
   // 다음 출근 (오늘 아직 퇴근 전이면 오늘)
   const nowMin = now.getHours() * 60 + now.getMinutes();
-  const next = days.find((s) => s.date > todayKey || (s.date === todayKey && nowMin < toMin(s.end)));
+  const next = days.find((s) => !s.leave && (s.date > todayKey || (s.date === todayKey && nowMin < toMin(s.end))));
   if (next) {
     const el = document.getElementById("next");
     const isToday = next.date === todayKey;
@@ -246,10 +262,14 @@
     selected = b.dataset.key; render();
   });
   document.getElementById("earlyOnly").addEventListener("change", render);
+  document.getElementById("nineOnly").addEventListener("change", render);
 
   function card(s) {
     const dow = s.d.getDay(), k = DOW_KEY[dow];
-    const early = toMin(s.end) < toMin(NORMAL_END);
+    const badge = s.leave ? '<span class="badge leave">연차</span>'
+      : isEarly(s) ? '<span class="badge early">조기 퇴근</span>'
+      : isNine(s) ? '<span class="badge nine">9시 출근</span>'
+      : '<span class="badge">선택적근로제</span>';
     const isToday = s.date === todayKey;
     const cls = ["card", isToday ? "today" : "", s.date < todayKey ? "past" : ""].join(" ");
     return `
@@ -262,14 +282,17 @@
         </div>
         <div class="body">
           <div class="top">
-            <span class="badge ${early ? "early" : ""}">${early ? "조기 퇴근" : "선택적근로제"}</span>
+            ${badge}
             ${isToday ? '<span class="now">TODAY</span>' : ""}
           </div>
+          ${s.leave ? `
+          <div class="leave-v">연차<small>출근하지 않는 날이에요</small></div>
+          <div class="hours">유급휴가 ${fmtH(s.hours)}</div>` : `
           <div class="times">
             <div class="t"><div class="k">${ICON_IN}출근</div><div class="v">${s.start}</div></div>
             <div class="t"><div class="k">${ICON_OUT}퇴근</div><div class="v">${s.end}</div></div>
           </div>
-          <div class="hours">근무 ${fmtH(s.hours)}</div>
+          <div class="hours">근무 ${fmtH(s.hours)}</div>`}
         </div>
       </article>`;
   }
@@ -277,18 +300,22 @@
   function render() {
     tabs.querySelectorAll(".tab").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.key === selected)));
     const earlyOnly = document.getElementById("earlyOnly").checked;
+    const nineOnly = document.getElementById("nineOnly").checked;
+    // 둘 다 켜면 둘 중 하나라도 해당하는 날을 보여줌
+    const match = (s) => (!earlyOnly && !nineOnly) || (earlyOnly && isEarly(s)) || (nineOnly && isNine(s));
     const html = weeks
       .filter((w) => selected === "all" || w.key === selected)
       .map((w) => {
-        const list = w.days.filter((s) => !earlyOnly || toMin(s.end) < toMin(NORMAL_END));
+        const list = w.days.filter(match);
         if (!list.length) return "";
         const total = w.days.reduce((a, s) => a + s.hours, 0);
         const last = w.days[w.days.length - 1].d;
+        const leaves = w.days.filter((s) => s.leave).length;
         return `
           <section class="week">
             <div class="week-head">
               <h2>${w.mon.getMonth() + 1}월 ${w.mon.getDate()}일 ~ ${last.getMonth() + 1}월 ${last.getDate()}일</h2>
-              <span>주 근로시간 <em>${fmtH(total)}</em> / ${WEEKLY_TARGET}H</span>
+              <span>주 근로시간 <em>${fmtH(total)}</em> / ${WEEKLY_TARGET}H${leaves ? ` · 연차 ${leaves}일` : ""}</span>
             </div>
             <div class="grid">${list.map(card).join("")}</div>
           </section>`;
