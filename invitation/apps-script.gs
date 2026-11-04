@@ -2,15 +2,16 @@
  * 공동 청첩장 모임 초대장 → 구글 시트 참석 명단
  *
  * 설치 방법
- * 1. "공동 청첩장 모임 참석 명단" 시트를 열고 확장 프로그램 > Apps Script
- * 2. 원래 있던 코드를 모두 지우고 이 파일 내용을 붙여넣은 뒤 저장
- * 3. 배포 > 새 배포 > 유형: 웹 앱
+ * 1. 명단 시트에서 확장 프로그램 > Apps Script 를 열고(또는 script.google.com 새 프로젝트)
+ *    원래 코드를 지운 뒤 이 파일 내용을 붙여넣고 저장
+ * 2. 배포 > 새 배포 > 유형: 웹 앱
  *    - 실행 사용자: 나
  *    - 액세스 권한이 있는 사용자: 모든 사용자
- * 4. 권한 승인 후 나오는 웹 앱 URL(…/exec)을 초대장 index.html 의 RSVP_ENDPOINT 에 넣기
+ * 3. 권한 승인 후 나오는 웹 앱 URL(…/exec)을 초대장 index.html 의 RSVP_ENDPOINT 에 넣기
  *
  * 같은 이름으로 다시 보내면 새 줄을 만들지 않고 그 사람의 줄을 고쳐요.
  */
+var SHEET_ID = '1uHCsLeiPQ2P7mBN-wI704X6gpEUXgmDMb-xSLoQ93kU';
 var SHEET_NAME = '응답';
 
 function doPost(e) {
@@ -27,7 +28,7 @@ function doPost(e) {
     var status = data.attending ? '참석' : '불참';
     var now = new Date();
 
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+    var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
     var last = Math.max(sheet.getLastRow(), 1);
     var names = last > 1
       ? sheet.getRange(2, 1, last - 1, 1).getDisplayValues().map(function (r) { return r[0].trim(); })
