@@ -316,6 +316,40 @@ a{color:inherit}
 }
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
+/* 참석 여부 */
+.rsvp{
+  position:relative;z-index:1;text-align:center;background-color:var(--paper);border-radius:20px;box-shadow:var(--shadow);
+  padding:26px 22px 24px;margin:4px 0 0;display:flex;flex-direction:column;gap:10px;
+}
+.rsvp h3{font-family:var(--hand);font-weight:400;font-size:34px;line-height:1.1;color:var(--ink);margin-top:4px}
+.rsvp .label{align-self:center}
+.rsvp .rsvp-sub{font-size:16px;color:var(--muted);margin:-4px 0 6px}
+.rsvp-field{text-align:left;font-size:16px;font-weight:700;color:var(--ink)}
+.rsvp input[type=text]{
+  font:inherit;font-size:19px;color:var(--ink);background:var(--paper-2);
+  border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;width:100%;
+}
+.rsvp input[type=text]::placeholder{color:#a8988a}
+.rsvp input[type=text]:focus{outline:none;border-color:var(--wine);box-shadow:0 0 0 3px var(--rose-soft)}
+.rsvp-choice{border:0;margin-top:4px;min-width:0}
+.rsvp-choice legend{text-align:left;font-size:16px;font-weight:700;margin-bottom:8px;padding:0}
+.rsvp-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rsvp-choice input{position:absolute;opacity:0;width:1px;height:1px}
+.rsvp-choice label{
+  display:flex;align-items:center;justify-content:center;min-height:50px;border-radius:14px;cursor:pointer;
+  border:1.5px solid var(--line);background:var(--paper-2);font-size:18px;font-weight:700;color:var(--muted);
+  transition:background .2s ease,border-color .2s ease,color .2s ease;
+}
+.rsvp-choice input:checked + label{background:var(--rose-soft);border-color:var(--wine);color:var(--wine-dark)}
+.rsvp-choice input:focus-visible + label{outline:3px solid var(--wine);outline-offset:2px}
+.rsvp .rsvp-error{min-height:1.2em;font-size:15px;color:var(--wine);margin:0}
+.rsvp .btn[disabled]{opacity:.6;cursor:wait}
+.rsvp.sent > :not(.rsvp-done):not(.label){display:none}
+.rsvp-done{display:flex;flex-direction:column;gap:6px;padding:6px 0 2px}
+.rsvp .rsvp-done-title{font-family:var(--hand);font-size:34px;line-height:1.15;color:var(--wine);margin:0}
+.rsvp .rsvp-done-sub{font-size:17px;color:var(--muted);margin:0}
+.rsvp-again{font:inherit;font-size:15px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;margin-top:6px;align-self:center;min-height:40px}
+
 /* 손그림 일러스트 */
 .doodle{position:absolute;pointer-events:none;user-select:none;z-index:0;height:auto}
 .dd-wine{width:84px;left:10px;top:18px;transform-origin:70% 90%;animation:clink 3.2s ease-in-out infinite}
@@ -570,7 +604,29 @@ a{color:inherit}
       <svg class="wave" viewBox="0 0 400 28" preserveAspectRatio="none" aria-hidden="true"><path d="M2 10c36 16 72-8 110 4s64 14 100-2 70-12 100 2 60 10 86-4"/></svg>
       <h2 style="margin-top:22px;position:relative">함께해주셔서 감사합니다</h2>
       <p>바쁘신 와중에도 저희의 시작을<br/>축하해 주셔서 진심으로 고맙습니다.<br/>12월 4일, 따뜻한 오뎅과 함께 기다릴게요.</p>
-      <button class="btn btn-primary" id="copyBtn" type="button">🔗 링크 복사</button>
+      <form class="rsvp paper-tex" id="rsvp" novalidate>
+        <span class="label">R.S.V.P</span>
+        <h3>모임에 오실 수 있나요?</h3>
+        <p class="rsvp-sub">12월 4일(금) 18:30 · 충무오뎅</p>
+        <label class="rsvp-field" for="rsvpName">이름</label>
+        <input id="rsvpName" name="name" type="text" maxlength="30" autocomplete="name" placeholder="이름을 적어주세요" required />
+        <fieldset class="rsvp-choice">
+          <legend>참석 여부</legend>
+          <div class="rsvp-opts">
+            <input type="radio" id="rsvpYes" name="attend" value="yes" />
+            <label for="rsvpYes">참석할게요 🍢</label>
+            <input type="radio" id="rsvpNo" name="attend" value="no" />
+            <label for="rsvpNo">못 가요 🥲</label>
+          </div>
+        </fieldset>
+        <p class="rsvp-error" id="rsvpError" role="alert"></p>
+        <button class="btn btn-primary btn-block" id="rsvpSubmit" type="submit">마음 전하기 💌</button>
+        <div class="rsvp-done" id="rsvpDone" hidden>
+          <p class="rsvp-done-title" id="rsvpDoneTitle"></p>
+          <p class="rsvp-done-sub" id="rsvpDoneSub"></p>
+          <button class="rsvp-again" id="rsvpAgain" type="button">답을 바꾸고 싶어요</button>
+        </div>
+      </form>
       <p style="margin:34px 0 0"><span class="with-love" aria-label="With love"><span class="w">WITH</span><span class="l">love</span></span></p>
       <p class="foot">JINHA ♥ MINSEOK<br/>JIWON ♥ HOYOUNG</p>
     </footer>
@@ -631,7 +687,10 @@ a{color:inherit}
       startPage2();
     }, reduceMotion ? 0 : 600);
   }
-  $('#yesBtn').addEventListener('click', goPage2);
+  $('#yesBtn').addEventListener('click', function(){
+    var y = $('#rsvpYes'); if (y && !form.classList.contains('sent')) y.checked = true;
+    goPage2();
+  });
 
   /* ───────── "다음에요" 도망가는 버튼 ───────── */
   var noBtn = $('#noBtn'), noSlot = $('#noSlot'), yesBtn = $('#yesBtn');
@@ -756,24 +815,62 @@ a{color:inherit}
     toast('캘린더 파일을 받았어요 📅');
   });
 
-  /* ───────── 링크 복사 ───────── */
+  /* ───────── 토스트 ───────── */
   function toast(msg){
     var t = $('#toast'); t.textContent = msg; t.classList.add('show');
     clearTimeout(toast._t); toast._t = setTimeout(function(){ t.classList.remove('show'); }, 2000);
   }
-  $('#copyBtn').addEventListener('click', function(){
-    var link = location.href.split('#')[0];
-    var fallback = function(){
-      var ta = document.createElement('textarea');
-      ta.value = link; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.opacity='0';
-      document.body.appendChild(ta); ta.select();
-      try { document.execCommand('copy'); toast('링크를 복사했어요 💌'); }
-      catch(e){ toast('복사에 실패했어요. 주소창을 길게 눌러 복사해주세요'); }
-      ta.remove();
-    };
-    if (navigator.clipboard && window.isSecureContext){
-      navigator.clipboard.writeText(link).then(function(){ toast('링크를 복사했어요 💌'); }, fallback);
-    } else fallback();
+  /* ───────── 참석 여부 (Supabase 저장) ─────────
+     같은 폴더의 rsvp.sql 을 Supabase SQL Editor에서 한 번 실행해야 저장돼요.
+     공개 키(publishable)는 "응답 추가"만 가능하고, 응답 목록은 읽을 수 없어요. */
+  var SUPABASE_URL = 'https://opacjpkjczihmtarmzrf.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_48yhlhoQGF-6qcb7PbWDMQ_P2fU_NZ7';
+  var RSVP_KEY = 'rsvp-1204';
+  var form = $('#rsvp'), nameIn = $('#rsvpName'), err = $('#rsvpError'), submit = $('#rsvpSubmit');
+
+  function showDone(name, attend){
+    $('#rsvpDoneTitle').textContent = attend
+      ? name + '님, 12월 4일에 만나요!'
+      : name + '님, 마음만으로도 고마워요';
+    $('#rsvpDoneSub').textContent = attend
+      ? '따뜻한 오뎅 준비해 둘게요 🍢'
+      : '결혼식에서 꼭 만나요 💍';
+    $('#rsvpDone').hidden = false;
+    form.classList.add('sent');
+  }
+  try {
+    var saved = JSON.parse(localStorage.getItem(RSVP_KEY) || 'null');
+    if (saved && saved.name){ nameIn.value = saved.name; showDone(saved.name, saved.attend); }
+  } catch(e){}
+
+  form.addEventListener('input', function(){ err.textContent = ''; });
+  $('#rsvpAgain').addEventListener('click', function(){
+    form.classList.remove('sent'); $('#rsvpDone').hidden = true; nameIn.focus();
+  });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = nameIn.value.trim();
+    var pick = form.querySelector('input[name=attend]:checked');
+    if (!name){ err.textContent = '이름을 적어주세요.'; nameIn.focus(); return; }
+    if (!pick){ err.textContent = '참석 여부를 골라주세요.'; return; }
+    err.textContent = '';
+    var attend = pick.value === 'yes';
+    submit.disabled = true; submit.textContent = '전하는 중…';
+    fetch(SUPABASE_URL + '/rest/v1/invitation_rsvp', {
+      method: 'POST',
+      headers: {'apikey': SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal'},
+      body: JSON.stringify({name: name, attending: attend})
+    }).then(function(res){
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      try { localStorage.setItem(RSVP_KEY, JSON.stringify({name: name, attend: attend})); } catch(e){}
+      showDone(name, attend);
+      toast('마음이 전해졌어요 💌');
+    }).catch(function(){
+      err.textContent = '전송하지 못했어요. 인터넷 연결을 확인하고 다시 눌러주세요.';
+    }).then(function(){
+      submit.disabled = false; submit.textContent = '마음 전하기 💌';
+    });
   });
 
   /* ───────── 스크롤 페이드업 ───────── */
