@@ -20,7 +20,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;500;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Gaegu:wght@400;700&family=Mrs+Saint+Delafield&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet" />
 
 <style>
 :root{
@@ -38,15 +38,17 @@
   --rose:#d9a5a0;
   --rose-soft:#f3dcd7;
   --shadow:0 18px 40px -18px rgba(70,40,25,.35);
-  --serif:'Nanum Myeongjo',serif;
-  --hand:'Nanum Pen Script',cursive;
-  --sans:'Noto Sans KR',system-ui,-apple-system,sans-serif;
-  --type:'Courier Prime','Noto Sans KR',monospace;
+  /* 제목: 펜 필기체 / 본문: 읽기 쉬운 손글씨 / 장식: 영문 붓 필기체 / 라벨: 타자기 */
+  --serif:'Nanum Pen Script','Gaegu',cursive;
+  --hand:'Nanum Pen Script','Gaegu',cursive;
+  --sans:'Gaegu','Nanum Pen Script',system-ui,sans-serif;
+  --script:'Mrs Saint Delafield','Nanum Pen Script',cursive;
+  --type:'Courier Prime','Gaegu',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
 body{
-  font-family:var(--sans);color:var(--ink);background:var(--bg);
+  font-family:var(--sans);font-size:17px;color:var(--ink);background:var(--bg);
   min-height:100vh;min-height:100dvh;word-break:keep-all;overflow-x:hidden;
   -webkit-tap-highlight-color:transparent;
 }
@@ -84,7 +86,7 @@ a{color:inherit}
 .stage{display:flex;flex-direction:column;align-items:center;gap:26px;transition:opacity .6s ease, transform .6s ease}
 .stage-top{text-align:center}
 .stage-top .kicker{font-family:var(--type);letter-spacing:.3em;font-size:12px;color:var(--muted)}
-.stage-top h1{font-family:var(--serif);font-weight:800;color:var(--wine);font-size:26px;margin-top:8px;line-height:1.35}
+.stage-top h1{font-family:var(--serif);font-weight:400;color:var(--wine);font-size:38px;margin-top:6px;line-height:1.15}
 
 .envelope{
   position:relative;width:300px;height:200px;perspective:1100px;cursor:pointer;
@@ -97,7 +99,7 @@ a{color:inherit}
   display:flex;flex-direction:column;align-items:center;padding-top:18px;gap:6px;
   transition:transform 1s cubic-bezier(.65,0,.35,1);
 }
-.letter-peek .t{font-family:var(--hand);font-size:30px;color:var(--wine);line-height:1}
+.letter-peek .t{font-family:var(--script);font-size:40px;color:var(--wine);line-height:1}
 .letter-peek .s{font-family:var(--type);font-size:11px;color:var(--muted);letter-spacing:.12em}
 .env-front{
   position:absolute;inset:0;z-index:3;border-radius:6px;
@@ -155,20 +157,20 @@ a{color:inherit}
 }
 .letter .mini-seal{position:absolute;top:-22px;left:50%;transform:translateX(-50%);width:46px;height:46px}
 .letter .kicker{font-family:var(--type);font-size:11px;letter-spacing:.32em;color:var(--muted)}
-.letter h2{font-family:var(--serif);font-weight:800;font-size:22px;line-height:1.45;color:var(--wine);margin:10px 0 20px}
+.letter h2{font-family:var(--serif);font-weight:400;font-size:36px;line-height:1.15;color:var(--wine);margin:8px 0 18px}
 .couples{display:flex;flex-direction:column;gap:2px;margin-bottom:20px}
 .couple-line{font-family:var(--hand);font-size:36px;line-height:1.15;color:var(--ink)}
 .couple-line .h{color:var(--wine);font-size:.8em;margin:0 4px;display:inline-block;transform:translateY(-2px)}
-.letter .msg{font-size:15px;line-height:1.85;color:var(--ink)}
+.letter .msg{font-size:18px;line-height:1.7;color:var(--ink)}
 .letter .when{
   margin:20px auto 6px;padding:12px 10px;border-top:1px dashed var(--rose);border-bottom:1px dashed var(--rose);
-  font-family:var(--serif);font-weight:700;font-size:16px;color:var(--wine-dark);line-height:1.6;
+  font-family:var(--serif);font-weight:400;font-size:25px;color:var(--wine-dark);line-height:1.3;
 }
 
 /* 손으로 동그라미 친 달력 */
 .cal{margin:22px auto 4px;max-width:250px}
 .cal-head{
-  background:var(--wine);color:#fff7ee;font-family:var(--serif);font-weight:700;font-size:13px;
+  background:var(--wine);color:#fff7ee;font-family:var(--serif);font-weight:400;font-size:19px;
   padding:4px 0;border-radius:4px 4px 0 0;letter-spacing:.2em;
 }
 .cal-row{display:grid;grid-template-columns:repeat(5,1fr);border-top:2px solid var(--ink)}
@@ -183,7 +185,7 @@ a{color:inherit}
 .actions{display:flex;gap:10px;justify-content:center;margin-top:26px;flex-wrap:wrap;align-items:center;min-height:52px}
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  min-height:48px;padding:0 20px;border-radius:999px;font-weight:700;font-size:15px;text-decoration:none;
+  min-height:48px;padding:0 20px;border-radius:999px;font-weight:700;font-size:19px;text-decoration:none;
   transition:transform .15s ease, background .2s ease, box-shadow .2s ease;
 }
 .btn:active{transform:scale(.97)}
@@ -210,7 +212,7 @@ a{color:inherit}
 }
 .hero .kicker{font-family:var(--type);letter-spacing:.3em;font-size:12px;color:var(--muted)}
 .hero h1{font-family:var(--hand);font-weight:400;font-size:48px;color:var(--wine);line-height:1.05;margin-top:10px}
-.hero p{font-family:var(--serif);font-size:14px;color:var(--muted);margin-top:8px}
+.hero p{font-family:var(--serif);font-size:22px;color:var(--muted);margin-top:6px}
 
 .section{padding:0 18px;margin-top:22px}
 .card{
@@ -224,18 +226,19 @@ a{color:inherit}
 
 /* 모임 카드 (가장 크게) */
 .meet{text-align:center;padding-top:34px}
-.meet .place{font-family:var(--serif);font-weight:800;font-size:36px;color:var(--ink);margin:14px 0 6px;letter-spacing:-.01em}
-.meet .date{font-size:17px;font-weight:700;color:var(--wine-dark)}
+.meet .place{font-family:var(--serif);font-weight:400;font-size:56px;line-height:1;color:var(--ink);margin:14px 0 6px;display:flex;justify-content:center;align-items:flex-end;gap:4px}
+.meet .place svg{width:34px;height:58px;transform:rotate(14deg)}
+.meet .date{font-size:19px;font-weight:700;color:var(--wine-dark)}
 .meet .time{font-family:var(--type);font-size:15px;color:var(--muted);margin-top:2px}
 .dday{
   display:inline-flex;align-items:center;justify-content:center;
-  font-family:var(--serif);font-weight:800;color:var(--wine);
+  font-family:var(--serif);font-weight:400;color:var(--wine);
 }
 .dday-big{
-  margin-top:18px;font-size:44px;line-height:1;position:relative;padding:6px 6px 10px;
+  margin-top:18px;font-size:60px;line-height:1;position:relative;padding:6px 6px 10px;
 }
 .dday-big::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:10px;background:var(--rose-soft);z-index:-1;border-radius:4px}
-.dday-cap{font-size:13px;color:var(--muted);margin-top:4px}
+.dday-cap{font-size:16px;color:var(--muted);margin-top:4px}
 
 .map-card{
   display:block;margin:22px 0 12px;border-radius:16px;overflow:hidden;text-decoration:none;
@@ -250,19 +253,18 @@ a{color:inherit}
 .map-card .pin-shadow{position:absolute;left:50%;top:44%;width:18px;height:6px;margin-left:-9px;margin-top:-2px;border-radius:50%;background:rgba(0,0,0,.18)}
 .map-card .map-tag{
   position:absolute;left:12px;bottom:12px;right:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;
-  background:rgba(255,255,255,.94);border-radius:12px;padding:10px 12px;font-size:14px;
+  background:rgba(255,255,255,.94);border-radius:12px;padding:10px 12px;font-size:16px;line-height:1.25;
 }
 .map-card .map-tag b{font-weight:700}
-.map-card .map-tag small{color:var(--muted);font-size:12px}
-.map-card .map-tag .go{color:#03a94f;font-weight:700;font-size:13px;white-space:nowrap}
+.map-card .map-tag small{color:var(--muted);font-size:14px}
+.map-card .map-tag .go{color:#027a39;font-weight:700;font-size:15px;white-space:nowrap}
 .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.btn-row .btn{padding:0 10px;font-size:14px}
+.btn-row .btn{padding:0 8px;font-size:17px;white-space:nowrap}
 
 /* 결혼식 카드 */
-.wed-intro{text-align:center;margin:40px 0 4px}
-.wed-intro h2{font-family:var(--serif);font-weight:800;font-size:20px;color:var(--ink)}
-.wed-intro p{font-size:13px;color:var(--muted);margin-top:6px}
-.wedding{text-align:center}
+.wed-intro{text-align:center;margin:40px 0 4px;position:relative}
+.wed-intro h2{font-family:var(--serif);font-weight:400;font-size:42px;line-height:1.1;color:var(--wine)}
+.wedding{text-align:center;overflow:hidden}
 .wedding .tag{font-family:var(--type);font-size:11px;letter-spacing:.24em;color:var(--muted)}
 .arch{
   position:relative;width:78%;max-width:280px;aspect-ratio:3/4;margin:14px auto 18px;
@@ -278,28 +280,28 @@ a{color:inherit}
 .arch .ph small{font-family:var(--type);font-size:11px;letter-spacing:.2em;color:var(--muted)}
 .arch.noimg img{display:none}
 .arch.noimg .ph{display:flex}
-.wedding .names{font-family:var(--hand);font-size:40px;line-height:1.1}
+.wedding .names{font-family:var(--hand);font-size:44px;line-height:1.1;position:relative}
 .wedding .names .h{color:var(--wine);font-size:.75em;margin:0 4px}
-.wedding .info{margin:12px 0 16px;line-height:1.75;font-size:15px}
-.wedding .info b{font-family:var(--serif);font-weight:800;color:var(--wine-dark);font-size:16px}
-.wedding .info span{color:var(--muted);font-size:14px}
-.wedding .dday{font-size:30px;margin-bottom:6px}
+.wedding .info{margin:10px 0 16px;line-height:1.55;font-size:18px}
+.wedding .info b{font-family:var(--serif);font-weight:400;color:var(--wine-dark);font-size:25px}
+.wedding .info span{color:var(--muted);font-size:16px}
+.wedding .dday{font-size:42px;margin-bottom:6px}
 .countdown{
   display:flex;justify-content:center;gap:6px;margin:6px 0 18px;font-family:var(--type);
 }
 .countdown div{min-width:52px;padding:6px 4px;border-radius:10px;background:var(--paper-2);border:1px solid var(--line)}
 .countdown b{display:block;font-size:17px;color:var(--ink);font-variant-numeric:tabular-nums}
 .countdown small{font-size:10px;color:var(--muted);letter-spacing:.1em}
-.countdown.done{font-family:var(--serif);font-size:14px;color:var(--muted)}
+.countdown.done{font-family:var(--serif);font-size:22px;color:var(--muted)}
 
 .divider{display:flex;align-items:center;justify-content:center;gap:10px;margin:26px 0 0;color:var(--rose);font-size:14px}
 .divider::before,.divider::after{content:"";width:60px;height:1px;background:var(--rose)}
 
 /* 하단 */
 .outro{text-align:center;padding:46px 24px 20px}
-.outro h2{font-family:var(--hand);font-weight:400;font-size:38px;color:var(--wine)}
-.outro p{font-size:14px;color:var(--muted);margin:8px 0 22px;line-height:1.7}
-.foot{font-family:var(--type);font-size:11px;color:var(--muted);letter-spacing:.18em;margin-top:28px}
+.outro h2{font-family:var(--hand);font-weight:400;font-size:40px;color:var(--wine)}
+.outro p{font-size:17px;color:var(--muted);margin:8px 0 22px;line-height:1.6}
+.foot{font-family:var(--type);font-size:11px;color:var(--muted);letter-spacing:.18em;margin-top:18px;line-height:1.8}
 
 /* 스크롤 페이드업 */
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease, transform .8s cubic-bezier(.22,1,.36,1)}
@@ -309,10 +311,58 @@ a{color:inherit}
 .toast{
   position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));z-index:100;
   transform:translate(-50%,20px);opacity:0;pointer-events:none;
-  background:var(--ink);color:#fff8f0;padding:12px 20px;border-radius:999px;font-size:14px;
+  background:var(--ink);color:#fff8f0;padding:12px 20px;border-radius:999px;font-size:16px;
   transition:opacity .3s ease, transform .3s ease;white-space:nowrap;
 }
 .toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* 손그림 일러스트 */
+.doodle{position:absolute;pointer-events:none;user-select:none;z-index:0;height:auto}
+.dd-wine{width:84px;left:10px;top:18px;transform-origin:70% 90%;animation:clink 3.2s ease-in-out infinite}
+.dd-disco{width:86px;right:12px;top:-6px;transform-origin:50% 0;animation:swing 4s ease-in-out infinite}
+.dd-sparkler{width:80px;left:14px;bottom:18px}
+.dd-cocktail{width:88px;right:6px;bottom:0;transform-origin:30% 90%;animation:clink2 3.2s ease-in-out infinite}
+.dd-star{width:30px;animation:twinkle 2.4s ease-in-out infinite}
+@keyframes swing{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+@keyframes clink{0%,100%{transform:rotate(0)}50%{transform:rotate(7deg)}}
+@keyframes clink2{0%,100%{transform:rotate(0)}50%{transform:rotate(-7deg)}}
+@keyframes twinkle{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(.8) rotate(20deg)}}
+#page1 .doodle{opacity:.9}
+#page1 > .letter, #page1 > .stage{position:relative;z-index:1}
+
+/* 히어로 건배 */
+.toast-row{position:relative;height:120px;margin:0 auto -6px;max-width:300px}
+.toast-row .dd-wine{left:30px;top:10px;width:92px}
+.toast-row .dd-cocktail{right:26px;top:6px;bottom:auto;width:96px}
+.toast-row .dd-star{left:50%;top:0;margin-left:-15px}
+.hero .dd-disco{right:6px;top:0;width:76px}
+.hero h1{position:relative;z-index:1}
+
+/* 반복되는 영문 필기체 띠 */
+.ribbon{
+  position:absolute;left:-30%;right:-30%;font-family:var(--script);color:var(--wine);
+  font-size:46px;line-height:1.05;white-space:nowrap;opacity:.85;pointer-events:none;z-index:0;
+  transform:rotate(-8deg);
+}
+.wedding .ribbon{top:58px}
+.wedding .ribbon span{display:block}
+.wedding .ribbon span:nth-child(2){margin-left:-80px}
+.wedding .ribbon span:nth-child(3){margin-left:-30px}
+.wedding .tag,.wedding .arch,.wedding .names,.wedding .info,.wedding .dday,.wedding .countdown,.wedding .btn{position:relative;z-index:1}
+.wedding .dd-star{right:18px;top:22px;z-index:1}
+.wedding .dd-sparkler{left:auto;right:4px;bottom:auto;top:auto;width:62px;z-index:1}
+
+/* 손으로 그은 물결 선 */
+.wave{display:block;width:100%;height:28px;margin:30px 0 0}
+.wave path{fill:none;stroke:var(--wine);stroke-width:2;stroke-linecap:round}
+
+/* With love */
+.with-love{position:relative;display:inline-block;margin:6px 0 2px;padding-bottom:46px;line-height:1}
+.with-love .w{font-family:var(--type);font-size:38px;letter-spacing:.06em;color:var(--ink)}
+.with-love .l{position:absolute;left:28%;top:22px;font-family:var(--script);font-size:56px;color:var(--wine);white-space:nowrap}
+.outro{position:relative}
+.outro .dd-sparkler{left:10px;bottom:auto;top:40px;width:70px}
+.outro .dd-wine{left:auto;right:16px;top:40px;width:70px}
 
 /* 모션 최소화 */
 @media (prefers-reduced-motion: reduce){
@@ -328,6 +378,10 @@ a{color:inherit}
 
   <!-- ═════════ PAGE 1 : 편지 오프닝 ═════════ -->
   <main class="page" id="page1">
+    <img class="doodle dd-wine" src="doodles/wine.png" alt="" aria-hidden="true" />
+    <img class="doodle dd-disco" src="doodles/disco.png" alt="" aria-hidden="true" />
+    <img class="doodle dd-sparkler" src="doodles/sparkler.png" alt="" aria-hidden="true" />
+    <img class="doodle dd-cocktail" src="doodles/cocktail.png" alt="" aria-hidden="true" />
     <div class="stage" id="stage">
       <div class="stage-top">
         <p class="kicker">INVITATION</p>
@@ -397,7 +451,13 @@ a{color:inherit}
   <!-- ═════════ PAGE 2 : 모임 안내 + 결혼식 정보 ═════════ -->
   <main class="page" id="page2" hidden>
     <header class="hero">
+      <img class="doodle dd-disco" src="doodles/disco.png" alt="" aria-hidden="true" />
       <p class="kicker">SAVE THE DATE</p>
+      <div class="toast-row" aria-hidden="true">
+        <img class="doodle dd-wine" src="doodles/wine.png" alt="" />
+        <img class="doodle dd-star" src="doodles/star.png" alt="" />
+        <img class="doodle dd-cocktail" src="doodles/cocktail.png" alt="" />
+      </div>
       <h1>와줘서 고마워요!</h1>
       <p>진하❤️민석 · 지원❤️호영</p>
     </header>
@@ -406,7 +466,7 @@ a{color:inherit}
     <section class="section reveal" aria-labelledby="meetTitle">
       <div class="card meet paper-tex">
         <span class="label">GATHERING</span>
-        <h2 class="place" id="meetTitle">충무오뎅</h2>
+        <h2 class="place" id="meetTitle">충무오뎅<svg viewBox="0 0 34 58" aria-hidden="true" fill="none" stroke="#3a2f29" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 4v52"/><path d="M8 8l18 0-9 13z"/><circle cx="17" cy="28" r="6.5"/><path d="M9 38c3-3 5 3 8 0s5 3 8 0M9 38v8c3-3 5 3 8 0s5 3 8 0v-8"/></svg></h2>
         <p class="date">2026년 12월 4일 금요일</p>
         <p class="time">PM 6:30 ~</p>
 
@@ -457,13 +517,14 @@ a{color:inherit}
 
     <!-- ② 결혼식 카드 -->
     <div class="wed-intro reveal">
-      <p class="divider">♡</p>
-      <h2 style="margin-top:14px">그리고, 두 번의 결혼식</h2>
-      <p>모임 이후 각자의 자리에서 다시 만나요</p>
+      <svg class="wave" viewBox="0 0 400 28" preserveAspectRatio="none" aria-hidden="true"><path d="M2 18C40 2 70 26 110 14s60-14 100 2 70 10 100-4 60-8 88 6"/></svg>
+      <h2 style="margin-top:18px">결혼식을 축하해 주세요!</h2>
     </div>
 
     <section class="section reveal" aria-labelledby="wedA">
       <div class="card wedding paper-tex">
+        <div class="ribbon" aria-hidden="true"><span>I love you I love you I love you</span><span>I love you I love you I love you</span><span>I love you I love you I love you</span></div>
+        <img class="doodle dd-star" src="doodles/star.png" alt="" aria-hidden="true" />
         <p class="tag">WEDDING · 01</p>
         <div class="arch">
           <!-- 사진 교체: 같은 폴더에 jinha.jpg 를 넣으면 됩니다 -->
@@ -483,6 +544,8 @@ a{color:inherit}
 
     <section class="section reveal" aria-labelledby="wedB">
       <div class="card wedding paper-tex">
+        <div class="ribbon" aria-hidden="true"><span>Cheers! Cheers! Cheers! Cheers!</span><span>Cheers! Cheers! Cheers! Cheers!</span><span>Cheers! Cheers! Cheers! Cheers!</span></div>
+        <img class="doodle dd-star" src="doodles/star.png" alt="" aria-hidden="true" />
         <p class="tag">WEDDING · 02</p>
         <div class="arch">
           <!-- 사진 교체: 같은 폴더에 jiwon.jpg 를 넣으면 됩니다 -->
@@ -502,11 +565,14 @@ a{color:inherit}
 
     <!-- ④ 하단 -->
     <footer class="outro reveal">
-      <p class="divider">♡</p>
-      <h2 style="margin-top:16px">함께해주셔서 감사합니다</h2>
+      <img class="doodle dd-sparkler" src="doodles/sparkler.png" alt="" aria-hidden="true" />
+      <img class="doodle dd-wine" src="doodles/wine.png" alt="" aria-hidden="true" />
+      <svg class="wave" viewBox="0 0 400 28" preserveAspectRatio="none" aria-hidden="true"><path d="M2 10c36 16 72-8 110 4s64 14 100-2 70-12 100 2 60 10 86-4"/></svg>
+      <h2 style="margin-top:22px;position:relative">함께해주셔서 감사합니다</h2>
       <p>바쁘신 와중에도 저희의 시작을<br/>축하해 주셔서 진심으로 고맙습니다.<br/>12월 4일, 따뜻한 오뎅과 함께 기다릴게요.</p>
       <button class="btn btn-primary" id="copyBtn" type="button">🔗 링크 복사</button>
-      <p class="foot">JINHA ♥ MINSEOK · JIWON ♥ HOYOUNG</p>
+      <p style="margin:34px 0 0"><span class="with-love" aria-label="With love"><span class="w">WITH</span><span class="l">love</span></span></p>
+      <p class="foot">JINHA ♥ MINSEOK<br/>JIWON ♥ HOYOUNG</p>
     </footer>
   </main>
 
