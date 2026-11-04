@@ -820,11 +820,10 @@ a{color:inherit}
     var t = $('#toast'); t.textContent = msg; t.classList.add('show');
     clearTimeout(toast._t); toast._t = setTimeout(function(){ t.classList.remove('show'); }, 2000);
   }
-  /* ───────── 참석 여부 (Supabase 저장) ─────────
-     같은 폴더의 rsvp.sql 을 Supabase SQL Editor에서 한 번 실행해야 저장돼요.
-     공개 키(publishable)는 "응답 추가"만 가능하고, 응답 목록은 읽을 수 없어요. */
-  var SUPABASE_URL = 'https://rspszjjphbfbbelttwdr.supabase.co';
-  var SUPABASE_KEY = 'sb_publishable_aw8abHdpmIDahSFG9VHWww_Fdgs-gXP';
+  /* ───────── 참석 여부 (구글 시트 저장) ─────────
+     구글 시트 > 확장 프로그램 > Apps Script 에 같은 폴더의 apps-script.gs 를 붙여넣고
+     웹 앱으로 배포한 뒤, 받은 주소(https://script.google.com/macros/s/.../exec)를 아래에 넣어주세요. */
+  var RSVP_ENDPOINT = '';
   var RSVP_KEY = 'rsvp-1204';
   var form = $('#rsvp'), nameIn = $('#rsvpName'), err = $('#rsvpError'), submit = $('#rsvpSubmit');
 
@@ -857,12 +856,20 @@ a{color:inherit}
     err.textContent = '';
     var attend = pick.value === 'yes';
     submit.disabled = true; submit.textContent = '전하는 중…';
-    fetch(SUPABASE_URL + '/rest/v1/invitation_rsvp', {
+    if (!RSVP_ENDPOINT){
+      err.textContent = '아직 응답을 받을 준비 중이에요. 조금 뒤에 다시 눌러주세요.';
+      submit.disabled = false; submit.textContent = '마음 전하기 💌';
+      return;
+    }
+    // text/plain 으로 보내야 Apps Script 웹 앱이 CORS 사전 요청 없이 받아요
+    fetch(RSVP_ENDPOINT, {
       method: 'POST',
-      headers: {'apikey': SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal'},
       body: JSON.stringify({name: name, attending: attend})
     }).then(function(res){
       if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }).then(function(out){
+      if (!out || !out.ok) throw new Error('rejected');
       try { localStorage.setItem(RSVP_KEY, JSON.stringify({name: name, attend: attend})); } catch(e){}
       showDone(name, attend);
       toast('마음이 전해졌어요 💌');
