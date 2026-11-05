@@ -46,7 +46,8 @@ function doPost(e) {
     }
     return json_({ ok: true });
   } catch (err) {
-    return json_({ ok: false, error: 'server_error' });
+    Logger.log(err);
+    return json_({ ok: false, error: 'server_error', detail: String(err) });
   } finally {
     lock.releaseLock();
   }
