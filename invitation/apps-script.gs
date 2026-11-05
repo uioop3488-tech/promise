@@ -56,3 +56,13 @@ function json_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }
+
+/**
+ * 편집기에서 직접 실행해 보는 테스트.
+ * 위쪽 함수 선택 칸에서 testRsvp 를 고르고 ▷ 실행 → 시트에 "연결 테스트" 줄이 생기면 정상.
+ * 확인 후 시트에서 그 줄은 지워주세요.
+ */
+function testRsvp() {
+  var out = doPost({ postData: { contents: JSON.stringify({ name: '연결 테스트', attending: true }) } });
+  Logger.log(out.getContent());
+}
