@@ -228,3 +228,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOi...';                // ← anon public key
   SQL Editor에서 `wedding/guestbook.sql` 전문을 한 번 실행하세요. (재실행해도 안전)
   - 글을 남길 때 정한 비밀번호가 맞아야 삭제되며, 비밀번호는 서버에서 bcrypt 해시로 저장됩니다.
   - 부적절한 글은 Supabase **Table Editor → guestbook** 에서 직접 지울 수 있습니다.
+- **참석 의사(RSVP)** 도 같은 프로젝트에서 `wedding/rsvp.sql` 을 한 번 실행하세요.
+  - 하객은 보내기만 할 수 있고, 응답은 **Table Editor → rsvp** 에서 확인·CSV 다운로드합니다.
+  - 측별 참석/식사 인원 합계는 SQL Editor에서 `select * from rsvp_summary;`
+- **캘린더 등록**: 구글 캘린더 링크와 `wedding/wedding.ics`(아이폰·삼성 캘린더용)를 함께 제공합니다.

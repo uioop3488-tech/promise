@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Reenie+Beanie&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poiret+One&family=Reenie+Beanie&display=swap" rel="stylesheet">
 <style>
   :root {
     --main: #721819;
@@ -310,6 +310,86 @@
   .thanks .heart { color: var(--main); margin-bottom: 18px; }
   .thanks .sign { margin-top: 20px; font-weight: 600; }
 
+  /* ---------- 오프닝 화면 ---------- */
+  #splash {
+    position: fixed; inset: 0; z-index: 100; background: var(--main); color: #fff;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 44px;
+    font-family: 'Poiret One', 'Reenie Beanie', sans-serif; font-size: clamp(30px, 9vw, 42px);
+    letter-spacing: .06em; cursor: pointer; transition: opacity .9s ease, visibility .9s;
+  }
+  #splash.done { opacity: 0; visibility: hidden; }
+  #splash p { opacity: 0; transform: translateY(12px); animation: splashIn 1s ease forwards; }
+  #splash p + p { animation-delay: .5s; }
+  @keyframes splashIn { to { opacity: 1; transform: none; } }
+
+  /* ---------- 캘린더 등록 ---------- */
+  .cal-add { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 20px; }
+  .cal-add a {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 11px 0; border-radius: 8px; font-size: 13px; font-weight: 600;
+    border: 1px solid var(--main); color: var(--main); background: #fff; text-decoration: none;
+  }
+  .cal-add a:active { background: var(--sub); }
+  .cal-add svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* ---------- 참석 의사 ---------- */
+  .rsvp-text { font-size: 15px; line-height: 1.9; }
+  .rsvp-open {
+    margin-top: 22px; width: 100%; border: 0; border-radius: 8px; padding: 14px; cursor: pointer;
+    background: var(--main); color: #fff; font: inherit; font-size: 15px; font-weight: 600;
+  }
+  .modal {
+    position: fixed; inset: 0; z-index: 70; background: rgba(30, 20, 18, .55);
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal[hidden] { display: none; }
+  .modal-card {
+    position: relative; width: 100%; max-width: 400px; max-height: calc(100dvh - 40px); overflow-y: auto;
+    background: #fff; border-radius: 20px; padding: 40px 28px 24px; text-align: center;
+  }
+  .modal-x {
+    position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; border: 0; background: none;
+    font-size: 26px; line-height: 1; color: var(--ink); cursor: pointer;
+  }
+  .modal-x:focus:not(:focus-visible) { outline: none; }
+  .modal-title { font-size: 22px; font-weight: 600; color: var(--main); }
+  .modal-desc { margin-top: 18px; font-size: 15px; line-height: 1.8; color: var(--ink); }
+  .modal-info {
+    margin: 26px 0; padding: 22px 0; display: grid; gap: 14px; text-align: left;
+    border-top: 1px solid rgba(114, 24, 25, .12); border-bottom: 1px solid rgba(114, 24, 25, .12);
+    font-size: 14px;
+  }
+  .modal-info div { display: flex; align-items: center; gap: 10px; }
+  .modal-info svg { width: 20px; height: 20px; flex-shrink: 0; stroke: var(--ink); fill: none; stroke-width: 1.6; }
+  .modal-main {
+    width: 100%; border: 0; border-radius: 10px; padding: 15px; cursor: pointer;
+    background: var(--main); color: #fff; font: inherit; font-size: 15px; font-weight: 600;
+  }
+  .modal-main:disabled { opacity: .5; cursor: default; }
+  .hide-today {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; cursor: pointer;
+    font-size: 15px; color: var(--muted);
+  }
+  .hide-today input { width: 20px; height: 20px; accent-color: var(--main); }
+  .rsvp-form { display: grid; gap: 18px; text-align: left; margin-top: 24px; }
+  .rsvp-form fieldset { border: 0; display: grid; gap: 8px; }
+  .rsvp-form legend, .rsvp-form label.f { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .req { color: var(--main); }
+  .choice { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .choice label { position: relative; }
+  .choice input { position: absolute; opacity: 0; inset: 0; }
+  .choice span {
+    display: block; padding: 11px 0; text-align: center; border-radius: 8px; font-size: 14px; cursor: pointer;
+    border: 1px solid rgba(114, 24, 25, .25); background: var(--bg);
+  }
+  .choice input:checked + span { background: var(--main); border-color: var(--main); color: #fff; font-weight: 600; }
+  .choice input:focus-visible + span { outline: 2px solid var(--main); outline-offset: 2px; }
+  .rsvp-form input[type=text], .rsvp-form input[type=tel], .rsvp-form select {
+    width: 100%; font: inherit; font-size: 15px; color: var(--ink); padding: 11px 12px; border-radius: 8px;
+    border: 1px solid rgba(114, 24, 25, .25); background: var(--bg);
+  }
+  .rsvp-form .if-attend[hidden] { display: none; }
+
   .toast {
     position: fixed; left: 50%; bottom: calc(40px + env(safe-area-inset-bottom));
     transform: translate(-50%, 20px);
@@ -328,6 +408,11 @@
 </style>
 </head>
 <body>
+<!-- 오프닝 화면: 잠시 날짜를 보여주고 사라짐 (탭하면 바로 넘어감) -->
+<div id="splash" aria-hidden="true">
+  <p id="splash-day"></p>
+  <p id="splash-time"></p>
+</div>
 <main>
 
   <!-- 1. 대문사진 -->
@@ -391,6 +476,14 @@
       <div class="cd-unit"><div class="cd-box" id="cd-s">00</div><div class="cd-label">Sec</div></div>
     </div>
     <p class="dday-msg reveal" id="dday-msg"></p>
+    <div class="cal-add reveal">
+      <a id="cal-google" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>구글 캘린더
+      </a>
+      <a id="cal-ics" href="wedding.ics">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>아이폰·삼성 캘린더
+      </a>
+    </div>
   </section>
 
   <!-- 6. Gallery (세로 스크롤 3열 그리드 · 탭하면 크게 보기) -->
@@ -425,6 +518,17 @@
       <h3>오시는 방법</h3>
       <dl id="transport"></dl>
     </div>
+  </section>
+
+  <!-- 참석 의사 전달 -->
+  <section class="rsvp">
+    <div class="sec-head reveal">
+      <div class="heart">♥︎</div>
+      <div class="en">R.S.V.P.</div>
+      <div class="ko">참석 의사 전달</div>
+    </div>
+    <p class="rsvp-text reveal">축하의 마음으로 참석해 주시는 모든 분들을<br>귀하게 모실 수 있도록<br>참석 의사를 전달 부탁드립니다.</p>
+    <button type="button" class="rsvp-open reveal" data-open-rsvp>참석 의사 전달하기</button>
   </section>
 
   <!-- 8. 계좌번호 -->
@@ -477,6 +581,69 @@
   </section>
 
 </main>
+
+<!-- 참석 의사: 첫 화면 안내 팝업 -->
+<div class="modal" id="rsvp-intro" hidden role="dialog" aria-modal="true" aria-labelledby="rsvp-intro-title">
+  <div class="modal-card">
+    <button type="button" class="modal-x" data-close aria-label="닫기">×</button>
+    <h2 class="modal-title" id="rsvp-intro-title">참석 여부</h2>
+    <p class="modal-desc">축하의 마음으로 참석해주시는<br>모든 분들을 귀하게 모실 수 있도록<br>참석 의사를 전달 부탁드립니다.</p>
+    <div class="modal-info">
+      <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-9.2-9.3C1.7 7.6 3.7 4.5 7 4.5c2 0 3.4 1.1 5 3 1.6-1.9 3-3 5-3 3.3 0 5.3 3.1 4.2 6.2C19.5 15.4 12 20 12 20z"/></svg><span id="ri-couple"></span></div>
+      <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span id="ri-venue"></span></div>
+      <div><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span id="ri-date"></span></div>
+    </div>
+    <button type="button" class="modal-main" data-open-rsvp>참석여부 전달</button>
+    <label class="hide-today"><input type="checkbox" id="hide-today">오늘 하루 보지않기</label>
+  </div>
+</div>
+
+<!-- 참석 의사: 입력 폼 -->
+<div class="modal" id="rsvp-modal" hidden role="dialog" aria-modal="true" aria-labelledby="rsvp-title">
+  <div class="modal-card">
+    <button type="button" class="modal-x" data-close aria-label="닫기">×</button>
+    <h2 class="modal-title" id="rsvp-title">참석 의사 전달</h2>
+    <form class="rsvp-form" id="rsvp-form" autocomplete="off">
+      <fieldset>
+        <legend>어느 측 하객이신가요? <span class="req">*</span></legend>
+        <div class="choice">
+          <label><input type="radio" name="side" value="신랑" required><span>신랑측</span></label>
+          <label><input type="radio" name="side" value="신부"><span>신부측</span></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>참석하실 수 있나요? <span class="req">*</span></legend>
+        <div class="choice">
+          <label><input type="radio" name="attend" value="yes" required><span>참석</span></label>
+          <label><input type="radio" name="attend" value="no"><span>불참석</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="if-attend" hidden>
+        <legend>식사 여부 <span class="req">*</span></legend>
+        <div class="choice">
+          <label><input type="radio" name="meal" value="예정"><span>식사함</span></label>
+          <label><input type="radio" name="meal" value="안함"><span>식사안함</span></label>
+        </div>
+      </fieldset>
+      <div>
+        <label class="f" for="rsvp-name">성함 <span class="req">*</span></label>
+        <input type="text" id="rsvp-name" maxlength="20" required placeholder="성함을 입력해주세요">
+      </div>
+      <div class="if-attend" hidden>
+        <label class="f" for="rsvp-guests">본인 포함 참석 인원 <span class="req">*</span></label>
+        <select id="rsvp-guests">
+          <option value="1">1명</option><option value="2">2명</option><option value="3">3명</option>
+          <option value="4">4명</option><option value="5">5명</option><option value="6">6명 이상</option>
+        </select>
+      </div>
+      <div>
+        <label class="f" for="rsvp-phone">연락처 뒷자리 4자리 <span class="req">*</span></label>
+        <input type="tel" id="rsvp-phone" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" required placeholder="예) 1234">
+      </div>
+      <button type="submit" class="modal-main" id="rsvp-submit">참석 의사 전달</button>
+    </form>
+  </div>
+</div>
 
 <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="사진 크게 보기">
   <img id="lb-img" alt="">
@@ -549,11 +716,33 @@
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const { groom, bride } = CONFIG;
 
+  // ----- 오프닝 화면 -----
+  const splashDone = new Promise(resolve => {
+    const el = $('splash');
+    const kst = new Date(new Date(CONFIG.weddingAt).getTime() + 9 * 3600e3);
+    const DAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    const p2 = n => String(n).padStart(2, '0');
+    $('splash-day').textContent = `${DAYS[kst.getUTCDay()]}. ${MONTHS[kst.getUTCMonth()]} ${p2(kst.getUTCDate())}.`;
+    $('splash-time').textContent = `${kst.getUTCFullYear()}. ${p2(kst.getUTCHours())}:${p2(kst.getUTCMinutes())}`;
+    document.body.style.overflow = 'hidden';
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      el.classList.add('done');
+      document.body.style.overflow = '';
+      setTimeout(() => { el.remove(); resolve(); }, 900);
+    };
+    el.addEventListener('click', finish);
+    setTimeout(finish, 2800);
+  });
+
   // ----- 2. Our Wedding day 필기 애니메이션 (폰트 로드 후, 화면에 보일 때 시작) -----
   (function () {
     const el = $('handwrite');
     const fontReady = document.fonts ? document.fonts.load('64px "Reenie Beanie"') : Promise.resolve();
-    Promise.race([fontReady, new Promise(r => setTimeout(r, 2500))]).then(() => {
+    Promise.all([splashDone, Promise.race([fontReady, new Promise(r => setTimeout(r, 2500))])]).then(() => {
       const io = new IntersectionObserver(([en]) => {
         if (en.isIntersecting) { el.classList.add('play'); io.disconnect(); }
       }, { threshold: 0.6 });
@@ -844,6 +1033,114 @@
 
   // ----- 9. 감사 인사 서명 -----
   $('sign').textContent = `신랑 ${groom.short} · 신부 ${bride.short} 올림`;
+
+  // ----- 캘린더 일정 등록 -----
+  (function () {
+    const start = new Date(CONFIG.weddingAt);
+    const end = new Date(start.getTime() + 2 * 3600e3);   // 예식 2시간
+    const fmt = d => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: `${groom.short} ♥ ${bride.short} 결혼식`,
+      dates: `${fmt(start)}/${fmt(end)}`,
+      location: CONFIG.venue.name,
+      details: location.origin.startsWith('http') ? location.origin + location.pathname : '',
+    });
+    $('cal-google').href = `https://calendar.google.com/calendar/render?${params}`;
+  })();
+
+  // ----- 참석 의사 전달 (Supabase · rsvp.sql 실행 필요) -----
+  (function () {
+    const intro = $('rsvp-intro'), modal = $('rsvp-modal'), form = $('rsvp-form');
+    const HIDE_KEY = 'rsvp-hide-until';
+    let lastFocus = null;
+
+    $('ri-couple').textContent = `${groom.name} & ${bride.name}`;
+    $('ri-venue').textContent = CONFIG.venue.name;
+    $('ri-date').textContent = $('wedding-date').textContent;
+
+    const openModal = m => { lastFocus = document.activeElement; m.hidden = false; document.body.style.overflow = 'hidden'; m.querySelector('.modal-x').focus(); };
+    const closeModal = m => {
+      m.hidden = true;
+      if (intro.hidden && modal.hidden) document.body.style.overflow = '';
+      if (lastFocus) lastFocus.focus();
+    };
+
+    // 첫 화면 팝업: '오늘 하루 보지않기'를 누르지 않았고, 예식 전일 때만
+    let hidden = false;
+    try { hidden = Number(localStorage.getItem(HIDE_KEY) || 0) > Date.now(); } catch {}
+    if (!hidden && Date.now() < new Date(CONFIG.weddingAt).getTime()) {
+      splashDone.then(() => setTimeout(() => openModal(intro), 500));
+    }
+    const closeIntro = () => {
+      if ($('hide-today').checked) {
+        const t = new Date(); t.setHours(24, 0, 0, 0);   // 오늘 자정까지
+        try { localStorage.setItem(HIDE_KEY, String(t.getTime())); } catch {}
+      }
+      closeModal(intro);
+    };
+
+    document.addEventListener('click', e => {
+      if (e.target.closest('[data-open-rsvp]')) {
+        if (!intro.hidden) closeIntro();
+        openModal(modal);
+        return;
+      }
+      if (e.target.closest('[data-close]') || e.target === intro || e.target === modal) {
+        const m = e.target.closest('.modal');
+        m === intro ? closeIntro() : closeModal(m);
+      }
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return;
+      if (!modal.hidden) closeModal(modal); else if (!intro.hidden) closeIntro();
+    });
+
+    // 참석일 때만 식사·인원 항목 표시
+    form.addEventListener('change', e => {
+      if (e.target.name !== 'attend') return;
+      const yes = e.target.value === 'yes';
+      form.querySelectorAll('.if-attend').forEach(el => { el.hidden = !yes; });
+      form.querySelectorAll('input[name=meal]').forEach(el => { el.required = yes; });
+    });
+    $('rsvp-phone').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4); });
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const v = name => (form.querySelector(`input[name=${name}]:checked`) || {}).value;
+      const attend = v('attend') === 'yes';
+      const body = {
+        side: v('side'),
+        attend,
+        meal: attend ? v('meal') : null,
+        name: $('rsvp-name').value.trim(),
+        guests: attend ? Number($('rsvp-guests').value) : 0,
+        phone4: $('rsvp-phone').value,
+      };
+      if (!body.side || !v('attend') || (attend && !body.meal) || !body.name || !/^\d{4}$/.test(body.phone4)) {
+        toast('필수 항목을 모두 입력해주세요.');
+        return;
+      }
+      const btn = $('rsvp-submit');
+      btn.disabled = true;
+      try {
+        const res = await fetch(`${CONFIG.supabase.url}/rest/v1/rsvp`, {
+          method: 'POST',
+          headers: { apikey: CONFIG.supabase.key, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+          body: JSON.stringify(body),
+        });
+        if (!res.ok) throw new Error(res.statusText);
+        form.reset();
+        form.querySelectorAll('.if-attend').forEach(el => { el.hidden = true; });
+        closeModal(modal);
+        toast(attend ? '참석 의사가 전달되었어요. 감사합니다!' : '전달되었어요. 마음만으로도 감사합니다.');
+      } catch {
+        toast('전달하지 못했어요. 잠시 후 다시 시도해주세요.');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  })();
 
   // ----- 토스트 -----
   let toastTimer;
