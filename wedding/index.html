@@ -827,7 +827,7 @@
     // 청첩장 주소 (공유 카드·미리보기에 쓰임)
     siteUrl: 'https://ourweddingday-270109.netlify.app/',
     // 카카오톡 공유: Kakao Developers 앱의 'JavaScript 키'를 넣으면 공유 버튼이 나타납니다.
-    kakaoKey: '',
+    kakaoKey: '2609b14e1670b51d0fd643913c6652c7',
     // 방명록·참석 의사 저장소
     // sheetApi(구글 시트 Apps Script 웹앱 주소)가 있으면 구글 시트에 저장하고, 비어 있으면 아래 Supabase를 씁니다.
     sheetApi: 'https://script.google.com/macros/s/AKfycbwDcS9W-fLeV8TVHnQK-tHPrSEiQ3iWev4aHHLzdHDiB1z_tc_VfAC1S6wsN6fHE-dK/exec',
@@ -1377,15 +1377,22 @@
     });
 
     if (!CONFIG.kakaoKey) return;
-    const s = document.createElement('script');
-    s.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js';
-    s.crossOrigin = 'anonymous';
-    s.onload = () => {
-      if (!window.Kakao) return;
-      if (!Kakao.isInitialized()) Kakao.init(CONFIG.kakaoKey);
-      $('share-kakao').hidden = false;
+    // 카카오 SDK 불러오기 (첫 주소가 안 되면 다음 버전으로)
+    const SDK = ['2.7.4', '2.7.2', '2.6.0'].map(v => `https://t1.kakaocdn.net/kakao_js_sdk/${v}/kakao.min.js`);
+    const loadSdk = i => {
+      if (i >= SDK.length) return;
+      const s = document.createElement('script');
+      s.src = SDK[i];
+      s.crossOrigin = 'anonymous';
+      s.onload = () => {
+        if (!window.Kakao) return loadSdk(i + 1);
+        if (!Kakao.isInitialized()) Kakao.init(CONFIG.kakaoKey);
+        $('share-kakao').hidden = false;
+      };
+      s.onerror = () => { s.remove(); loadSdk(i + 1); };
+      document.head.appendChild(s);
     };
-    document.head.appendChild(s);
+    loadSdk(0);
 
     $('share-kakao').addEventListener('click', () => {
       const kst = new Date(new Date(CONFIG.weddingAt).getTime() + 9 * 3600e3);
