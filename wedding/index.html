@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poiret+One&family=Reenie+Beanie&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Gilda+Display&family=Pinyon+Script&family=Reenie+Beanie&display=swap" rel="stylesheet">
 <style>
   :root {
     --main: #721819;
@@ -280,20 +280,8 @@
   .gb-form input:focus, .gb-form textarea:focus,
   .gb-del-form input:focus { outline: 2px solid var(--main); outline-offset: -1px; }
   .gb-count { font-size: 12px; color: var(--muted); text-align: right; margin-top: -4px; }
-  .gb-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; text-align: left; }
-  .gb-item {
-    padding: 22px 20px 18px; border-radius: 10px;
-    background: #fff; border: 1px solid rgba(114, 24, 25, .12);
-  }
-  .gb-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-  .gb-name { font-size: 16px; color: var(--main); }
-  .gb-x {
-    border: 0; background: none; cursor: pointer; padding: 4px 0 4px 8px;
-    color: var(--muted); font: inherit; font-size: 14px;
-  }
-  .gb-msg { margin-top: 14px; font-size: 15px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
-  .gb-date { margin-top: 18px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
   .gb-del-form { display: flex; gap: 6px; margin-top: 14px; }
+  .gb-del-form[hidden] { display: none; }
   .gb-del-form input {
     flex: 1; min-width: 0; font: inherit; font-size: 13px; padding: 7px 10px;
     border-radius: 6px; border: 1px solid rgba(114, 24, 25, .25); background: var(--bg);
@@ -304,14 +292,6 @@
   }
   .gb-del-form button.cancel { background: #fff; color: var(--main); }
   .gb-empty { font-size: 14px; color: var(--muted); padding: 20px 0; text-align: center; }
-  .gb-write {
-    margin-top: 16px; width: 100%; border: 0; border-radius: 8px; padding: 15px; cursor: pointer;
-    background: var(--main); color: #fff; font: inherit; font-size: 16px; font-weight: 600;
-  }
-  .gb-more {
-    margin-top: 12px; width: 100%; padding: 11px; border-radius: 8px; cursor: pointer;
-    border: 1px solid var(--main); background: transparent; color: var(--main); font: inherit; font-size: 14px;
-  }
 
   /* ---------- 9. 감사 인사 ---------- */
   .thanks { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
@@ -319,17 +299,107 @@
   .thanks .heart { color: var(--main); margin-bottom: 18px; }
   .thanks .sign { margin-top: 20px; font-weight: 600; }
 
-  /* ---------- 오프닝 화면 ---------- */
+  /* ---------- 오프닝: 편지 봉투 ---------- */
   #splash {
-    position: fixed; inset: 0; z-index: 100; background: var(--main); color: #fff;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 44px;
-    font-family: 'Poiret One', 'Reenie Beanie', sans-serif; font-size: clamp(30px, 9vw, 42px);
-    letter-spacing: .06em; cursor: pointer; transition: opacity .9s ease, visibility .9s;
+    position: fixed; inset: 0; z-index: 100; background: var(--bg);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; color: var(--ink); cursor: pointer;
+    transition: opacity .9s ease, visibility .9s;
   }
+  #splash::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: url(img/paper.webp) center / cover; mix-blend-mode: multiply; opacity: .55;
+  }
+  #splash > * { position: relative; }
   #splash.done { opacity: 0; visibility: hidden; }
-  #splash p { opacity: 0; transform: translateY(12px); animation: splashIn 1s ease forwards; }
-  #splash p + p { animation-delay: .5s; }
-  @keyframes splashIn { to { opacity: 1; transform: none; } }
+  .sp-title { font-family: 'Pinyon Script', cursive; color: var(--main); font-size: clamp(44px, 13vw, 58px); line-height: 1.1; }
+  .sp-sub { font-family: 'Cormorant Garamond', serif; font-size: 18px; margin-top: 2px; }
+  .sp-env { position: relative; width: 200px; height: 236px; margin: 34px 0 30px; }
+  .sp-photo {
+    position: absolute; left: 6px; right: 6px; bottom: 30px; height: 190px;
+    border: 3px solid var(--main); background: #fff; overflow: hidden;
+    transform: translateY(70px); animation: spRise 1.4s .5s cubic-bezier(.2, .8, .2, 1) forwards;
+  }
+  .sp-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 35%; display: block; }
+  .sp-pocket {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 92px; background: var(--main);
+    clip-path: polygon(0 0, 50% 46%, 100% 0, 100% 100%, 0 100%);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, .18);
+  }
+  .sp-pocket::after {
+    content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.08));
+  }
+  .sp-names { font-family: 'Gilda Display', serif; color: var(--main); font-size: 21px; letter-spacing: .06em; }
+  .sp-date { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 500; margin-top: 8px; line-height: 1.3; }
+  .sp-fade { opacity: 0; animation: splashIn 1s ease forwards; }
+  .sp-fade.d1 { animation-delay: .1s; } .sp-fade.d2 { animation-delay: 1.2s; } .sp-fade.d3 { animation-delay: 1.5s; }
+  @keyframes spRise { to { transform: translateY(0); } }
+  @keyframes splashIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- OPEN THE WEDDING LETTER 타이포 ---------- */
+  .letter { padding-top: 40px; color: var(--main); }
+  .letter-top { display: grid; grid-template-columns: repeat(3, 1fr); font-size: 12px; letter-spacing: .02em; color: var(--ink); }
+  .letter-top div:first-child { text-align: left; } .letter-top div:last-child { text-align: right; }
+  .letter-top b { display: block; font-family: 'Gilda Display', serif; font-weight: 400; color: var(--main); font-size: 12px; letter-spacing: .04em; }
+  .letter-top span { display: block; font-size: 14px; margin-top: 2px; }
+  .letter-big {
+    font-family: 'Gilda Display', serif; font-weight: 400; text-align: left;
+    font-size: clamp(38px, 12vw, 56px); line-height: 1; letter-spacing: -.01em; margin-top: 26px;
+  }
+  .letter-big .of { font-family: 'Pinyon Script', cursive; color: rgba(114, 24, 25, .45); font-size: .8em; margin-left: .1em; }
+  .letter-photos { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin: 18px 0 22px; }
+  .letter-photos img { width: 100%; aspect-ratio: 6 / 5; object-fit: cover; border: 2px solid var(--main); display: block; }
+  .letter-photos .amp { font-family: 'Pinyon Script', cursive; font-size: 64px; color: rgba(114, 24, 25, .45); line-height: 1; }
+  .letter-foot { margin-top: 24px; font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--ink); }
+
+  /* ---------- OUR FRAME ---------- */
+  .frame-head { font-family: 'Reenie Beanie', cursive; color: var(--ink); font-size: 34px; letter-spacing: .06em; }
+  .frame-sub { display: flex; justify-content: space-between; font-family: 'Reenie Beanie', cursive; font-size: 22px; letter-spacing: .08em; margin: 18px 4px 8px; }
+  .frame-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 14px; }
+  .frame-grid button { padding: 0; border: 0; background: none; cursor: zoom-in; }
+  .frame-grid .fr {
+    display: block; padding: 5px; background: #fff;
+    border: 3.5px solid var(--main);
+    border-radius: 6px 3px 7px 2px / 3px 7px 2px 6px;
+    box-shadow: 1px 1px 0 rgba(114, 24, 25, .25);
+  }
+  .frame-grid button:nth-child(odd) .fr { transform: rotate(-.6deg); }
+  .frame-grid button:nth-child(even) .fr { transform: rotate(.5deg); }
+  .frame-grid img { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; }
+
+  /* ---------- 방명록: 하트 쪽지 ---------- */
+  .notes-desc { font-size: 15px; line-height: 1.9; margin-bottom: 28px; }
+  .notes {
+    display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory;
+    margin: 0 -24px; padding: 18px 24px 26px; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .notes::-webkit-scrollbar { display: none; }
+  .note {
+    position: relative; flex: 0 0 200px; height: 186px; scroll-snap-align: center;
+    border: 0; background: none; padding: 0; cursor: pointer; font: inherit;
+    filter: drop-shadow(0 6px 6px rgba(58, 46, 42, .18));
+  }
+  .note-heart {
+    position: absolute; inset: 0;
+    background: linear-gradient(160deg, #e6dccb 0%, #d2c4ae 100%);
+    clip-path: polygon(50% 17%, 68% 2%, 90% 6%, 100% 28%, 95% 52%, 50% 100%, 5% 52%, 0 28%, 10% 6%, 32% 2%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 34px;
+    color: #5a4a40;
+  }
+  .note-heart b { font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 20px; letter-spacing: .08em; }
+  .note-heart span { font-size: 15px; margin-top: 4px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .note-tape { position: absolute; left: 50%; top: -6px; width: 16px; height: 30px; margin-left: -8px; background: #4a3b33; border-radius: 2px; z-index: 1; }
+  .notes .gb-empty { flex: 1; }
+  .gb-write {
+    display: block; margin: 6px auto 0; width: auto; min-width: 200px; padding: 14px 40px;
+    border: 0; border-radius: 2px; cursor: pointer; background: #fff; color: var(--ink);
+    font: inherit; font-size: 15px; box-shadow: 0 2px 8px rgba(58, 46, 42, .15);
+  }
+  .note-view .modal-card { text-align: left; }
+  .note-from { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--main); letter-spacing: .04em; }
+  .note-msg { margin-top: 16px; font-size: 15px; line-height: 1.8; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .note-foot { margin-top: 22px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); }
+  .note-del { border: 0; background: none; color: var(--muted); font: inherit; font-size: 14px; cursor: pointer; padding: 4px 0; }
 
   /* ---------- 캘린더 등록 ---------- */
   .cal-add { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 20px; }
@@ -417,10 +487,16 @@
 </style>
 </head>
 <body>
-<!-- 오프닝 화면: 잠시 날짜를 보여주고 사라짐 (탭하면 바로 넘어감) -->
+<!-- 오프닝: 편지 봉투에서 사진이 올라옴 (탭하면 바로 넘어감) -->
 <div id="splash" aria-hidden="true">
-  <p id="splash-day"></p>
-  <p id="splash-time"></p>
+  <p class="sp-title sp-fade d1">a little letter</p>
+  <p class="sp-sub sp-fade d1">to our favorite people.</p>
+  <div class="sp-env">
+    <div class="sp-photo"><img src="img/gallery/g01_s.jpg" alt=""></div>
+    <div class="sp-pocket"></div>
+  </div>
+  <p class="sp-names sp-fade d2">MINSEOK &amp; JINHA</p>
+  <p class="sp-date sp-fade d3" id="splash-date"></p>
 </div>
 <main>
 
@@ -452,6 +528,23 @@
         <circle cx="39" cy="15.5" r="2.6" fill="#721819" stroke="none"/>
       </svg>
     </figure>
+  </section>
+
+  <!-- 4-1. OPEN THE WEDDING LETTER -->
+  <section class="letter">
+    <div class="letter-top reveal">
+      <div><b>BEST GROOM</b><span>김 민 석</span></div>
+      <div style="text-align:center"><b>BEST FRIEND</b><span>초대합니다</span></div>
+      <div><b>BEST BRIDE</b><span>황 진 하</span></div>
+    </div>
+    <h2 class="letter-big reveal">OPEN THE<br>WEDDING<br>LETTER<span class="of">of</span></h2>
+    <div class="letter-photos reveal">
+      <img src="img/gallery/g12_s.jpg" alt="신랑 김민석">
+      <span class="amp" aria-hidden="true">&amp;</span>
+      <img src="img/gallery/g14_s.jpg" alt="신부 황진하">
+    </div>
+    <p class="letter-big reveal" style="margin-top:0">BE WITH US<br>ON THIS DAY.</p>
+    <p class="letter-foot reveal">[ Our favorite day begins here ]</p>
   </section>
 
   <!-- 4. 초대문구 & 신랑신부 이름 -->
@@ -502,6 +595,13 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>아이폰·삼성 캘린더
       </a>
     </div>
+  </section>
+
+  <!-- 6-1. OUR FRAME -->
+  <section class="our-frame">
+    <p class="frame-head reveal">- OUR FRAME -</p>
+    <div class="frame-sub reveal"><span>THE MOMENTS</span><span>WE KEEP</span></div>
+    <div class="frame-grid reveal" id="frames"></div>
   </section>
 
   <!-- 6. Gallery (세로 스크롤 3열 그리드 · 탭하면 크게 보기) -->
@@ -570,16 +670,16 @@
     <div class="accordion reveal" id="contacts"></div>
   </section>
 
-  <!-- 10. 방명록 -->
+  <!-- 10. 방명록: 하트 쪽지 -->
   <section class="guestbook">
     <div class="sec-head reveal">
       <div class="heart">♥︎</div>
-      <div class="en">Guestbook</div>
+      <div class="en">- Notes from you -</div>
       <div class="ko">방명록</div>
     </div>
-    <div class="gb-list" id="gb-list"><p class="gb-empty">방명록을 불러오는 중이에요.</p></div>
-    <button class="gb-more" id="gb-more" type="button" hidden>더보기</button>
-    <button class="gb-write" id="gb-write" type="button">방명록 작성하기</button>
+    <p class="notes-desc reveal">짧은 한 마디를 남겨주세요.<br>마음 깊이 간직하겠습니다.</p>
+    <div class="notes" id="gb-list"><p class="gb-empty">방명록을 불러오는 중이에요.</p></div>
+    <button class="gb-write" id="gb-write" type="button">편지 보내기</button>
   </section>
 
   <!-- 11. 감사 인사 -->
@@ -592,11 +692,26 @@
 
 </main>
 
+<!-- 방명록 쪽지 보기 -->
+<div class="modal note-view" id="gb-view" hidden role="dialog" aria-modal="true" aria-labelledby="gb-view-from">
+  <div class="modal-card">
+    <button type="button" class="modal-x" id="gb-view-close" aria-label="닫기">×</button>
+    <p class="note-from" id="gb-view-from"></p>
+    <p class="note-msg" id="gb-view-msg"></p>
+    <div class="note-foot"><span id="gb-view-date"></span><button type="button" class="note-del" id="gb-view-del">삭제</button></div>
+    <form class="gb-del-form" id="gb-del-form" hidden>
+      <input type="password" placeholder="작성 시 입력한 비밀번호" aria-label="비밀번호" required>
+      <button type="submit">삭제</button>
+      <button type="button" class="cancel">취소</button>
+    </form>
+  </div>
+</div>
+
 <!-- 방명록 작성 팝업 -->
 <div class="modal" id="gb-modal" hidden role="dialog" aria-modal="true" aria-labelledby="gb-title">
   <div class="modal-card">
     <button type="button" class="modal-x" id="gb-close" aria-label="닫기">×</button>
-    <h2 class="modal-title" id="gb-title">방명록 작성하기</h2>
+    <h2 class="modal-title" id="gb-title">편지 보내기</h2>
     <form class="gb-form" id="gb-form" autocomplete="off">
       <input id="gb-name" name="name" maxlength="20" placeholder="이름" required aria-label="이름">
       <input id="gb-pw" name="password" type="password" minlength="4" maxlength="20" placeholder="비밀번호 (삭제할 때 필요해요)" required aria-label="비밀번호">
@@ -688,7 +803,7 @@
      ================================================================ */
   const CONFIG = {
     groom: { name: '김민석', short: '민석', father: '김탄용', mother: '송숙희', rel: '장남' },
-    bride: { name: '황진하', short: '진하', father: '황인성', mother: '심민경', rel: '차녀' },
+    bride: { name: '황진하', short: '진하', father: '황인성', mother: '심민경', rel: '장녀' },
     weddingAt: '2027-01-09T11:00:00+09:00',   // 예식 일시 (한국 시간)
     // 방명록 저장소 (약속 앱과 같은 Supabase 프로젝트, guestbook.sql 실행 필요)
     supabase: {
@@ -711,6 +826,8 @@
     gallery: Array.from({ length: 22 }, (_, i) => `g${String(i + 1).padStart(2, '0')}`),
     // 갤러리 줄 배열: 한 줄에 몇 장씩 놓을지 (이 순서가 반복됩니다)
     galleryRows: [3, 2, 3],
+    // OUR FRAME 액자에 넣을 사진 6장 (갤러리 사진 번호)
+    frames: ['g02', 'g09', 'g10', 'g11', 'g15', 'g17'],
     // 계좌: number(계좌번호)가 있으면 표시되고 '복사' 버튼이 켜집니다.
     accounts: [
       { title: '신랑 측 계좌번호', list: [
@@ -747,11 +864,11 @@
   const splashDone = new Promise(resolve => {
     const el = $('splash');
     const kst = new Date(new Date(CONFIG.weddingAt).getTime() + 9 * 3600e3);
-    const DAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-    const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
     const p2 = n => String(n).padStart(2, '0');
-    $('splash-day').textContent = `${DAYS[kst.getUTCDay()]}. ${MONTHS[kst.getUTCMonth()]} ${p2(kst.getUTCDate())}.`;
-    $('splash-time').textContent = `${kst.getUTCFullYear()}. ${p2(kst.getUTCHours())}:${p2(kst.getUTCMinutes())}`;
+    const MONTHS_L = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const DAYS_L = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const h = kst.getUTCHours();
+    $('splash-date').innerHTML = `${MONTHS_L[kst.getUTCMonth()]}. ${p2(kst.getUTCDate())}<br>${DAYS_L[kst.getUTCDay()]}, ${h % 12 || 12}${h < 12 ? 'AM' : 'PM'}`;
     document.body.style.overflow = 'hidden';
     let finished = false;
     const finish = () => {
@@ -762,7 +879,7 @@
       setTimeout(() => { el.remove(); resolve(); }, 900);
     };
     el.addEventListener('click', finish);
-    setTimeout(finish, 2800);
+    setTimeout(finish, 4200);
   });
 
   // ----- 2. Our Wedding day 필기 애니메이션 (폰트 로드 후, 화면에 보일 때 시작) -----
@@ -882,6 +999,15 @@
       const b = e.target.closest('button[data-i]');
       if (b) open(Number(b.dataset.i));
     });
+
+    // OUR FRAME: 액자 사진도 누르면 크게 보기
+    $('frames').innerHTML = CONFIG.frames.map(n =>
+      `<button type="button" data-i="${list.indexOf(n)}" aria-label="웨딩 사진 크게 보기"><span class="fr"><img src="img/gallery/${esc(n)}_s.jpg" alt="" loading="lazy"></span></button>`
+    ).join('');
+    $('frames').addEventListener('click', e => {
+      const b = e.target.closest('button[data-i]');
+      if (b && b.dataset.i !== '-1') open(Number(b.dataset.i));
+    });
     $('lb-close').addEventListener('click', close);
     $('lb-prev').addEventListener('click', () => show(cur - 1));
     $('lb-next').addEventListener('click', () => show(cur + 1));
@@ -963,10 +1089,8 @@
   (function () {
     const API = `${CONFIG.supabase.url}/rest/v1`;
     const headers = { apikey: CONFIG.supabase.key, 'Content-Type': 'application/json' };
-    const PAGE = 5;
-    let shown = PAGE;
     let entries = [];
-    const list = $('gb-list'), more = $('gb-more'), form = $('gb-form');
+    const list = $('gb-list'), form = $('gb-form');
 
     const p2 = n => String(n).padStart(2, '0');
     // 2026.10.17 4:47am
@@ -991,20 +1115,14 @@
 
     function render() {
       if (!entries.length) {
-        list.innerHTML = '<p class="gb-empty">아직 남겨진 글이 없어요. 첫 축하를 남겨주세요.</p>';
-        more.hidden = true;
+        list.innerHTML = '<p class="gb-empty">아직 남겨진 쪽지가 없어요. 첫 마음을 남겨주세요.</p>';
         return;
       }
-      list.innerHTML = entries.slice(0, shown).map(e => `
-        <div class="gb-item" data-id="${e.id}">
-          <div class="gb-head">
-            <span class="gb-name">From.${esc(e.name)}</span>
-            <button type="button" class="gb-x" aria-label="${esc(e.name)}님의 글 삭제">삭제</button>
-          </div>
-          <p class="gb-msg">${esc(e.message)}</p>
-          <p class="gb-date">${fmt(e.created_at)}</p>
-        </div>`).join('');
-      more.hidden = entries.length <= shown;
+      list.innerHTML = entries.map((e, i) => `
+        <button type="button" class="note" data-i="${i}" aria-label="${esc(e.name)}님의 쪽지 열기">
+          <span class="note-tape" aria-hidden="true"></span>
+          <span class="note-heart"><b>FROM</b><span>${esc(e.name)}</span></span>
+        </button>`).join('');
     }
 
     async function load() {
@@ -1031,8 +1149,8 @@
         await rpc('guestbook_add', { p_name: name, p_message: message, p_password: pw });
         form.reset(); $('gb-len').textContent = '0';
         closeWrite();
-        shown = PAGE;
         await load();
+        list.scrollTo({ left: 0, behavior: 'smooth' });
         toast('방명록이 등록되었어요.');
       } catch {
         toast('등록하지 못했어요. 잠시 후 다시 시도해주세요.');
@@ -1041,32 +1159,32 @@
       }
     });
 
-    more.addEventListener('click', () => { shown += PAGE; render(); });
-
-    // 삭제: 삭제 → 비밀번호 입력 → 확인
+    // 쪽지 열기 → 내용 보기, 삭제는 비밀번호 확인
+    const view = $('gb-view'), delForm = $('gb-del-form');
+    let current = null;
+    const closeView = () => { view.hidden = true; document.body.style.overflow = ''; };
     list.addEventListener('click', e => {
-      const item = e.target.closest('.gb-item');
-      if (!item) return;
-      if (e.target.closest('.gb-x')) {
-        if (item.querySelector('.gb-del-form')) return;
-        item.insertAdjacentHTML('beforeend', `
-          <form class="gb-del-form">
-            <input type="password" placeholder="작성 시 입력한 비밀번호" aria-label="비밀번호" required>
-            <button type="submit">삭제</button>
-            <button type="button" class="cancel">취소</button>
-          </form>`);
-        item.querySelector('.gb-del-form input').focus();
-      } else if (e.target.closest('.cancel')) {
-        item.querySelector('.gb-del-form').remove();
-      }
+      const b = e.target.closest('.note');
+      if (!b) return;
+      current = entries[Number(b.dataset.i)];
+      $('gb-view-from').textContent = `From. ${current.name}`;
+      $('gb-view-msg').textContent = current.message;
+      $('gb-view-date').textContent = fmt(current.created_at);
+      delForm.hidden = true; delForm.reset();
+      view.hidden = false; document.body.style.overflow = 'hidden';
+      $('gb-view-close').focus();
     });
-    list.addEventListener('submit', async e => {
+    $('gb-view-close').addEventListener('click', closeView);
+    view.addEventListener('click', e => { if (e.target === view) closeView(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !view.hidden) closeView(); });
+    $('gb-view-del').addEventListener('click', () => { delForm.hidden = false; delForm.querySelector('input').focus(); });
+    delForm.querySelector('.cancel').addEventListener('click', () => { delForm.hidden = true; });
+    delForm.addEventListener('submit', async e => {
       e.preventDefault();
-      const item = e.target.closest('.gb-item');
-      const pw = e.target.querySelector('input').value;
       try {
-        const ok = await rpc('guestbook_delete', { p_id: Number(item.dataset.id), p_password: pw });
+        const ok = await rpc('guestbook_delete', { p_id: current.id, p_password: delForm.querySelector('input').value });
         if (!ok) { toast('비밀번호가 맞지 않아요.'); return; }
+        closeView();
         await load();
         toast('삭제되었어요.');
       } catch {
