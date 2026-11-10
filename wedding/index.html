@@ -828,7 +828,10 @@
     siteUrl: 'https://timely-melba-525a56.netlify.app/',
     // 카카오톡 공유: Kakao Developers 앱의 'JavaScript 키'를 넣으면 공유 버튼이 나타납니다.
     kakaoKey: '',
-    // 방명록·참석 의사 저장소 (청첩장 전용 Supabase 프로젝트, setup.sql 실행 완료)
+    // 방명록·참석 의사 저장소
+    // sheetApi(구글 시트 Apps Script 웹앱 주소)가 있으면 구글 시트에 저장하고, 비어 있으면 아래 Supabase를 씁니다.
+    sheetApi: '',
+    // 청첩장 전용 Supabase 프로젝트 (setup.sql 실행 완료)
     supabase: {
       url: 'https://enmmtozkzlpyxjutyrcy.supabase.co',
       key: 'sb_publishable_ogRswtuPV4N1kOHUndTdcg_2hbx2_YM',
@@ -1108,10 +1111,54 @@
       </div>
     </details>`).join('');
 
-  // ----- 방명록 (Supabase · guestbook.sql 실행 필요) -----
+  // ----- 저장소: 구글 시트(Apps Script) 또는 Supabase -----
+  const store = (() => {
+    const sheet = CONFIG.sheetApi;
+    const SB = `${CONFIG.supabase.url}/rest/v1`;
+    const sbHeaders = { apikey: CONFIG.supabase.key, 'Content-Type': 'application/json' };
+    // Apps Script: 본문을 text/plain 으로 보내야 브라우저 사전 요청(CORS) 없이 전달됩니다.
+    const sheetCall = async (body) => {
+      const res = await fetch(sheet, { method: 'POST', body: JSON.stringify(body) });
+      const j = await res.json();
+      if (!j.ok) throw new Error(j.error || 'failed');
+      return j;
+    };
+    const sbRpc = async (fn, body) => {
+      const res = await fetch(`${SB}/rpc/${fn}`, { method: 'POST', headers: sbHeaders, body: JSON.stringify(body) });
+      if (!res.ok) throw new Error(res.statusText);
+      return res.status === 204 ? null : res.json();
+    };
+    return {
+      async listGuestbook() {
+        if (sheet) {
+          const j = await (await fetch(`${sheet}?action=list`)).json();
+          if (!j.ok) throw new Error(j.error);
+          return j.entries;
+        }
+        const res = await fetch(`${SB}/guestbook?select=id,name,message,created_at&order=created_at.desc&limit=200`, { headers: sbHeaders });
+        if (!res.ok) throw new Error(res.statusText);
+        return res.json();
+      },
+      async addGuestbook(name, message, password) {
+        if (sheet) return sheetCall({ action: 'gb_add', name, message, password });
+        return sbRpc('guestbook_add', { p_name: name, p_message: message, p_password: password });
+      },
+      async deleteGuestbook(id, password) {
+        if (sheet) return (await sheetCall({ action: 'gb_delete', id, password })).deleted;
+        return sbRpc('guestbook_delete', { p_id: id, p_password: password });
+      },
+      async sendRsvp(body) {
+        if (sheet) return sheetCall({ action: 'rsvp', ...body });
+        const res = await fetch(`${SB}/rsvp`, {
+          method: 'POST', headers: { ...sbHeaders, Prefer: 'return=minimal' }, body: JSON.stringify(body),
+        });
+        if (!res.ok) throw new Error(res.statusText);
+      },
+    };
+  })();
+
+  // ----- 방명록 -----
   (function () {
-    const API = `${CONFIG.supabase.url}/rest/v1`;
-    const headers = { apikey: CONFIG.supabase.key, 'Content-Type': 'application/json' };
     let entries = [];
     const list = $('gb-list'), form = $('gb-form');
 
@@ -1130,12 +1177,6 @@
     gbModal.addEventListener('click', e => { if (e.target === gbModal) closeWrite(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !gbModal.hidden) closeWrite(); });
 
-    async function rpc(fn, body) {
-      const res = await fetch(`${API}/rpc/${fn}`, { method: 'POST', headers, body: JSON.stringify(body) });
-      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).message || res.statusText);
-      return res.status === 204 ? null : res.json();
-    }
-
     function render() {
       if (!entries.length) {
         list.innerHTML = '<p class="gb-empty">아직 남겨진 쪽지가 없어요. 첫 마음을 남겨주세요.</p>';
@@ -1150,9 +1191,7 @@
 
     async function load() {
       try {
-        const res = await fetch(`${API}/guestbook?select=id,name,message,created_at&order=created_at.desc&limit=200`, { headers });
-        if (!res.ok) throw new Error(res.statusText);
-        entries = await res.json();
+        entries = await store.listGuestbook();
         render();
       } catch {
         list.innerHTML = '<p class="gb-empty">방명록을 불러오지 못했어요. 잠시 후 다시 시도해주세요.</p>';
@@ -1169,7 +1208,7 @@
       const btn = $('gb-submit');
       btn.disabled = true;
       try {
-        await rpc('guestbook_add', { p_name: name, p_message: message, p_password: pw });
+        await store.addGuestbook(name, message, pw);
         form.reset(); $('gb-len').textContent = '0';
         closeWrite();
         await load();
@@ -1205,7 +1244,7 @@
     delForm.addEventListener('submit', async e => {
       e.preventDefault();
       try {
-        const ok = await rpc('guestbook_delete', { p_id: current.id, p_password: delForm.querySelector('input').value });
+        const ok = await store.deleteGuestbook(current.id, delForm.querySelector('input').value);
         if (!ok) { toast('비밀번호가 맞지 않아요.'); return; }
         closeView();
         await load();
@@ -1236,7 +1275,7 @@
     $('cal-google').href = `https://calendar.google.com/calendar/render?${params}`;
   })();
 
-  // ----- 참석 의사 전달 (Supabase · rsvp.sql 실행 필요) -----
+  // ----- 참석 의사 전달 -----
   (function () {
     const intro = $('rsvp-intro'), modal = $('rsvp-modal'), form = $('rsvp-form');
     const HIDE_KEY = 'rsvp-hide-until';
@@ -1311,12 +1350,7 @@
       const btn = $('rsvp-submit');
       btn.disabled = true;
       try {
-        const res = await fetch(`${CONFIG.supabase.url}/rest/v1/rsvp`, {
-          method: 'POST',
-          headers: { apikey: CONFIG.supabase.key, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
-          body: JSON.stringify(body),
-        });
-        if (!res.ok) throw new Error(res.statusText);
+        await store.sendRsvp(body);
         form.reset();
         form.querySelectorAll('.if-attend').forEach(el => { el.hidden = true; });
         closeModal(modal);

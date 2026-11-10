@@ -232,3 +232,5 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOi...';                // ← anon public key
   - 하객은 보내기만 할 수 있고, 응답은 **Table Editor → rsvp** 에서 확인·CSV 다운로드합니다.
   - 측별 참석/식사 인원 합계는 SQL Editor에서 `select * from rsvp_summary;`
 - **캘린더 등록**: 구글 캘린더 링크와 `wedding/wedding.ics`(아이폰·삼성 캘린더용)를 함께 제공합니다.
+- **구글 시트로 받기**: `wedding/apps-script.gs`를 구글 시트의 [확장 프로그램 → Apps Script]에 붙여넣고 웹 앱으로 배포한 뒤,
+  나온 주소를 `CONFIG.sheetApi`에 넣으면 방명록·참석 의사가 시트의 `방명록`/`참석의사` 탭에 쌓입니다. (비워 두면 Supabase 사용)
