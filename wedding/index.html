@@ -3,13 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>민석 ♥ 진하 결혼합니다</title>
-<meta name="description" content="2027년 1월 9일 토요일 오전 11시 · L65호텔웨딩컨벤션">
-<meta property="og:title" content="민석 ♥ 진하 결혼합니다">
-<meta property="og:description" content="2027년 1월 9일 토요일 오전 11시 · L65호텔웨딩컨벤션">
+<title>김민석 ♥ 황진하 결혼합니다</title>
+<meta name="description" content="2027년 01월 09일 토요일 11:00시 · L65호텔웨딩컨벤션">
+<!-- 카카오톡·문자 링크 미리보기 (주소가 바뀌면 og:url, og:image 도 함께 바꿔주세요) -->
+<meta property="og:title" content="김민석 ♥ 황진하 결혼합니다">
+<meta property="og:description" content="2027년 01월 09일 토요일 11:00시">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://jinha-minseok-wedding.netlify.app/">
-<meta property="og:image" content="https://jinha-minseok-wedding.netlify.app/img/main.jpg">
+<meta property="og:url" content="https://timely-melba-525a56.netlify.app/">
+<meta property="og:image" content="https://timely-melba-525a56.netlify.app/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="900">
 <meta name="theme-color" content="#721819">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -396,6 +399,17 @@
   .note-foot { margin-top: 22px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); }
   .note-del { border: 0; background: none; color: var(--muted); font: inherit; font-size: 14px; cursor: pointer; padding: 4px 0; }
 
+  /* ---------- 공유하기 ---------- */
+  .share { display: grid; gap: 8px; padding-top: 0; }
+  .share button {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 14px; border-radius: 8px; cursor: pointer; font: inherit; font-size: 15px; font-weight: 600;
+  }
+  .share button[hidden] { display: none; }
+  .share .kakao { border: 0; background: #fee500; color: #191919; }
+  .share .copy { border: 1px solid var(--main); background: #fff; color: var(--main); }
+  .share svg { width: 18px; height: 18px; flex-shrink: 0; }
+
   /* ---------- 캘린더 등록 ---------- */
   .cal-add { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 20px; }
   .cal-add a {
@@ -609,7 +623,7 @@
   </section>
 
   <!-- 7. 예식장소 안내: 지도 → 교통편·주차 -->
-  <section class="location">
+  <section class="location" id="location">
     <div class="sec-head reveal">
       <div class="heart">♥︎</div>
       <div class="en">Location</div>
@@ -683,6 +697,16 @@
     <p class="reveal">저희 두 사람의 새로운 시작을<br>따뜻한 마음으로 축복해 주시면<br>감사하겠습니다.</p>
     <p class="reveal">행복하게 잘 살겠습니다.</p>
     <p class="sign reveal" id="sign"></p>
+  </section>
+
+  <!-- 12. 공유하기 -->
+  <section class="share">
+    <button type="button" class="kakao" id="share-kakao" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#191919" d="M12 3C6.5 3 2 6.6 2 11c0 2.8 1.9 5.3 4.7 6.7l-1 3.6c-.1.3.3.6.6.4l4.2-2.8c.5.1 1 .1 1.5.1 5.5 0 10-3.6 10-8S17.5 3 12 3z"/></svg>카카오톡으로 공유하기
+    </button>
+    <button type="button" class="copy" id="share-copy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>청첩장 링크 복사하기
+    </button>
   </section>
 
 </main>
@@ -800,6 +824,10 @@
     groom: { name: '김민석', short: '민석', father: '김탄용', mother: '송숙희', rel: '장남' },
     bride: { name: '황진하', short: '진하', father: '황인성', mother: '심민경', rel: '장녀' },
     weddingAt: '2027-01-09T11:00:00+09:00',   // 예식 일시 (한국 시간)
+    // 청첩장 주소 (공유 카드·미리보기에 쓰임)
+    siteUrl: 'https://timely-melba-525a56.netlify.app/',
+    // 카카오톡 공유: Kakao Developers 앱의 'JavaScript 키'를 넣으면 공유 버튼이 나타납니다.
+    kakaoKey: '',
     // 방명록 저장소 (약속 앱과 같은 Supabase 프로젝트, guestbook.sql 실행 필요)
     supabase: {
       url: 'https://opacjpkjczihmtarmzrf.supabase.co',
@@ -1228,7 +1256,7 @@
     // 첫 화면 팝업: '오늘 하루 보지않기'를 누르지 않았고, 예식 전일 때만
     let hidden = false;
     try { hidden = Number(localStorage.getItem(HIDE_KEY) || 0) > Date.now(); } catch {}
-    if (!hidden && Date.now() < new Date(CONFIG.weddingAt).getTime()) {
+    if (!hidden && location.hash !== '#location' && Date.now() < new Date(CONFIG.weddingAt).getTime()) {
       splashDone.then(() => setTimeout(() => openModal(intro), 500));
     }
     const closeIntro = () => {
@@ -1300,6 +1328,58 @@
       }
     });
   })();
+
+  // ----- 공유하기 (카카오톡 카드 / 링크 복사) -----
+  (function () {
+    const url = CONFIG.siteUrl;
+    $('share-copy').addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(url); }
+      catch {
+        const ta = document.createElement('textarea');
+        ta.value = url; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+      }
+      toast('청첩장 링크가 복사되었어요.');
+    });
+
+    if (!CONFIG.kakaoKey) return;
+    const s = document.createElement('script');
+    s.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js';
+    s.crossOrigin = 'anonymous';
+    s.onload = () => {
+      if (!window.Kakao) return;
+      if (!Kakao.isInitialized()) Kakao.init(CONFIG.kakaoKey);
+      $('share-kakao').hidden = false;
+    };
+    document.head.appendChild(s);
+
+    $('share-kakao').addEventListener('click', () => {
+      const kst = new Date(new Date(CONFIG.weddingAt).getTime() + 9 * 3600e3);
+      const p2 = n => String(n).padStart(2, '0');
+      const day = ['일', '월', '화', '수', '목', '금', '토'][kst.getUTCDay()];
+      // 카드: 사진 + 제목 + 일시 + [청첩장 보기] [위치 보기]
+      Kakao.Share.sendDefault({
+        objectType: 'feed',
+        content: {
+          title: `${groom.name} ♥ ${bride.name} 결혼합니다`,
+          description: `${kst.getUTCFullYear()}년 ${p2(kst.getUTCMonth() + 1)}월 ${p2(kst.getUTCDate())}일 ${day}요일 ${p2(kst.getUTCHours())}:${p2(kst.getUTCMinutes())}시`,
+          imageUrl: url + 'img/og.jpg',
+          imageWidth: 1200,
+          imageHeight: 900,
+          link: { mobileWebUrl: url, webUrl: url },
+        },
+        buttons: [
+          { title: '청첩장 보기', link: { mobileWebUrl: url, webUrl: url } },
+          { title: '위치 보기', link: { mobileWebUrl: url + '#location', webUrl: url + '#location' } },
+        ],
+      });
+    });
+  })();
+
+  // '위치 보기'로 들어오면 오프닝 후 오시는 길로 이동
+  if (location.hash === '#location') {
+    splashDone.then(() => $('location').scrollIntoView({ behavior: 'smooth' }));
+  }
 
   // ----- 토스트 -----
   let toastTimer;
