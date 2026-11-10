@@ -42,17 +42,12 @@
     max-width: 480px;
     margin: 0 auto;
     min-height: 100vh;
-    background: var(--bg);
+    background: #f3f3f1 url(img/paper-white.webp) center top / 100% auto repeat-y;
     overflow: hidden;
     box-shadow: 0 0 30px rgba(114, 24, 25, .12);
     text-align: center;
   }
-  /* 배경 종이 질감 (업로드한 4번 이미지) */
-  main::before {
-    content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-    background: url(img/paper.webp) center top / 100% auto repeat-y;
-    mix-blend-mode: multiply; opacity: .55;
-  }
+  /* 배경: 흰 종이 질감 (드라이브 '배경' 이미지) */
   main > * { position: relative; z-index: 1; }
   section { padding: 64px 24px; }
 
@@ -301,14 +296,10 @@
 
   /* ---------- 오프닝: 편지 봉투 ---------- */
   #splash {
-    position: fixed; inset: 0; z-index: 100; background: var(--bg);
+    position: fixed; inset: 0; z-index: 100; background: #f3f3f1 url(img/paper-white.webp) center / cover;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     text-align: center; color: var(--ink); cursor: pointer;
     transition: opacity .9s ease, visibility .9s;
-  }
-  #splash::before {
-    content: ''; position: absolute; inset: 0; pointer-events: none;
-    background: url(img/paper.webp) center / cover; mix-blend-mode: multiply; opacity: .55;
   }
   #splash > * { position: relative; }
   #splash.done { opacity: 0; visibility: hidden; }
