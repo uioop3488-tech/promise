@@ -110,17 +110,32 @@
 
   /* ---------- 3. 장식 이미지 ---------- */
   .deco-img { padding: 0 24px 24px; }
-  .deco-img img {
+  /* 폴라로이드 액자 + 리본 */
+  .polaroid {
+    position: relative; width: 86%; margin: 0 auto;
+    background: #fff; padding: 14px 14px 56px;
+    box-shadow: 0 2px 10px rgba(58, 46, 42, .12), 0 1px 2px rgba(58, 46, 42, .08);
+  }
+  .polaroid img {
     display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: center 22%;
-    border-radius: 4px;
+  }
+  .polaroid .ribbon {
+    position: absolute; left: 50%; bottom: 10px; width: 78px; height: 36px; transform: translateX(-50%);
+    fill: none; stroke: var(--main); stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round;
   }
 
   /* ---------- 4. Gallery ---------- */
   /* 옆으로 넘기지 않고 스크롤하며 내려보는 3열 그리드 */
-  .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
-  .gallery-grid .placeholder { aspect-ratio: 3 / 4; border-radius: 4px; font-size: 12px; }
-  .gallery-grid button { display: block; padding: 0; border: 0; background: none; cursor: zoom-in; }
-  .gallery-grid img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 4px; background: var(--sub); }
+  /* 6칸 그리드: 3장 줄은 2칸씩, 2장 줄은 3칸씩, 1장 줄은 6칸 */
+  .gallery-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+  .gallery-grid button { display: block; padding: 0; border: 0; background: none; cursor: zoom-in; min-width: 0; }
+  .gallery-grid img { display: block; width: 100%; object-fit: cover; border-radius: 4px; background: var(--sub); }
+  .gallery-grid .r3 { grid-column: span 2; }
+  .gallery-grid .r3 img { aspect-ratio: 3 / 4; }
+  .gallery-grid .r2 { grid-column: span 3; }
+  .gallery-grid .r2 img { aspect-ratio: 4 / 5; }
+  .gallery-grid .r1 { grid-column: span 6; }
+  .gallery-grid .r1 img { aspect-ratio: 3 / 2; }
 
   /* 사진 크게 보기 */
   .lightbox {
@@ -255,40 +270,30 @@
   .gift-note { margin-top: 24px; font-size: 14px; color: var(--muted); line-height: 1.8; }
 
   /* ---------- 방명록 ---------- */
-  .gb-form {
-    display: grid; gap: 8px; text-align: left;
-    padding: 16px; border-radius: 10px;
-    background: #fff; border: 1px solid rgba(114, 24, 25, .2);
-  }
-  .gb-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .gb-form { display: grid; gap: 10px; text-align: left; margin-top: 24px; }
   .gb-form input, .gb-form textarea {
-    width: 100%; min-width: 0; font: inherit; font-size: 14px; color: var(--ink);
-    padding: 10px 12px; border-radius: 8px;
+    width: 100%; min-width: 0; font: inherit; font-size: 15px; color: var(--ink);
+    padding: 11px 12px; border-radius: 8px;
     border: 1px solid rgba(114, 24, 25, .25); background: var(--bg);
   }
-  .gb-form textarea { resize: vertical; min-height: 84px; line-height: 1.6; }
+  .gb-form textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
   .gb-form input:focus, .gb-form textarea:focus,
   .gb-del-form input:focus { outline: 2px solid var(--main); outline-offset: -1px; }
   .gb-count { font-size: 12px; color: var(--muted); text-align: right; margin-top: -4px; }
-  .gb-submit {
-    border: 0; border-radius: 8px; padding: 12px; cursor: pointer;
-    background: var(--main); color: #fff; font: inherit; font-size: 15px; font-weight: 600;
-  }
-  .gb-submit:disabled { opacity: .5; cursor: default; }
-  .gb-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 20px; text-align: left; }
+  .gb-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; text-align: left; }
   .gb-item {
-    padding: 14px 16px; border-radius: 10px;
-    background: #fff; border: 1px solid rgba(114, 24, 25, .15);
+    padding: 22px 20px 18px; border-radius: 10px;
+    background: #fff; border: 1px solid rgba(114, 24, 25, .12);
   }
-  .gb-head { display: flex; align-items: baseline; gap: 8px; }
-  .gb-name { font-weight: 700; font-size: 14px; color: var(--main); }
-  .gb-date { font-size: 12px; color: var(--muted); }
+  .gb-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .gb-name { font-size: 16px; color: var(--main); }
   .gb-x {
-    margin-left: auto; border: 0; background: none; cursor: pointer;
-    color: var(--muted); font-size: 18px; line-height: 1; padding: 0 2px;
+    border: 0; background: none; cursor: pointer; padding: 4px 0 4px 8px;
+    color: var(--muted); font: inherit; font-size: 14px;
   }
-  .gb-msg { margin-top: 6px; font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
-  .gb-del-form { display: flex; gap: 6px; margin-top: 10px; }
+  .gb-msg { margin-top: 14px; font-size: 15px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .gb-date { margin-top: 18px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .gb-del-form { display: flex; gap: 6px; margin-top: 14px; }
   .gb-del-form input {
     flex: 1; min-width: 0; font: inherit; font-size: 13px; padding: 7px 10px;
     border-radius: 6px; border: 1px solid rgba(114, 24, 25, .25); background: var(--bg);
@@ -299,6 +304,10 @@
   }
   .gb-del-form button.cancel { background: #fff; color: var(--main); }
   .gb-empty { font-size: 14px; color: var(--muted); padding: 20px 0; text-align: center; }
+  .gb-write {
+    margin-top: 16px; width: 100%; border: 0; border-radius: 8px; padding: 15px; cursor: pointer;
+    background: var(--main); color: #fff; font: inherit; font-size: 16px; font-weight: 600;
+  }
   .gb-more {
     margin-top: 12px; width: 100%; padding: 11px; border-radius: 8px; cursor: pointer;
     border: 1px solid var(--main); background: transparent; color: var(--main); font: inherit; font-size: 14px;
@@ -433,7 +442,16 @@
 
   <!-- 3. 장식 이미지 -->
   <section class="deco-img">
-    <img class="reveal" src="img/deco.jpg" alt="신랑 신부가 마주 보고 웃는 흑백 사진" loading="lazy">
+    <figure class="polaroid reveal">
+      <img src="img/deco.jpg" alt="신랑 신부가 마주 보고 웃는 흑백 사진" loading="lazy">
+      <svg class="ribbon" viewBox="0 0 78 36" aria-hidden="true">
+        <path d="M39 15 C 30 6, 14 2, 9 8 C 5 13, 14 19, 39 15 Z"/>
+        <path d="M39 15 C 48 6, 64 2, 69 8 C 73 13, 64 19, 39 15 Z"/>
+        <path d="M37 16 C 32 22, 24 29, 16 33"/>
+        <path d="M41 16 C 46 22, 54 29, 62 33"/>
+        <circle cx="39" cy="15.5" r="2.6" fill="#721819" stroke="none"/>
+      </svg>
+    </figure>
   </section>
 
   <!-- 4. 초대문구 & 신랑신부 이름 -->
@@ -559,17 +577,9 @@
       <div class="en">Guestbook</div>
       <div class="ko">방명록</div>
     </div>
-    <form class="gb-form reveal" id="gb-form" autocomplete="off">
-      <div class="gb-row">
-        <input id="gb-name" name="name" maxlength="20" placeholder="이름" required aria-label="이름">
-        <input id="gb-pw" name="password" type="password" minlength="4" maxlength="20" placeholder="비밀번호 (삭제용)" required aria-label="비밀번호">
-      </div>
-      <textarea id="gb-msg" name="message" maxlength="300" placeholder="두 사람에게 축하의 말을 남겨주세요." required aria-label="축하 메시지"></textarea>
-      <div class="gb-count"><span id="gb-len">0</span> / 300</div>
-      <button class="gb-submit" id="gb-submit" type="submit">남기기</button>
-    </form>
     <div class="gb-list" id="gb-list"><p class="gb-empty">방명록을 불러오는 중이에요.</p></div>
     <button class="gb-more" id="gb-more" type="button" hidden>더보기</button>
+    <button class="gb-write" id="gb-write" type="button">방명록 작성하기</button>
   </section>
 
   <!-- 11. 감사 인사 -->
@@ -581,6 +591,21 @@
   </section>
 
 </main>
+
+<!-- 방명록 작성 팝업 -->
+<div class="modal" id="gb-modal" hidden role="dialog" aria-modal="true" aria-labelledby="gb-title">
+  <div class="modal-card">
+    <button type="button" class="modal-x" id="gb-close" aria-label="닫기">×</button>
+    <h2 class="modal-title" id="gb-title">방명록 작성하기</h2>
+    <form class="gb-form" id="gb-form" autocomplete="off">
+      <input id="gb-name" name="name" maxlength="20" placeholder="이름" required aria-label="이름">
+      <input id="gb-pw" name="password" type="password" minlength="4" maxlength="20" placeholder="비밀번호 (삭제할 때 필요해요)" required aria-label="비밀번호">
+      <textarea id="gb-msg" name="message" maxlength="300" placeholder="두 사람에게 축하의 말을 남겨주세요." required aria-label="축하 메시지"></textarea>
+      <div class="gb-count"><span id="gb-len">0</span> / 300</div>
+      <button class="modal-main" id="gb-submit" type="submit">작성 완료</button>
+    </form>
+  </div>
+</div>
 
 <!-- 참석 의사: 첫 화면 안내 팝업 -->
 <div class="modal" id="rsvp-intro" hidden role="dialog" aria-modal="true" aria-labelledby="rsvp-intro-title">
@@ -684,6 +709,8 @@
     // 갤러리: img/gallery/ 의 사진 번호 (g01.jpg = 크게 보기용, g01_s.jpg = 목록용)
     // 순서를 바꾸거나 빼려면 이 목록만 고치면 됩니다.
     gallery: Array.from({ length: 22 }, (_, i) => `g${String(i + 1).padStart(2, '0')}`),
+    // 갤러리 줄 배열: 한 줄에 몇 장씩 놓을지 (이 순서가 반복됩니다)
+    galleryRows: [3, 2, 3],
     // 계좌: number(계좌번호)가 있으면 표시되고 '복사' 버튼이 켜집니다.
     accounts: [
       { title: '신랑 측 계좌번호', list: [
@@ -827,8 +854,16 @@
   // ----- 갤러리 -----
   (function () {
     const list = CONFIG.gallery;
+    // 줄마다 3장 → 2장 → 3장 … 순서로 반복 (CONFIG.galleryRows)
+    const rows = CONFIG.galleryRows;
+    const sizes = [];
+    for (let left = list.length, r = 0; left > 0; r++) {
+      const n = Math.min(rows[r % rows.length], left);
+      for (let k = 0; k < n; k++) sizes.push(n);
+      left -= n;
+    }
     $('gallery').innerHTML = list.map((n, i) =>
-      `<button type="button" data-i="${i}" aria-label="웨딩 사진 ${i + 1} 크게 보기"><img src="img/gallery/${esc(n)}_s.jpg" alt="" loading="lazy"></button>`
+      `<button type="button" class="r${sizes[i]}" data-i="${i}" aria-label="웨딩 사진 ${i + 1} 크게 보기"><img src="img/gallery/${esc(n)}_s.jpg" alt="" loading="lazy"></button>`
     ).join('');
 
     // 크게 보기: 탭하면 열리고, 좌우 버튼·스와이프·키보드로 넘김
@@ -933,10 +968,20 @@
     let entries = [];
     const list = $('gb-list'), more = $('gb-more'), form = $('gb-form');
 
+    const p2 = n => String(n).padStart(2, '0');
+    // 2026.10.17 4:47am
     const fmt = iso => {
-      const d = new Date(iso);
-      return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+      const d = new Date(iso), h = d.getHours();
+      return `${d.getFullYear()}.${p2(d.getMonth() + 1)}.${p2(d.getDate())} ${h % 12 || 12}:${p2(d.getMinutes())}${h < 12 ? 'am' : 'pm'}`;
     };
+
+    const gbModal = $('gb-modal');
+    const openWrite = () => { gbModal.hidden = false; document.body.style.overflow = 'hidden'; $('gb-name').focus(); };
+    const closeWrite = () => { gbModal.hidden = true; document.body.style.overflow = ''; $('gb-write').focus(); };
+    $('gb-write').addEventListener('click', openWrite);
+    $('gb-close').addEventListener('click', closeWrite);
+    gbModal.addEventListener('click', e => { if (e.target === gbModal) closeWrite(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !gbModal.hidden) closeWrite(); });
 
     async function rpc(fn, body) {
       const res = await fetch(`${API}/rpc/${fn}`, { method: 'POST', headers, body: JSON.stringify(body) });
@@ -953,11 +998,11 @@
       list.innerHTML = entries.slice(0, shown).map(e => `
         <div class="gb-item" data-id="${e.id}">
           <div class="gb-head">
-            <span class="gb-name">${esc(e.name)}</span>
-            <span class="gb-date">${fmt(e.created_at)}</span>
-            <button type="button" class="gb-x" aria-label="${esc(e.name)}님의 글 삭제">×</button>
+            <span class="gb-name">From.${esc(e.name)}</span>
+            <button type="button" class="gb-x" aria-label="${esc(e.name)}님의 글 삭제">삭제</button>
           </div>
           <p class="gb-msg">${esc(e.message)}</p>
+          <p class="gb-date">${fmt(e.created_at)}</p>
         </div>`).join('');
       more.hidden = entries.length <= shown;
     }
@@ -985,6 +1030,7 @@
       try {
         await rpc('guestbook_add', { p_name: name, p_message: message, p_password: pw });
         form.reset(); $('gb-len').textContent = '0';
+        closeWrite();
         shown = PAGE;
         await load();
         toast('방명록이 등록되었어요.');
@@ -997,7 +1043,7 @@
 
     more.addEventListener('click', () => { shown += PAGE; render(); });
 
-    // 삭제: × → 비밀번호 입력 → 확인
+    // 삭제: 삭제 → 비밀번호 입력 → 확인
     list.addEventListener('click', e => {
       const item = e.target.closest('.gb-item');
       if (!item) return;
