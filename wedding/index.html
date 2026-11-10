@@ -81,6 +81,14 @@
   .cover { padding: 0; }
   .cover img { display: block; width: 100%; height: auto; }
 
+  .cover-info { padding: 28px 24px 8px; }
+  .cover-date {
+    font-family: 'Reenie Beanie', cursive; color: var(--ink);
+    font-size: 40px; line-height: 1.1; letter-spacing: .02em;
+  }
+  .cover-time { font-family: 'Reenie Beanie', cursive; font-size: 30px; line-height: 1.1; color: var(--ink); }
+  .cover-venue { margin-top: 6px; font-size: 13px; color: var(--muted); }
+
   /* ---------- 2. Our Wedding Day (필기체로 써지는 애니메이션) ---------- */
   .our-day { padding-top: 56px; padding-bottom: 40px; }
   .our-day .heart { color: var(--main); font-size: 18px; }
@@ -105,8 +113,17 @@
   .deco-img .placeholder { height: 120px; }
 
   /* ---------- 4. Gallery ---------- */
-  .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .gallery-grid .placeholder { aspect-ratio: 3 / 4; }
+  /* 옆으로 넘기지 않고 스크롤하며 내려보는 3열 그리드 */
+  .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  .gallery-grid .placeholder { aspect-ratio: 3 / 4; border-radius: 4px; font-size: 12px; }
+  .gallery-grid img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 4px; }
+
+  /* ---------- 초대문구 ---------- */
+  .invite-text { font-size: 15px; line-height: 2; }
+  .invite-names { display: grid; gap: 10px; margin-top: 36px; }
+  .invite-names .row { display: flex; align-items: baseline; justify-content: center; gap: 10px; }
+  .invite-names .parents { font-size: 14px; color: var(--muted); }
+  .invite-names .who { font-size: 19px; font-weight: 700; letter-spacing: .08em; }
 
   /* ---------- 5. Save the Date + D-day ---------- */
   .calendar {
@@ -151,6 +168,21 @@
     border: 1px solid rgba(114, 24, 25, .3); border-top: 0;
     border-radius: 0 0 10px 10px; overflow: hidden; background: #fff;
   }
+  .map-pills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+  .map-pills a {
+    padding: 10px 0; border-radius: 999px; font-size: 13px; font-weight: 600;
+    background: var(--main); color: #fff; text-decoration: none;
+  }
+  .map-pills a:active { opacity: .85; }
+  .transport { margin-top: 32px; text-align: left; }
+  .transport h3 { text-align: center; font-size: 16px; font-weight: 700; margin-bottom: 14px; }
+  .transport dl {
+    display: grid; grid-template-columns: auto 1fr; gap: 10px 14px;
+    padding: 18px; border-radius: 10px; background: #fff; border: 1px solid rgba(114, 24, 25, .15);
+    font-size: 14px;
+  }
+  .transport dt { font-weight: 700; color: var(--main); white-space: nowrap; }
+  .transport dd { min-width: 0; }
   .map-links a {
     flex: 1; padding: 13px 0; font-size: 14px; color: var(--ink); text-decoration: none;
   }
@@ -160,14 +192,6 @@
   .address .name { font-size: 16px; font-weight: 600; }
   .address .line { font-size: 14px; color: var(--muted); }
 
-  /* ---------- 7. Detail ---------- */
-  .detail-list { display: grid; gap: 18px; font-size: 15px; }
-  .detail-list .label { font-size: 13px; color: var(--muted); }
-  .names { display: grid; gap: 10px; margin-top: 8px; }
-  .names .row { font-size: 15px; }
-  .names .parents { color: var(--muted); }
-  .names .role { color: var(--main); font-weight: 600; margin: 0 4px 0 8px; }
-  .names .who { font-weight: 700; font-size: 17px; }
 
   /* ---------- 8. Gift ---------- */
   .accordion { display: grid; gap: 10px; }
@@ -202,6 +226,8 @@
   }
   .copy-btn:active { background: var(--sub); }
   .copy-btn:disabled { opacity: .35; cursor: default; }
+  .btn-group { display: flex; gap: 6px; flex-shrink: 0; }
+  a.copy-btn { text-decoration: none; display: inline-block; }
   .gift-note { margin-top: 24px; font-size: 14px; color: var(--muted); line-height: 1.8; }
 
   /* ---------- 방명록 ---------- */
@@ -283,9 +309,14 @@
   <!-- 1. 대문사진 -->
   <section class="cover">
     <img src="img/main.png" alt="김민석 · 황진하 웨딩 사진">
+    <div class="cover-info">
+      <p class="cover-date">2027. 01. 09 SAT</p>
+      <p class="cover-time">11:00 AM</p>
+      <p class="cover-venue">청량리 L65호텔웨딩컨벤션</p>
+    </div>
   </section>
 
-  <!-- 2. Our Wedding Day -->
+  <!-- 2. Our Wedding day -->
   <section class="our-day">
     <div class="heart">♥︎</div>
     <h1 class="handwrite" id="handwrite" aria-label="Our Wedding day"><span>Our</span> <span>Wedding</span> <span>day</span></h1>
@@ -296,21 +327,22 @@
     <div class="placeholder">장식 이미지 영역</div>
   </section>
 
-  <!-- 4. Gallery (사진 업로드 전 placeholder) -->
-  <section class="gallery">
+  <!-- 4. 초대문구 & 신랑신부 이름 -->
+  <section class="invite">
     <div class="sec-head reveal">
       <div class="heart">♥︎</div>
-      <div class="en">Gallery</div>
+      <div class="en">Invitation</div>
+      <div class="ko">초대합니다</div>
     </div>
-    <div class="gallery-grid reveal">
-      <div class="placeholder">사진 1</div>
-      <div class="placeholder">사진 2</div>
-      <div class="placeholder">사진 3</div>
-      <div class="placeholder">사진 4</div>
-    </div>
+    <p class="invite-text reveal">서로의 삶에 따뜻하고 든든한 동반자가 되어<br>
+    언제까지나 사랑하고 신뢰하는<br>
+    행복한 가정을 이루려 합니다.<br>
+    귀한 걸음으로 오셔서<br>
+    축복해주시고 함께해주세요.</p>
+    <div class="invite-names reveal" id="names"></div>
   </section>
 
-  <!-- 5. Save the Date + D-day -->
+  <!-- 5. 예식일정: 달력 + D-day -->
   <section class="save-date">
     <div class="sec-head reveal">
       <div class="heart">♥︎</div>
@@ -337,7 +369,16 @@
     <p class="dday-msg reveal" id="dday-msg"></p>
   </section>
 
-  <!-- 6. Location -->
+  <!-- 6. Gallery (사진 업로드 전 placeholder · 세로 스크롤 그리드) -->
+  <section class="gallery">
+    <div class="sec-head reveal">
+      <div class="heart">♥︎</div>
+      <div class="en">Gallery</div>
+    </div>
+    <div class="gallery-grid reveal" id="gallery"></div>
+  </section>
+
+  <!-- 7. 예식장소 안내: 지도 → 교통편·주차 -->
   <section class="location">
     <div class="sec-head reveal">
       <div class="heart">♥︎</div>
@@ -345,9 +386,10 @@
       <div class="ko">오시는길</div>
     </div>
     <div class="map-wrap reveal">
-      <iframe class="map-frame" id="map-frame" title="예식장 지도" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
-      <div class="map-links">
+      <iframe class="map-frame" id="map-frame" title="예식장 지도" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen style="border-radius:10px"></iframe>
+      <div class="map-pills">
         <a id="link-naver" target="_blank" rel="noopener">네이버지도</a>
+        <a id="link-tmap" href="#">티맵</a>
         <a id="link-kakao" target="_blank" rel="noopener">카카오맵</a>
       </div>
     </div>
@@ -355,23 +397,13 @@
       <p class="name" id="venue-name"></p>
       <p class="line" id="venue-address"></p>
     </div>
-  </section>
-
-  <!-- 7. Detail -->
-  <section class="detail">
-    <div class="sec-head reveal">
-      <div class="heart">♥︎</div>
-      <div class="en">Detail</div>
-    </div>
-    <div class="detail-list reveal">
-      <div>
-        <div class="label">신랑 · 신부</div>
-        <div class="names" id="names"></div>
-      </div>
+    <div class="transport reveal">
+      <h3>오시는 방법</h3>
+      <dl id="transport"></dl>
     </div>
   </section>
 
-  <!-- 8. Gift -->
+  <!-- 8. 계좌번호 -->
   <section class="gift">
     <div class="sec-head reveal">
       <div class="heart">♥︎</div>
@@ -382,7 +414,17 @@
     <p class="gift-note reveal">참석이 어려우신 분들을 위해 조심스럽게 안내드립니다.<br>보내주시는 따뜻한 마음, 감사히 간직하겠습니다.</p>
   </section>
 
-  <!-- 방명록 -->
+  <!-- 9. 연락처 -->
+  <section class="contact">
+    <div class="sec-head reveal">
+      <div class="heart">♥︎</div>
+      <div class="en">Contact</div>
+      <div class="ko">연락처</div>
+    </div>
+    <div class="accordion reveal" id="contacts"></div>
+  </section>
+
+  <!-- 10. 방명록 -->
   <section class="guestbook">
     <div class="sec-head reveal">
       <div class="heart">♥︎</div>
@@ -402,7 +444,7 @@
     <button class="gb-more" id="gb-more" type="button" hidden>더보기</button>
   </section>
 
-  <!-- 9. 감사 인사 -->
+  <!-- 11. 감사 인사 -->
   <section class="thanks">
     <div class="heart reveal">♥︎</div>
     <p class="reveal">저희 두 사람의 새로운 시작을<br>따뜻한 마음으로 축복해 주시면<br>감사하겠습니다.</p>
@@ -421,8 +463,8 @@
            화면에 표시되고 '복사' 버튼이 활성화됩니다.
      ================================================================ */
   const CONFIG = {
-    groom: { name: '김민석', short: '민석', father: '김탄용', mother: '송숙희' },
-    bride: { name: '황진하', short: '진하', father: '황인성', mother: '심민경' },
+    groom: { name: '김민석', short: '민석', father: '김탄용', mother: '송숙희', rel: '장남' },
+    bride: { name: '황진하', short: '진하', father: '황인성', mother: '심민경', rel: '차녀' },
     weddingAt: '2027-01-09T11:00:00+09:00',   // 예식 일시 (한국 시간)
     // 방명록 저장소 (약속 앱과 같은 Supabase 프로젝트, guestbook.sql 실행 필요)
     supabase: {
@@ -433,16 +475,36 @@
       name: 'L65호텔웨딩컨벤션',                // 지도 검색어 겸 장소명
       address: '서울 청량리',                   // 화면에 보일 주소 (정확한 도로명 주소로 바꿔도 됩니다)
     },
+    // 오시는 방법
+    transport: [
+      ['KTX', '청량리역 2번 출구 롯데몰 연결'],
+      ['지하철', '1호선 / 경의중앙선 / 경춘선 / 수인분당선 청량리역 6번 출구'],
+      ['버스', '청량리역환승센터 하차'],
+      ['자차', '웨딩홀 주차장 주차 시 2시간 무료'],
+    ],
+    // 갤러리: 사진을 img/ 폴더에 넣고 파일 이름을 적어주세요. 예) 'img/g1.jpg'
+    // 비어 있으면 빈 칸(placeholder) 9개가 표시됩니다.
+    gallery: [],
+    // 계좌: number(계좌번호)가 있으면 표시되고 '복사' 버튼이 켜집니다.
     accounts: [
       { title: '신랑 측 계좌번호', list: [
-        { bank: '', number: '', holder: '김민석' },
-        { bank: '', number: '', holder: '김탄용' },
-        { bank: '', number: '', holder: '송숙희' },
+        { bank: '', number: '110-50-123864', holder: '김민석' },
       ]},
       { title: '신부 측 계좌번호', list: [
-        { bank: '', number: '', holder: '황진하' },
-        { bank: '', number: '', holder: '황인성' },
-        { bank: '', number: '', holder: '심민경' },
+        { bank: '신한', number: '110-444-077214', holder: '황진하' },
+        { bank: '농협', number: '136-12-607732', holder: '황인성 (부)' },
+        { bank: '농협', number: '127-12-201138', holder: '심민경 (모)' },
+      ]},
+    ],
+    // 연락처
+    contacts: [
+      { title: '신랑 측 연락처', list: [
+        { label: '신랑 김민석', phone: '010-8187-2870' },
+      ]},
+      { title: '신부 측 연락처', list: [
+        { label: '신부 황진하', phone: '010-8845-4967' },
+        { label: '아버지 황인성', phone: '010-2787-4769' },
+        { label: '어머니 심민경', phone: '010-9023-7917' },
       ]},
     ],
   };
@@ -513,17 +575,34 @@
     $('map-frame').src = `https://maps.google.com/maps?q=${q}&hl=ko&z=16&output=embed`;
     $('link-naver').href = `https://map.naver.com/p/search/${q}`;
     $('link-kakao').href = `https://map.kakao.com/link/search/${q}`;
+    $('link-tmap').addEventListener('click', e => {
+      e.preventDefault();
+      const ua = navigator.userAgent;
+      if (!/Android|iPhone|iPad|iPod/i.test(ua)) { toast('티맵은 휴대폰에서 열 수 있어요.'); return; }
+      const started = Date.now();
+      location.href = `tmap://search?name=${q}`;
+      // 앱이 없으면 설치 페이지로
+      setTimeout(() => {
+        if (document.hidden || Date.now() - started > 2500) return;
+        location.href = /Android/i.test(ua)
+          ? 'https://play.google.com/store/apps/details?id=com.skt.tmap.ku'
+          : 'https://apps.apple.com/kr/app/id431589174';
+      }, 1500);
+    });
+    $('transport').innerHTML = CONFIG.transport.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
     $('venue-name').textContent = CONFIG.venue.name;
     $('venue-address').textContent = CONFIG.venue.address === CONFIG.venue.name ? '' : CONFIG.venue.address;
   })();
 
-  // ----- 7. Detail -----
-  $('names').innerHTML = [
-    { p: groom, rel: '아들', role: '신랑' },
-    { p: bride, rel: '딸', role: '신부' },
-  ].map(({ p, rel, role }) =>
-    `<div class="row"><span class="parents">${esc(p.father)} · ${esc(p.mother)}의 ${rel}</span><span class="role">${role}</span><span class="who">${esc(p.name)}</span></div>`
+  // ----- 신랑신부 이름 -----
+  $('names').innerHTML = [groom, bride].map(p =>
+    `<div class="row"><span class="parents">${esc(p.father)} · ${esc(p.mother)}의 ${esc(p.rel)}</span><span class="who">${esc(p.name)}</span></div>`
   ).join('');
+
+  // ----- 갤러리 -----
+  $('gallery').innerHTML = CONFIG.gallery.length
+    ? CONFIG.gallery.map((src, i) => `<img src="${esc(src)}" alt="웨딩 사진 ${i + 1}" loading="lazy">`).join('')
+    : Array.from({ length: 9 }, (_, i) => `<div class="placeholder">사진 ${i + 1}</div>`).join('');
 
   // ----- 8. Gift 계좌 아코디언 -----
   (function () {
@@ -533,11 +612,11 @@
         <summary>${esc(g.title)}</summary>
         <div class="acc-body">
           ${g.list.map(a => {
-            const ready = a.bank && a.number;
+            const ready = !!a.number;
             return `<div class="acc-item">
               <div class="acc-info">
                 ${ready
-                  ? `<div class="bank">${esc(a.bank)}</div><div class="num">${esc(a.number)}</div><div class="holder">예금주 ${esc(a.holder)}</div>`
+                  ? `${a.bank ? `<div class="bank">${esc(a.bank)}</div>` : ''}<div class="num">${esc(a.number)}</div><div class="holder">예금주 ${esc(a.holder)}</div>`
                   : `<div class="holder">예금주 ${esc(a.holder)}</div><div class="empty">계좌 정보 준비 중</div>`}
               </div>
               <button type="button" class="copy-btn" data-copy="${esc(a.number)}" ${ready ? '' : 'disabled'}>복사</button>
@@ -561,6 +640,27 @@
       toast('계좌번호가 복사되었습니다.');
     });
   })();
+
+  // ----- 연락처 아코디언 (전화 / 문자) -----
+  $('contacts').innerHTML = CONFIG.contacts.map(g => `
+    <details class="acc">
+      <summary>${esc(g.title)}</summary>
+      <div class="acc-body">
+        ${g.list.map(c => {
+          const tel = c.phone.replace(/[^0-9+]/g, '');
+          return `<div class="acc-item">
+            <div class="acc-info">
+              <div class="holder">${esc(c.label)}</div>
+              <div class="num">${esc(c.phone)}</div>
+            </div>
+            <div class="btn-group">
+              <a class="copy-btn" href="tel:${tel}">전화</a>
+              <a class="copy-btn" href="sms:${tel}">문자</a>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </details>`).join('');
 
   // ----- 방명록 (Supabase · guestbook.sql 실행 필요) -----
   (function () {
