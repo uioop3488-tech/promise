@@ -106,6 +106,10 @@
   .handwrite.play span:nth-child(3) { animation-delay: 2.2s; }
   @keyframes write { to { clip-path: inset(-20% -5% -20% 0); } }
 
+  /* ---------- 스토리 이미지 (완성된 디자인 이미지를 화면 폭에 꽉 차게) ---------- */
+  section.story { padding: 0; }
+  .story img { display: block; width: 100%; height: auto; }
+
   /* ---------- 3. 장식 이미지 ---------- */
   .deco-img { padding: 0 24px 24px; }
   /* 폴라로이드 액자 + 리본 */
@@ -539,6 +543,11 @@
     </figure>
   </section>
 
+  <!-- 3-1. 프러포즈 스토리 이미지 -->
+  <section class="story">
+    <img class="reveal" src="img/story-proposal.jpg" alt="Our Wedding day. Will you marry me? yeees! 서로 마주 보고 웃는 신랑 신부. BEST GROOM 김민석, BEST FRIEND 초대합니다, BEST BRIDE 황진하" loading="lazy">
+  </section>
+
   <!-- 4-1. OPEN THE WEDDING LETTER -->
   <section class="letter">
     <div class="letter-top reveal">
@@ -554,6 +563,11 @@
     </div>
     <p class="letter-big reveal" style="margin-top:0">BE WITH US<br>ON THIS DAY.</p>
     <p class="letter-foot reveal">[ Our favorite day begins here ]</p>
+  </section>
+
+  <!-- 4-2. 어린 시절 스토리 이미지 -->
+  <section class="story">
+    <img class="reveal" src="img/story-childhood.jpg" alt="신랑 신부의 어린 시절 사진. 진하 만나러 열심히 커야징, 진하 어디떠 ㅠㅠㅠ엉엉, 난 방금 태어났는디… 이 모든 것 위에 사랑을 더하라 이는 온전하게 매는 띠니라" loading="lazy">
   </section>
 
   <!-- 4. 초대문구 & 신랑신부 이름 -->
@@ -611,6 +625,11 @@
     <p class="frame-head reveal">- OUR FRAME -</p>
     <div class="frame-sub reveal"><span>THE MOMENTS</span><span>WE KEEP</span></div>
     <div class="frame-grid reveal" id="frames"></div>
+  </section>
+
+  <!-- 6-2. 부모님 축하 메시지 이미지 -->
+  <section class="story">
+    <img class="reveal" src="img/story-parents.jpg" alt="부모님과 함께한 어린 시절 가족 사진과 축하 메시지. 민석아 진하야 결혼 축하해, 둘이 오순도순 잘 살아라. 사랑하는 진하와 민석아, 결혼을 진심으로 축하한다. 늘 평안하고 행복한 가정이 되길 기도할께." loading="lazy">
   </section>
 
   <!-- 6. Gallery (세로 스크롤 3열 그리드 · 탭하면 크게 보기) -->
