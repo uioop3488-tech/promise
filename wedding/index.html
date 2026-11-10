@@ -9,7 +9,7 @@
 <meta property="og:description" content="2027년 1월 9일 토요일 오전 11시 · L65호텔웨딩컨벤션">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://jinha-minseok-wedding.netlify.app/">
-<meta property="og:image" content="https://jinha-minseok-wedding.netlify.app/img/main.png">
+<meta property="og:image" content="https://jinha-minseok-wedding.netlify.app/img/main.jpg">
 <meta name="theme-color" content="#721819">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -110,13 +110,37 @@
 
   /* ---------- 3. 장식 이미지 ---------- */
   .deco-img { padding: 0 24px 24px; }
-  .deco-img .placeholder { height: 120px; }
+  .deco-img img {
+    display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: center 22%;
+    border-radius: 4px;
+  }
 
   /* ---------- 4. Gallery ---------- */
   /* 옆으로 넘기지 않고 스크롤하며 내려보는 3열 그리드 */
   .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
   .gallery-grid .placeholder { aspect-ratio: 3 / 4; border-radius: 4px; font-size: 12px; }
-  .gallery-grid img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 4px; }
+  .gallery-grid button { display: block; padding: 0; border: 0; background: none; cursor: zoom-in; }
+  .gallery-grid img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 4px; background: var(--sub); }
+
+  /* 사진 크게 보기 */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 60; background: rgba(20, 12, 10, .94);
+    display: flex; align-items: center; justify-content: center;
+    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  }
+  .lightbox[hidden] { display: none; }
+  .lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; user-select: none; -webkit-user-drag: none; }
+  .lb-btn {
+    position: absolute; border: 0; background: rgba(0, 0, 0, .45); color: #fff; cursor: pointer;
+    width: 44px; height: 44px; border-radius: 50%; font-size: 22px; line-height: 44px; text-align: center;
+  }
+  .lb-close { top: calc(14px + env(safe-area-inset-top)); right: 14px; }
+  .lb-prev { left: 10px; top: 50%; transform: translateY(-50%); }
+  .lb-next { right: 10px; top: 50%; transform: translateY(-50%); }
+  .lb-count {
+    position: absolute; bottom: calc(18px + env(safe-area-inset-bottom)); left: 0; right: 0;
+    color: rgba(255, 255, 255, .8); font-size: 13px; text-align: center;
+  }
 
   /* ---------- 초대문구 ---------- */
   .invite-text { font-size: 15px; line-height: 2; }
@@ -308,7 +332,7 @@
 
   <!-- 1. 대문사진 -->
   <section class="cover">
-    <img src="img/main.png" alt="김민석 · 황진하 웨딩 사진">
+    <img src="img/main.jpg" alt="김민석 · 황진하 웨딩 사진">
     <div class="cover-info">
       <p class="cover-date">2027. 01. 09 SAT</p>
       <p class="cover-time">11:00 AM</p>
@@ -322,9 +346,9 @@
     <h1 class="handwrite" id="handwrite" aria-label="Our Wedding day"><span>Our</span> <span>Wedding</span> <span>day</span></h1>
   </section>
 
-  <!-- 3. 장식 이미지 (이미지 업로드 전 placeholder) -->
+  <!-- 3. 장식 이미지 -->
   <section class="deco-img">
-    <div class="placeholder">장식 이미지 영역</div>
+    <img class="reveal" src="img/deco.jpg" alt="신랑 신부가 마주 보고 웃는 흑백 사진" loading="lazy">
   </section>
 
   <!-- 4. 초대문구 & 신랑신부 이름 -->
@@ -369,7 +393,7 @@
     <p class="dday-msg reveal" id="dday-msg"></p>
   </section>
 
-  <!-- 6. Gallery (사진 업로드 전 placeholder · 세로 스크롤 그리드) -->
+  <!-- 6. Gallery (세로 스크롤 3열 그리드 · 탭하면 크게 보기) -->
   <section class="gallery">
     <div class="sec-head reveal">
       <div class="heart">♥︎</div>
@@ -454,6 +478,14 @@
 
 </main>
 
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="사진 크게 보기">
+  <img id="lb-img" alt="">
+  <button type="button" class="lb-btn lb-close" id="lb-close" aria-label="닫기">×</button>
+  <button type="button" class="lb-btn lb-prev" id="lb-prev" aria-label="이전 사진">‹</button>
+  <button type="button" class="lb-btn lb-next" id="lb-next" aria-label="다음 사진">›</button>
+  <div class="lb-count" id="lb-count"></div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -482,9 +514,9 @@
       ['버스', '청량리역환승센터 하차'],
       ['자차', '웨딩홀 주차장 주차 시 2시간 무료'],
     ],
-    // 갤러리: 사진을 img/ 폴더에 넣고 파일 이름을 적어주세요. 예) 'img/g1.jpg'
-    // 비어 있으면 빈 칸(placeholder) 9개가 표시됩니다.
-    gallery: [],
+    // 갤러리: img/gallery/ 의 사진 번호 (g01.jpg = 크게 보기용, g01_s.jpg = 목록용)
+    // 순서를 바꾸거나 빼려면 이 목록만 고치면 됩니다.
+    gallery: Array.from({ length: 22 }, (_, i) => `g${String(i + 1).padStart(2, '0')}`),
     // 계좌: number(계좌번호)가 있으면 표시되고 '복사' 버튼이 켜집니다.
     accounts: [
       { title: '신랑 측 계좌번호', list: [
@@ -600,9 +632,46 @@
   ).join('');
 
   // ----- 갤러리 -----
-  $('gallery').innerHTML = CONFIG.gallery.length
-    ? CONFIG.gallery.map((src, i) => `<img src="${esc(src)}" alt="웨딩 사진 ${i + 1}" loading="lazy">`).join('')
-    : Array.from({ length: 9 }, (_, i) => `<div class="placeholder">사진 ${i + 1}</div>`).join('');
+  (function () {
+    const list = CONFIG.gallery;
+    $('gallery').innerHTML = list.map((n, i) =>
+      `<button type="button" data-i="${i}" aria-label="웨딩 사진 ${i + 1} 크게 보기"><img src="img/gallery/${esc(n)}_s.jpg" alt="" loading="lazy"></button>`
+    ).join('');
+
+    // 크게 보기: 탭하면 열리고, 좌우 버튼·스와이프·키보드로 넘김
+    const lb = $('lightbox'), img = $('lb-img'), count = $('lb-count');
+    let cur = 0, startX = null;
+    const show = i => {
+      cur = (i + list.length) % list.length;
+      img.src = `img/gallery/${list[cur]}.jpg`;
+      img.alt = `웨딩 사진 ${cur + 1}`;
+      count.textContent = `${cur + 1} / ${list.length}`;
+    };
+    const open = i => { show(i); lb.hidden = false; document.body.style.overflow = 'hidden'; $('lb-close').focus(); };
+    const close = () => { lb.hidden = true; document.body.style.overflow = ''; };
+
+    $('gallery').addEventListener('click', e => {
+      const b = e.target.closest('button[data-i]');
+      if (b) open(Number(b.dataset.i));
+    });
+    $('lb-close').addEventListener('click', close);
+    $('lb-prev').addEventListener('click', () => show(cur - 1));
+    $('lb-next').addEventListener('click', () => show(cur + 1));
+    lb.addEventListener('click', e => { if (e.target === lb) close(); });
+    lb.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+    lb.addEventListener('touchend', e => {
+      if (startX === null) return;
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 40) show(cur + (dx < 0 ? 1 : -1));
+      startX = null;
+    });
+    document.addEventListener('keydown', e => {
+      if (lb.hidden) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') show(cur - 1);
+      if (e.key === 'ArrowRight') show(cur + 1);
+    });
+  })();
 
   // ----- 8. Gift 계좌 아코디언 -----
   (function () {
