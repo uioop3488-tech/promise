@@ -77,7 +77,20 @@
 
   /* ---------- 1. 대문사진 ---------- */
   .cover { padding: 0; }
+  .cover-photo { position: relative; }
   .cover img { display: block; width: 100%; height: auto; }
+  /* 사진 위 손글씨: 획을 따라 그린 뒤 잉크가 채워짐 */
+  .cover-title { position: absolute; left: 6%; right: 6%; top: 6%; width: 88%; height: auto; overflow: visible; }
+  .cover-title text {
+    font-family: 'Pinyon Script', cursive; fill: transparent;
+    stroke: var(--main); stroke-width: .9; stroke-linejoin: round;
+    stroke-dasharray: 1200; stroke-dashoffset: 1200;
+  }
+  .cover-title.play text { animation: coverWrite 2.6s ease-in-out forwards, coverInk .8s ease forwards; }
+  .cover-title.play .t1 { animation-delay: 0s, 1.8s; }
+  .cover-title.play .t2 { animation-delay: 1.1s, 3.1s; animation-duration: 2.8s, .8s; }
+  @keyframes coverWrite { to { stroke-dashoffset: 0; } }
+  @keyframes coverInk { to { fill: var(--main); stroke-width: 0; } }
 
   .cover-info { padding: 28px 24px 8px; }
   .cover-date {
@@ -520,7 +533,13 @@
 
   <!-- 1. 대문사진 -->
   <section class="cover">
-    <img src="img/main.jpg" alt="김민석 · 황진하 웨딩 사진">
+    <div class="cover-photo">
+      <img src="img/main.jpg" alt="김민석 · 황진하 웨딩 사진">
+      <svg class="cover-title" id="cover-title" viewBox="0 0 400 150" role="img" aria-label="Wedding Day">
+        <text class="t1" x="40" y="70" font-size="76">Wedding</text>
+        <text class="t2" x="190" y="135" font-size="76">Day</text>
+      </svg>
+    </div>
     <div class="cover-info">
       <p class="cover-date">2027. 01. 09 SAT</p>
       <p class="cover-time">11:00 AM</p>
@@ -926,6 +945,14 @@
     el.addEventListener('click', finish);
     setTimeout(finish, 4200);
   });
+
+  // ----- 메인 사진 위 'Wedding Day' 필기 애니메이션 (오프닝이 끝나면 시작) -----
+  (function () {
+    const el = $('cover-title');
+    const fontReady = document.fonts ? document.fonts.load('76px "Pinyon Script"') : Promise.resolve();
+    Promise.all([splashDone, Promise.race([fontReady, new Promise(r => setTimeout(r, 2500))])])
+      .then(() => el.classList.add('play'));
+  })();
 
   // ----- 2. Our Wedding day 필기 애니메이션 (폰트 로드 후, 화면에 보일 때 시작) -----
   (function () {
