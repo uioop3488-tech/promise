@@ -80,11 +80,11 @@
   .cover-photo { position: relative; }
   .cover img { display: block; width: 100%; height: auto; }
   /* 사진 위 손글씨: 획을 따라 그린 뒤 잉크가 채워짐 */
-  .cover-title { position: absolute; left: 6%; right: 6%; top: 6%; width: 88%; height: auto; overflow: visible; }
+  .cover-title { position: absolute; left: 4%; right: 4%; top: 4%; width: 92%; height: auto; overflow: visible; }
   .cover-title text {
     font-family: 'Pinyon Script', cursive; fill: transparent;
-    stroke: var(--main); stroke-width: .9; stroke-linejoin: round;
-    stroke-dasharray: 1200; stroke-dashoffset: 1200;
+    stroke: var(--main); stroke-width: 1.1; stroke-linejoin: round;
+    stroke-dasharray: 1600; stroke-dashoffset: 1600;
   }
   .cover-title.play text { animation: coverWrite 2.6s ease-in-out forwards, coverInk .8s ease forwards; }
   .cover-title.play .t1 { animation-delay: 0s, 1.8s; }
@@ -122,6 +122,7 @@
   /* ---------- 스토리 이미지 (완성된 디자인 이미지를 화면 폭에 꽉 차게) ---------- */
   /* 누끼 사진·손글씨를 종이 배경 위에 배치하는 콜라주 (위치는 모두 %라 화면 폭에 맞춰 같이 커지고 작아짐) */
   section.story { padding: 8px 16px; }
+  section.story-headed { padding-top: 64px; }
   .collage { position: relative; width: 100%; container-type: inline-size; }
   .collage > * { position: absolute; margin: 0; }
   .collage img { display: block; height: auto; }
@@ -535,9 +536,9 @@
   <section class="cover">
     <div class="cover-photo">
       <img src="img/main.jpg" alt="김민석 · 황진하 웨딩 사진">
-      <svg class="cover-title" id="cover-title" viewBox="0 0 400 150" role="img" aria-label="Wedding Day">
-        <text class="t1" x="40" y="70" font-size="76">Wedding</text>
-        <text class="t2" x="190" y="135" font-size="76">Day</text>
+      <svg class="cover-title" id="cover-title" viewBox="0 0 400 190" role="img" aria-label="Wedding Day">
+        <text class="t1" x="14" y="90" font-size="104">Wedding</text>
+        <text class="t2" x="178" y="172" font-size="104">Day</text>
       </svg>
     </div>
     <div class="cover-info">
@@ -618,7 +619,11 @@
   </section>
 
   <!-- 6-1. 어린 시절 콜라주 -->
-  <section class="story" aria-label="어린 시절">
+  <section class="story story-headed" aria-label="Our History">
+    <div class="sec-head reveal">
+      <div class="heart">♥︎</div>
+      <div class="en">Our History</div>
+    </div>
     <div class="collage story-childhood reveal">
       <svg style="left:0;top:0;width:100%;height:100%" viewBox="0 0 100 120" preserveAspectRatio="none" aria-hidden="true">
         <path class="line" stroke-width="2.2" d="M23 34 C 26 27, 30 24, 34 23 M48 36 C 48 46, 50 54, 56 58 C 62 62, 66 60, 64 56 C 62 52, 56 56, 58 64 C 60 70, 62 76, 64 80"/></svg>
@@ -628,8 +633,8 @@
       <img class="cut" src="img/story/minseok-cry.webp" alt="울고 있는 아기 민석" loading="lazy" style="left:34%;top:4%;width:26%">
       <p class="say" style="left:58%;top:28%;width:40%;font-size:4.6cqw">난 방금 태어났는디…</p>
       <img class="cut" src="img/story/jinha-baby.webp" alt="막 태어난 아기 진하" loading="lazy" style="left:66%;top:34%;width:31%">
-      <div class="blot" style="left:0;top:58%;width:58%;height:30%"></div>
-      <img src="img/story/hand-jinha-dad.webp" alt="이 모든 것 위에 사랑을 더하라 이는 온전하게 매는 띠니라" loading="lazy" style="left:5%;top:64%;width:49%">
+      <div class="blot" style="left:2%;top:62%;width:48%;height:22%"></div>
+      <img src="img/story/hand-jinha-dad.webp" alt="이 모든 것 위에 사랑을 더하라 이는 온전하게 매는 띠니라" loading="lazy" style="left:7%;top:66%;width:38%">
       <svg style="left:84%;top:66%;width:11%;height:7%" viewBox="0 0 40 30" aria-hidden="true"><path fill="#721819" d="M20 28 C 8 20, 2 14, 3 8 C 4 3, 11 1, 20 9 C 29 1, 36 3, 37 8 C 38 14, 32 20, 20 28 Z"/><path fill="#721819" transform="translate(-14 10) scale(.5)" d="M20 28 C 8 20, 2 14, 3 8 C 4 3, 11 1, 20 9 C 29 1, 36 3, 37 8 C 38 14, 32 20, 20 28 Z"/></svg>
       <img class="cut" src="img/story/jinha-hanbok.webp" alt="한복을 입은 아기 진하" loading="lazy" style="left:56%;top:76%;width:21%">
       <img class="cut" src="img/story/minseok-hoodie.webp" alt="후드티를 입은 어린 민석" loading="lazy" style="left:76%;top:74%;width:22%">
@@ -637,7 +642,11 @@
   </section>
 
   <!-- 6-2. 부모님 축하 메시지 콜라주 -->
-  <section class="story" aria-label="부모님의 축하 메시지">
+  <section class="story story-headed" aria-label="Dear Family">
+    <div class="sec-head reveal">
+      <div class="heart">♥︎</div>
+      <div class="en">Dear Family</div>
+    </div>
     <div class="collage story-parents reveal">
       <svg style="left:6%;top:3.5%;width:36%;height:4%" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true">
         <path class="line" stroke-width="1.8" d="M2 18 C 2 6, 12 2, 22 6 C 30 10, 24 18, 18 14 C 12 10, 24 2, 40 4 C 60 6, 80 4, 98 3"/>
