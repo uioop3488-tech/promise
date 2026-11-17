@@ -1,0 +1,24 @@
+# Supabase 무료 프로젝트는 1주일 동안 요청이 없으면 자동 일시정지됩니다.
+# 3일마다 방명록 테이블을 한 번 읽어서 '사용 중' 상태로 유지합니다.
+# (publishable 키는 청첩장 페이지에도 공개되어 있는 키라 그대로 적어도 안전합니다)
+name: Supabase keep-alive
+
+on:
+  schedule:
+    - cron: '17 3 */3 * *'   # 3일마다 03:17 UTC (한국 12:17)
+  workflow_dispatch:          # Actions 탭에서 수동 실행도 가능
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping wedding Supabase
+        env:
+          SUPABASE_URL: https://enmmtozkzlpyxjutyrcy.supabase.co
+          SUPABASE_KEY: sb_publishable_ogRswtuPV4N1kOHUndTdcg_2hbx2_YM
+        run: |
+          code=$(curl -sS -o /dev/null -w '%{http_code}' \
+            "$SUPABASE_URL/rest/v1/guestbook?select=id&limit=1" \
+            -H "apikey: $SUPABASE_KEY")
+          echo "HTTP $code"
+          test "$code" = "200"
