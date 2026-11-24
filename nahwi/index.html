@@ -3,485 +3,279 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>나휘님 입사 1주년 축하해요 💚</title>
-<meta property="og:title" content="나휘님 입사 1주년 축하해요 💚">
-<meta property="og:description" content="우리의 1년을 앨범으로 담았어요. 표지를 눌러 열어보세요!">
+<title>나휘님 입사 1주년 캘린더</title>
+<meta property="og:title" content="나휘님 입사 1주년 캘린더 🎄">
+<meta property="og:description" content="문을 하나씩 열어 우리의 1년을 만나보세요.">
 <meta property="og:image" content="assets/team.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Special+Elite&family=Yellowtail&family=Gowun+Batang:wght@400;700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#efe9df;
-    --paper:#fbf7ef;
-    --ink:#2f3a33;
-    --green:#1f4a3a;
-    --green-2:#2c6650;
-    --lime:#9acd32;
-    --gold:#d8b46a;
-    --tape:rgba(214,226,190,.75);
-    --pw:min(92vw, 440px);
-    --ph:min(calc(var(--pw) * 1.5), calc(100dvh - 120px));
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{
-    background:
-      radial-gradient(ellipse at 20% 10%, #f8f3ea 0, transparent 60%),
-      radial-gradient(ellipse at 80% 90%, #e3dccd 0, transparent 60%),
-      var(--bg);
-    color:var(--ink);
-    font-family:'Gowun Batang', serif;
-    overflow:hidden;
-    display:flex;align-items:center;justify-content:center;flex-direction:column;
-    -webkit-tap-highlight-color:transparent;
-    user-select:none;-webkit-user-select:none;
-  }
+/*
+VOICE: 따뜻하고 장난스러운 연말 선물 — 동료가 손으로 오려 만든 크리스마스 카드
+IDEA: 종이를 오려 붙인 빨간 집 모양 어드벤트 캘린더, 티켓 모양 문 9개
+PICTURE: 회색 바탕 위 톱니 가장자리 빨간 집, 흰 선 일러스트 문들, 내리는 눈
+COLOUR & TYPE: 크리스마스 레드 + 흰 선 + 회색 바탕 / Yellowtail 로고, Alfa Slab 외곽선 숫자, Special Elite 라벨, 나눔펜 캡션
+LAYOUT: 한 화면에 집 하나. 문 열기 → 사진 보임 → 누르면 크게 보기
+*/
+:root{color-scheme:light dark;
+  --bg:light-dark(#c6c5c8,#1f1e22);--ink:light-dark(#1b1b1d,#f1efe9);
+  --red:#b5121b;--red2:#c3171f;--red3:#8c0c13;--cream:#fbf6ec;
+  --W:min(94vw,500px)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0;margin:0;padding:0}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 'Gowun Batang',serif;overflow-x:clip;
+  display:flex;flex-direction:column;align-items:center;padding:14px 0 28px;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit}
 
-  /* ---------- 앨범 ---------- */
-  .stage{position:relative;width:var(--pw);height:var(--ph);perspective:2200px}
-  .album{position:absolute;inset:0;border-radius:6px 14px 14px 6px;
-    box-shadow:0 30px 60px -20px rgba(40,30,20,.45), 0 8px 18px rgba(40,30,20,.18);}
+.wrap{position:relative;width:var(--W)}
+.logo{position:absolute;left:0;top:-2px;z-index:3;font-family:'Yellowtail',cursive;color:var(--ink);line-height:.82;
+  transform:rotate(-8deg);font-size:clamp(40px,11.5vw,58px)}
+.logo span{display:block;font-family:'Alfa Slab One';font-size:.5em;letter-spacing:.02em;margin-left:.6em}
+.ttl{position:absolute;right:0;top:4px;z-index:3;text-align:right;font-family:'Gowun Batang';font-weight:700;
+  font-size:clamp(14px,3.9vw,19px);line-height:1.2}
+.ttl small{display:block;font-family:'Special Elite';font-weight:400;font-size:.78em;opacity:.75}
 
-  /* 내지 (슬라이더) */
-  .inner{position:absolute;inset:0;border-radius:6px 14px 14px 6px;overflow:hidden;background:var(--paper)}
-  .inner::before{ /* 제본선 */
-    content:"";position:absolute;left:0;top:0;bottom:0;width:22px;z-index:5;pointer-events:none;
-    background:linear-gradient(90deg, rgba(0,0,0,.18), rgba(0,0,0,.04) 60%, transparent);
-  }
-  .track{display:flex;height:100%;transition:transform .55s cubic-bezier(.22,.8,.25,1);will-change:transform;touch-action:pan-y}
-  .track.dragging{transition:none}
-  .page{flex:0 0 100%;height:100%;position:relative;padding:26px 22px 22px 34px;
-    display:flex;flex-direction:column;align-items:center;
-    background:
-      repeating-linear-gradient(0deg, transparent 0 27px, rgba(31,74,58,.05) 27px 28px),
-      var(--paper);
-  }
-  .page .no{position:absolute;bottom:12px;right:18px;font-family:'Nanum Pen Script';font-size:20px;color:#9a9283}
-  .eyebrow{font-size:11px;letter-spacing:.32em;color:var(--green-2);text-transform:uppercase;font-weight:700}
-  h2{font-size:clamp(22px, 6.4vw, 28px);margin:6px 0 4px;color:var(--green);text-align:center;line-height:1.25}
-  .sub{font-family:'Nanum Pen Script';font-size:clamp(20px,5.6vw,25px);color:#6b6457;text-align:center;line-height:1.15}
+.house-sh{filter:drop-shadow(0 10px 18px rgba(0,0,0,.28))}
+.house{position:relative;width:100%;aspect-ratio:1/1.36;background:
+  radial-gradient(ellipse at 50% 30%,#c41a22,transparent 70%),var(--red)}
+.grid{position:absolute;left:4.5%;right:4.5%;top:22.5%;bottom:3.2%;display:grid;gap:2.2%;
+  grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:repeat(8,minmax(0,1fr));
+  grid-template-areas:"a a a a b b" "a a a a b b" "c c d d b b" "c c d d e e" "c c d d e e" "f f g g e e" "f f g g h h" "i i i i h h"}
 
-  /* 폴라로이드 */
-  .pol{background:#fff;padding:8px 8px 34px;box-shadow:0 6px 14px rgba(0,0,0,.16), 0 1px 2px rgba(0,0,0,.1);
-    position:relative;display:inline-flex;flex-direction:column;align-items:center}
-  .pol img,.pol video{display:block;object-fit:cover;background:#ddd}
-  .pol figcaption{position:absolute;bottom:4px;left:0;right:0;text-align:center;
-    font-family:'Nanum Pen Script';font-size:21px;color:#444;line-height:1.1}
-  .tape::after{content:"";position:absolute;top:-11px;left:50%;width:70px;height:22px;margin-left:-35px;
-    background:var(--tape);transform:rotate(-4deg);box-shadow:0 1px 2px rgba(0,0,0,.08)}
-  .tape.r::after{transform:rotate(5deg);left:70%}
-  .tape.l::after{transform:rotate(-8deg);left:28%}
-  .sticker{position:absolute;font-size:30px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15));pointer-events:none}
+/* 칸 + 문 */
+.cell{position:relative;perspective:900px;border-radius:3px;z-index:2}
+.cell.open{z-index:1}
+.win{position:absolute;inset:0;border-radius:3px;overflow:hidden;background:var(--red3) center/cover no-repeat;
+  box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.35),inset 0 6px 14px rgba(0,0,0,.45);cursor:zoom-in}
+.win::after{content:"크게 보기";position:absolute;right:5px;bottom:5px;font-size:11px;background:rgba(0,0,0,.55);color:#fff;
+  padding:2px 7px;border-radius:99px;opacity:0;transition:opacity .3s .6s}
+.cell.open .win::after{opacity:1}
+.door{position:absolute;inset:0;transform-origin:left center;transform-style:preserve-3d;cursor:pointer;
+  transition:transform .9s cubic-bezier(.5,.05,.25,1);border:0;background:none;padding:0;text-align:left}
+.cell.open .door{transform:rotateY(-112deg);pointer-events:none}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:3px}
+.front{background:linear-gradient(160deg,var(--red2),#b0131b);color:#fff;padding:7% 8%;display:flex;flex-direction:column;
+  box-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 0 0 1px rgba(0,0,0,.28);
+  -webkit-mask:radial-gradient(circle 7px at 100% 50%,transparent 97%,#000);mask:radial-gradient(circle 7px at 100% 50%,transparent 97%,#000)}
+.front::before{content:"";position:absolute;inset:5px;border:1px solid rgba(255,255,255,.2);border-radius:2px;pointer-events:none}
+.back{transform:rotateY(180deg);background:linear-gradient(90deg,#7d0a10,#9a0f16);box-shadow:inset 0 0 0 1px rgba(0,0,0,.3)}
+.lab{font-family:'Special Elite';font-size:clamp(9px,2.3vw,12px);letter-spacing:.06em;opacity:.92}
+.ko{font-family:'Nanum Pen Script';font-size:clamp(14px,3.9vw,19px);line-height:1;opacity:.95;margin-top:auto}
+.art{flex:1;position:relative;min-height:0;margin:5% 0}
+.art svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.art .num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.num{font-family:'Alfa Slab One';color:transparent;-webkit-text-stroke:1.6px #fff;line-height:.9;font-size:clamp(30px,9.5vw,52px);letter-spacing:.01em}
+.num sup{font-size:.26em;-webkit-text-stroke:0;color:#fff;font-family:'Special Elite';vertical-align:top;margin-left:3px}
+.door:focus-visible .front{outline:3px solid #fff;outline-offset:-6px}
+.door:hover .front{filter:brightness(1.07)}
+.cell:not(.open) .door:hover{transform:rotateY(-9deg)}
 
-  .photos{flex:1;width:100%;position:relative;margin-top:10px;min-height:0}
-  .photos > *{position:absolute}
+.foot{margin-top:16px;display:flex;align-items:center;flex-wrap:wrap;justify-content:center;gap:4px 12px;font-size:14px}
+.prog{display:flex;gap:4px}
+.prog i{width:9px;height:9px;border-radius:50%;background:color-mix(in srgb,var(--ink) 22%,transparent)}
+.prog i.on{background:var(--red)}
+.reset{border:0;background:none;text-decoration:underline;font-size:13px;opacity:.6;cursor:pointer;padding:12px 4px}
 
-  /* 페이지별 배치 */
-  .p-intro .photos{display:flex;align-items:center;justify-content:center}
-  .p-intro .photos > .pol{position:relative;transform:rotate(-2.5deg)}
-  .p-intro .pol img{width:calc(var(--pw) * .72);aspect-ratio:4/3}
-  .dplus{font-family:'Gowun Batang';font-weight:700;font-size:clamp(46px,15vw,64px);color:var(--green);letter-spacing:-.02em;line-height:1;margin-top:4px}
-  .dplus small{font-size:.38em;color:var(--lime);vertical-align:super;margin-left:4px}
+/* 모달 */
+.modal{position:fixed;inset:0;z-index:40;display:grid;place-items:center;padding:16px;background:rgba(60,4,8,.62);
+  backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .35s}
+.modal.on{opacity:1;pointer-events:auto}
+.card{position:relative;width:min(100%,480px);max-height:calc(100dvh - 32px);overflow:auto;background:var(--cream);color:#2b2222;
+  border-radius:10px;padding:26px 18px 20px;text-align:center;box-shadow:0 30px 60px rgba(0,0,0,.4);
+  transform:translateY(24px) scale(.97);transition:transform .45s cubic-bezier(.2,.8,.2,1);
+  background-image:radial-gradient(circle at 12px 12px,rgba(181,18,27,.07) 2px,transparent 2.5px);background-size:24px 24px}
+.modal.on .card{transform:none}
+.x{position:absolute;top:6px;right:6px;width:44px;height:44px;border:0;background:none;font-size:26px;cursor:pointer;color:#7a1218}
+.card .lab{color:var(--red);font-size:12px;letter-spacing:.14em}
+.card h2{font-size:clamp(22px,6vw,28px);line-height:1.15;margin:4px 0 2px;color:#7a1218;text-wrap:balance}
+.card .sub{font-family:'Nanum Pen Script';font-size:22px;color:#6c5d55;line-height:1.1}
+.shots{display:flex;flex-wrap:wrap;justify-content:center;gap:14px 10px;margin:16px 0 6px}
+.pol{background:#fff;padding:7px 7px 30px;box-shadow:0 6px 14px rgba(0,0,0,.18);position:relative}
+.pol:nth-child(odd){transform:rotate(-2deg)}.pol:nth-child(even){transform:rotate(2.5deg)}
+.pol img,.pol video{display:block;object-fit:cover;background:#ddd}
+.pol figcaption{position:absolute;left:0;right:0;bottom:3px;font-family:'Nanum Pen Script';font-size:19px;color:#444}
+.n1 .pol img{width:min(76vw,330px);max-height:52dvh}
+.n2 .pol img,.n2 .pol video{width:min(39vw,190px);aspect-ratio:3/4}
+.n2 .pol video{width:min(32vw,150px);aspect-ratio:9/16}
+.n3 .pol img{width:min(26vw,128px);aspect-ratio:3/4}
+.vid{position:relative}
+.snd{position:absolute;top:12px;right:12px;border:0;border-radius:99px;background:rgba(0,0,0,.55);color:#fff;font-size:12px;padding:5px 10px;cursor:pointer}
+.note{font-family:'Nanum Pen Script';font-size:23px;line-height:1.25;color:#4a3e36;margin-top:8px}
+.note b{font-weight:400;background:linear-gradient(transparent 60%,rgba(181,18,27,.22) 0)}
 
-  .p-team .photos{display:flex;align-items:center;justify-content:center}
-  .p-team .pol{position:relative;transform:rotate(1.5deg)}
-  .p-team .pol img{height:calc(var(--ph) * .6);aspect-ratio:3/4}
-
-  .p-class .a{left:0;top:4%;transform:rotate(-5deg);z-index:2}
-  .p-class .a img{width:calc(var(--pw) * .5);aspect-ratio:3/4}
-  .p-class .b{right:0;bottom:4%;transform:rotate(4deg);z-index:1}
-  .p-class .b img{width:calc(var(--pw) * .5);aspect-ratio:3/4}
-
-  .p-dessert .a{left:2%;top:0;transform:rotate(3deg);z-index:2}
-  .p-dessert .a img{width:calc(var(--pw) * .44);aspect-ratio:3/4}
-  .p-dessert .b{right:0;bottom:2%;transform:rotate(-3deg)}
-  .p-dessert .b img{width:calc(var(--pw) * .58);aspect-ratio:4/3}
-
-  .p-first .a{left:50%;top:0;transform:translateX(-50%) rotate(-1.5deg);z-index:1}
-  .p-first .a img{width:calc(var(--pw) * .48);aspect-ratio:3/4}
-  .p-first .b{left:0;bottom:2%;transform:rotate(-6deg);z-index:2}
-  .p-first .c{right:0;bottom:6%;transform:rotate(5deg);z-index:2}
-  .p-first .b img,.p-first .c img{width:calc(var(--pw) * .36);aspect-ratio:3/4}
-
-  .p-clown .a{left:0;top:2%;transform:rotate(-3deg);z-index:2}
-  .p-clown .a video{width:calc(var(--pw) * .48);aspect-ratio:9/16}
-  .p-clown .b{right:0;bottom:4%;transform:rotate(4deg);z-index:1}
-  .p-clown .b img{width:calc(var(--pw) * .42);aspect-ratio:3/4}
-  .sound{position:absolute;top:14px;right:14px;z-index:3;border:0;border-radius:99px;background:rgba(0,0,0,.55);color:#fff;
-    font-size:12px;padding:5px 9px;font-family:inherit;cursor:pointer}
-
-  .p-spot .a{left:0;top:3%;transform:rotate(4deg);z-index:3}
-  .p-spot .a img{width:calc(var(--pw) * .56);aspect-ratio:4/3}
-  .p-spot .b{right:2%;bottom:2%;transform:rotate(-4deg);z-index:2}
-  .p-spot .b img{width:calc(var(--pw) * .38);aspect-ratio:9/14}
-
-  .p-team2 .photos{display:flex;align-items:center;justify-content:center}
-  .p-team2 .pol{position:relative;transform:rotate(-1.5deg)}
-  .p-team2 .pol img{height:calc(var(--ph) * .58);aspect-ratio:3/4}
-
-  .p-rice .photos{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
-  .p-rice .photos > *{position:relative}
-  .p-rice .pol{transform:rotate(-2deg)}
-  .p-rice .pol img{width:calc(var(--pw) * .74);aspect-ratio:16/9}
-  .note{background:#fff8c9;padding:14px 16px 16px;width:calc(var(--pw) * .62);transform:rotate(2deg);
-    font-family:'Nanum Pen Script';font-size:23px;line-height:1.25;color:#4a4436;box-shadow:0 5px 12px rgba(0,0,0,.12);text-align:center}
-
-  .p-end .photos{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:16px}
-  .p-end .photos > *{position:relative}
-  .p-end .pol{transform:rotate(2deg)}
-  .p-end .pol img{width:calc(var(--pw) * .5);aspect-ratio:1}
-  .letter{font-family:'Nanum Pen Script';font-size:clamp(21px,5.8vw,25px);line-height:1.3;text-align:center;color:#3c4a40}
-  .letter b{color:var(--green);font-weight:400;background:linear-gradient(transparent 60%, rgba(154,205,50,.45) 0)}
-  .btns{display:flex;gap:8px;margin-top:2px}
-  .btn{border:0;border-radius:99px;padding:9px 16px;font-family:'Gowun Batang';font-weight:700;font-size:13px;cursor:pointer;
-    background:var(--green);color:#fff;box-shadow:0 4px 10px rgba(31,74,58,.3)}
-  .btn.ghost{background:transparent;color:var(--green);box-shadow:inset 0 0 0 1.5px var(--green)}
-
-  /* ---------- 표지 (오픈형) ---------- */
-  .cover{position:absolute;inset:0;z-index:20;transform-origin:left center;transform-style:preserve-3d;
-    transition:transform 1.3s cubic-bezier(.55,.05,.25,1);cursor:pointer}
-  .cover.open{transform:rotateY(-168deg)}
-  .cover.gone{visibility:hidden}
-  .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:6px 14px 14px 6px}
-  .front{
-    background:
-      radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.12), transparent 55%),
-      repeating-linear-gradient(45deg, rgba(255,255,255,.018) 0 2px, transparent 2px 5px),
-      linear-gradient(160deg, #2a5c48, #173b2e 70%, #12302a);
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 14px 0 18px -10px rgba(0,0,0,.6);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--gold);text-align:center;padding:30px;
-  }
-  .front::before{content:"";position:absolute;left:16px;top:0;bottom:0;width:2px;background:linear-gradient(transparent, rgba(0,0,0,.35), transparent)}
-  .frame{position:absolute;inset:26px 22px 26px 34px;border:1.5px solid rgba(216,180,106,.55);border-radius:4px}
-  .frame::after{content:"";position:absolute;inset:6px;border:1px solid rgba(216,180,106,.3);border-radius:2px}
-  .front .label{font-size:11px;letter-spacing:.5em;opacity:.85}
-  .front .big{font-size:clamp(84px,26vw,120px);font-weight:700;line-height:1;margin:14px 0 2px;
-    background:linear-gradient(180deg,#f3dc9c,#c39a4c 60%,#e9cf8b);-webkit-background-clip:text;background-clip:text;color:transparent;
-    text-shadow:0 2px 0 rgba(0,0,0,.08)}
-  .front .yr{font-size:15px;letter-spacing:.42em;margin-bottom:22px}
-  .front .name{font-size:clamp(26px,7.6vw,34px);font-weight:700;color:#f1e3bd}
-  .front .name span{font-family:'Nanum Pen Script';font-weight:400;font-size:1.1em;color:var(--gold)}
-  .front .tap{position:absolute;bottom:46px;left:0;right:0;font-family:'Nanum Pen Script';font-size:22px;color:#e8d6a6;animation:bob 1.6s ease-in-out infinite}
-  .ribbon{position:absolute;right:46px;top:-6px;width:26px;height:110px;background:linear-gradient(90deg,#8fbf2f,#a9d84a,#8fbf2f);
-    clip-path:polygon(0 0,100% 0,100% 100%,50% 86%,0 100%);box-shadow:0 2px 4px rgba(0,0,0,.2)}
-  .back{transform:rotateY(180deg);
-    background:linear-gradient(90deg, #efe6d4, #f7f1e5);
-    box-shadow:inset -14px 0 18px -10px rgba(0,0,0,.35);
-    display:flex;align-items:center;justify-content:center;
-  }
-  .back p{font-family:'Nanum Pen Script';font-size:22px;color:#8a8170;transform:rotateY(0)}
-  @keyframes bob{0%,100%{transform:translateY(0);opacity:.75}50%{transform:translateY(-6px);opacity:1}}
-
-  /* 흔들림 힌트 */
-  .cover:not(.open):hover{transform:rotateY(-12deg)}
-  .cover.hint{animation:peek 2.6s ease-in-out 1.2s 2}
-  @keyframes peek{0%,100%{transform:rotateY(0)}25%{transform:rotateY(-14deg)}45%{transform:rotateY(0)}}
-
-  /* ---------- 내비 ---------- */
-  .nav{display:flex;align-items:center;gap:14px;margin-top:18px;height:34px;opacity:0;transition:opacity .6s .9s}
-  body.opened .nav{opacity:1}
-  .arrow{width:34px;height:34px;border-radius:50%;border:0;background:#fff;color:var(--green);font-size:16px;cursor:pointer;
-    box-shadow:0 3px 8px rgba(0,0,0,.12);display:grid;place-items:center}
-  .arrow:disabled{opacity:.3;cursor:default}
-  .dots{display:flex;gap:6px}
-  .dot{width:7px;height:7px;border-radius:99px;background:#c8c0b0;transition:all .3s;border:0;padding:0;cursor:pointer}
-  .dot.on{width:20px;background:var(--green)}
-
-  #confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
-
-  /* 페이지 진입 애니메이션 */
-  .page .pol,.page .note{opacity:0;transition:opacity .5s, translate .6s cubic-bezier(.2,.8,.2,1);translate:0 14px}
-  .page.seen .pol,.page.seen .note{opacity:1;translate:0 0}
-  .page.seen .pol:nth-child(2){transition-delay:.12s}
-  .page.seen .pol:nth-child(3){transition-delay:.24s}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:30}
+#cf{position:fixed;inset:0;pointer-events:none;z-index:50}
+@media (prefers-reduced-motion:reduce){.door,.card,.modal{transition:none}}
 </style>
 </head>
 <body>
 
-<div class="stage">
-  <div class="album">
-    <!-- 내지 -->
-    <div class="inner">
-      <div class="track" id="track">
-
-        <!-- 1 -->
-        <section class="page p-intro">
-          <div class="eyebrow">Happy Work Anniversary</div>
-          <div class="dplus">D+365<small>✦</small></div>
-          <div class="sub">나휘님이 우리 회사에 온 지 딱 1년!</div>
-          <div class="photos">
-            <figure class="pol tape"><img src="assets/oneyear.jpg" alt="진짜 1년 된 거야 그러면?"><figcaption>벌써…? 진짜로…?</figcaption></figure>
-            <span class="sticker" style="right:4%;top:6%">🎉</span>
-            <span class="sticker" style="left:2%;bottom:10%">✨</span>
-          </div>
-          <span class="no">1</span>
-        </section>
-
-        <!-- 2 -->
-        <section class="page p-team">
-          <div class="eyebrow">Team Zeroid</div>
-          <h2>우리의 1위 모먼트</h2>
-          <div class="sub">이 팀, 이 사진, 이 순간 💚</div>
-          <div class="photos">
-            <figure class="pol tape r"><img src="assets/team.jpg" alt="제로이드 팀 단체사진"><figcaption>NO.1은 역시 우리 팀</figcaption></figure>
-            <span class="sticker" style="left:0;top:4%">🥇</span>
-          </div>
-          <span class="no">2</span>
-        </section>
-
-        <!-- 3 -->
-        <section class="page p-class">
-          <div class="eyebrow">No.1 Derma Class</div>
-          <h2>현장 출근 도장 쾅!</h2>
-          <div class="sub">간판 찍고, 얼굴 가리고(?) 인증샷까지</div>
-          <div class="photos">
-            <figure class="pol tape a"><img src="assets/sign.jpg" alt="더마 클래스 입구 간판" style="object-position:30% center"><figcaption>CLASS ENTRANCE →</figcaption></figure>
-            <figure class="pol tape r b"><img src="assets/booth.jpg" alt="포토존 인증샷"><figcaption>얼굴은 크림으로 대신합니다</figcaption></figure>
-          </div>
-          <span class="no">3</span>
-        </section>
-
-        <!-- 4 -->
-        <section class="page p-dessert">
-          <div class="eyebrow">Behind the Scenes</div>
-          <h2>세팅도 우리가, 사진도 우리가</h2>
-          <div class="sub">디테일 장인 나휘님의 손길 🍰</div>
-          <div class="photos">
-            <figure class="pol tape l a"><img src="assets/dessert.jpg" alt="디저트 세팅"><figcaption>마카롱 하나하나</figcaption></figure>
-            <figure class="pol tape b"><img src="assets/buffet.jpg" alt="케이터링 테이블 촬영"><figcaption>기록은 필수 📸</figcaption></figure>
-          </div>
-          <span class="no">4</span>
-        </section>
-
-        <!-- 5 -->
-        <section class="page p-first">
-          <div class="eyebrow">Zeroid First Class</div>
-          <h2>퍼스트 클래스 탑승 완료 ✈️</h2>
-          <div class="photos">
-            <figure class="pol tape a"><img src="assets/firstclass.jpg" alt="제로이드 퍼스트클래스 팝업 단체사진"><figcaption>팝업 오픈 날</figcaption></figure>
-            <figure class="pol tape l b"><img src="assets/seat1.jpg" alt="비행기 좌석 포토존"><figcaption>기내 독서 중</figcaption></figure>
-            <figure class="pol tape r c"><img src="assets/seat2.jpg" alt="비행기 창문 포토존"><figcaption>창밖은 구름</figcaption></figure>
-          </div>
-          <span class="no">5</span>
-        </section>
-
-        <!-- 6 -->
-        <section class="page p-clown">
-          <div class="eyebrow">Special Guest</div>
-          <h2>키다리 아저씨와의 만남 🎈</h2>
-          <div class="sub">풍선 선물에 미소 한가득</div>
-          <div class="photos">
-            <figure class="pol tape a">
-              <video id="clip" src="assets/clown.mp4" poster="assets/clown_poster.jpg" muted loop playsinline preload="metadata"></video>
-              <button class="sound" id="soundBtn" type="button">🔇 소리</button>
-              <figcaption>▶ 그날의 현장</figcaption>
-            </figure>
-            <figure class="pol tape r b"><img src="assets/clown2.jpg" alt="풍선 아트 퍼포머와 함께"><figcaption>초록 풍선 get!</figcaption></figure>
-          </div>
-          <span class="no">6</span>
-        </section>
-
-        <!-- 7 -->
-        <section class="page p-spot">
-          <div class="eyebrow">Everywhere</div>
-          <h2>곳곳에 남긴 나휘님의 흔적</h2>
-          <div class="sub">지하상가 광고부터 체험존까지</div>
-          <div class="photos">
-            <figure class="pol tape a"><img src="assets/mh.jpg" alt="지하상가 광고 앞"><figcaption>광고 앞 인증샷</figcaption></figure>
-            <figure class="pol tape l b"><img src="assets/game.jpg" alt="체험존 게임"><figcaption>열정 MAX</figcaption></figure>
-            <span class="sticker" style="right:6%;top:2%">🔥</span>
-          </div>
-          <span class="no">7</span>
-        </section>
-
-        <!-- 8 -->
-        <section class="page p-rice">
-          <div class="eyebrow">Our Motto</div>
-          <h2>앞으로도 꼭 붙어 있어요</h2>
-          <div class="photos">
-            <figure class="pol tape"><img src="assets/jumeok.jpg" alt="뭉치면 주먹밥 흩어지면 볶음밥"><figcaption>팀워크의 진리 🍙</figcaption></figure>
-            <div class="note">뭉치면 주먹밥,<br>흩어지면 볶음밥…<br>우리는 영원한 주먹밥 팀!</div>
-          </div>
-          <span class="no">8</span>
-        </section>
-
-        <!-- 9 -->
-        <section class="page p-end">
-          <div class="eyebrow">To. 나휘님</div>
-          <h2>입사 1주년 축하해요!</h2>
-          <div class="photos">
-            <figure class="pol tape"><img src="assets/cake.jpg" alt="우리 사랑 영원히 케이크"><figcaption>우리 사랑 영원히..♡</figcaption></figure>
-            <p class="letter">지난 1년 동안 현장 곳곳을 누비며<br>
-              <b>늘 웃으면서 함께해줘서 고마워요.</b><br>
-              2년차에도 잘 부탁해요 💚</p>
-            <div class="btns">
-              <button class="btn" id="party" type="button">🎉 축하 한 번 더</button>
-              <button class="btn ghost" id="restart" type="button">처음부터</button>
-            </div>
-          </div>
-          <span class="no">9</span>
-        </section>
-
-      </div>
-    </div>
-
-    <!-- 표지 -->
-    <div class="cover hint" id="cover" role="button" aria-label="앨범 열기" tabindex="0">
-      <div class="face front">
-        <div class="frame"></div>
-        <div class="ribbon"></div>
-        <div class="label">OUR ALBUM</div>
-        <div class="big">1</div>
-        <div class="yr">YEAR</div>
-        <div class="name">나휘님 <span>입사 1주년</span></div>
-        <div class="tap">눌러서 앨범 열기 ✦</div>
-      </div>
-      <div class="face back"><p>with love, from our team</p></div>
-    </div>
-  </div>
+<div class="wrap">
+  <div class="logo">Nahwi<span>1st YEAR</span></div>
+  <div class="ttl">나휘님 입사 1주년<br>어드벤트 캘린더<small>open one by one</small></div>
+  <div class="house-sh"><div class="house" id="house"><div class="grid" id="grid"></div></div></div>
 </div>
+<div class="foot"><span id="cnt">문을 눌러 열어보세요</span><span class="prog" id="prog"></span><button class="reset" id="reset" type="button">다시 닫기</button></div>
 
-<nav class="nav" aria-label="앨범 넘기기">
-  <button class="arrow" id="prev" type="button" aria-label="이전">‹</button>
-  <div class="dots" id="dots"></div>
-  <button class="arrow" id="next" type="button" aria-label="다음">›</button>
-</nav>
-
-<canvas id="confetti"></canvas>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
+  <div class="card" id="card"></div>
+</div>
+<canvas id="fx"></canvas><canvas id="cf"></canvas>
 
 <script>
-(() => {
-  const track = document.getElementById('track');
-  const pages = [...track.children];
-  const cover = document.getElementById('cover');
-  const dotsEl = document.getElementById('dots');
-  const prev = document.getElementById('prev');
-  const next = document.getElementById('next');
-  const clip = document.getElementById('clip');
-  const soundBtn = document.getElementById('soundBtn');
-  let idx = 0, opened = false;
+{
+const S = 'stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"';
+const spark = (x, y) => `<path d="M${x} ${y - 3}l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"/>`;
+const flake = (x, y) => `<path d="M${x - 4} ${y}h8M${x} ${y - 4}v8M${x - 3} ${y - 3}l6 6M${x + 3} ${y - 3}l-6 6"/>`;
+const CANE = 'M10 30H196a14 14 0 0 0 0-24 14 14 0 0 0-14 12';
+const ART = {
+  tree:`<svg viewBox="0 0 60 80"><g fill="#fff"><path d="M30 6 18 24h7L13 40h8L8 58h44L39 40h8L35 24h7z"/><rect x="26" y="58" width="8" height="10"/>
+    ${[[8,10],[52,14],[5,40],[55,44],[50,72],[10,70]].map(([x, y]) => spark(x, y)).join('')}</g></svg>`,
+  star:`<svg viewBox="0 0 60 60"><path ${S} d="M30 6l6.5 15 16 1.4-12 10.6 3.6 15.7L30 40.4 15.9 48.7l3.6-15.7-12-10.6 16-1.4z"/><circle cx="30" cy="29" r="4" fill="#fff"/></svg>`,
+  plane:`<svg viewBox="0 0 70 50"><path ${S} d="M6 30l52-18c4-1 7 2 4 5L40 30l-4 14-6 2 1-12-12 4-5 8-4 1 1-10z"/><path ${S} stroke-dasharray="2 5" d="M4 44c10-2 18-6 24-12"/></svg>`,
+  heart:`<svg viewBox="0 0 70 60"><path fill="#fff" d="M35 52S10 38 10 22c0-8 6-13 12-13 6 0 10 4 13 9 3-5 7-9 13-9 6 0 12 5 12 13 0 16-25 30-25 30z"/>
+    <g ${S} stroke-width="1.6">${[[5,8],[64,10],[65,48],[4,46]].map(([x, y]) => flake(x, y)).join('')}</g></svg>`,
+  balloon:`<svg viewBox="0 0 60 80"><ellipse cx="30" cy="26" rx="16" ry="20" fill="#fff"/><path fill="#fff" d="M27 45h6l-3 4z"/><path ${S} d="M30 49c-5 8 5 12 0 20s4 8 2 10"/><path d="M22 16c2-4 5-6 8-6" stroke="#c3171f" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`,
+  gift:`<svg viewBox="0 0 60 60"><path ${S} d="M10 26h40v26H10zM7 18h46v8H7zM30 18v34"/><path ${S} d="M30 18c-6-10-16-8-14-2 1 3 8 2 14 2 6 0 13 1 14-2 2-6-8-8-14 2"/></svg>`,
+  cane:`<svg viewBox="0 0 220 40" preserveAspectRatio="xMidYMid meet"><defs><pattern id="st" width="14" height="40" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="7" height="40" fill="#fff"/></pattern></defs>
+    <path d="${CANE}" stroke="#fff" stroke-width="12" fill="none" stroke-linecap="round"/>
+    <path d="${CANE}" stroke="#c3171f" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="${CANE}" stroke="url(#st)" stroke-width="8" fill="none" stroke-linecap="round"/></svg>`,
+  orn:`<svg viewBox="0 0 80 96"><path ${S} d="M40 2v10"/><rect x="33" y="12" width="14" height="8" rx="1" ${S}/><circle cx="40" cy="56" r="34" fill="#fff"/>
+    <circle cx="40" cy="56" r="30" fill="none" stroke="#c3171f" stroke-width="1.2" stroke-dasharray="1 3"/>
+    <text x="40" y="45" text-anchor="middle" font-family="Special Elite" font-size="10" fill="#b5121b">NO.</text>
+    <text x="40" y="76" text-anchor="middle" font-family="Alfa Slab One" font-size="30" fill="#b5121b">01</text></svg>`
+};
 
-  pages.forEach((_, i) => {
-    const d = document.createElement('button');
-    d.className = 'dot'; d.type = 'button'; d.setAttribute('aria-label', (i + 1) + '페이지');
-    d.onclick = () => go(i);
-    dotsEl.appendChild(d);
-  });
+/* 문 9개: 앞면 디자인 + 안쪽 사진 + 크게 보기 내용 */
+const DOORS = [
+  {area:'a', lab:'D+365', front:`<div class="num">365<sup>DAYS</sup></div>`, ko:'', thumb:'oneyear.jpg',
+   t:'진짜 1년 된 거야 그러면?', s:'나휘님이 우리 회사에 온 지 딱 1년!', shots:[['oneyear.jpg','벌써…? 진짜로…?']]},
+  {area:'b', lab:'TEAM', art:'tree', ko:'우리 팀 단체샷', thumb:'team.jpg',
+   t:'우리의 1위 모먼트', s:'이 팀, 이 사진, 이 순간', shots:[['team.jpg','NO.1은 역시 우리 팀']]},
+  {area:'c', lab:'DERMA CLASS', art:'star', ko:'현장 출근 도장', thumb:'sign.jpg',
+   t:'현장 출근 도장 쾅!', s:'간판 찍고, 얼굴 가리고(?) 인증샷까지', shots:[['sign.jpg','CLASS ENTRANCE →'],['booth.jpg','얼굴은 크림으로 대신']]},
+  {area:'d', lab:'FIRST CLASS', art:'plane', ko:'퍼스트 클래스 탑승', thumb:'seat1.jpg',
+   t:'퍼스트 클래스 탑승 완료', s:'구름 위 팝업스토어로 출발', shots:[['firstclass.jpg','팝업 오픈 날'],['seat1.jpg','기내 독서 중'],['seat2.jpg','창밖은 구름']]},
+  {area:'e', lab:'EVERYWHERE', art:'orn', ko:'곳곳의 흔적', thumb:'mh.jpg',
+   t:'곳곳에 남긴 나휘님의 흔적', s:'지하상가 광고부터 체험존까지', shots:[['mh.jpg','광고 앞 인증샷'],['game.jpg','열정 MAX']]},
+  {area:'f', lab:'BEHIND', art:'heart', ko:'디테일 장인', thumb:'dessert.jpg',
+   t:'세팅도 우리가, 사진도 우리가', s:'디테일 장인 나휘님의 손길', shots:[['dessert.jpg','마카롱 하나하나'],['buffet.jpg','기록은 필수']]},
+  {area:'g', lab:'GUEST', art:'balloon', ko:'키다리 아저씨', thumb:'clown2.jpg',
+   t:'키다리 아저씨와의 만남', s:'풍선 선물에 미소 한가득', video:'clown.mp4', shots:[['clown2.jpg','초록 풍선 get!']]},
+  {area:'h', lab:'OPEN LAST', art:'gift', ko:'마지막에 열기', thumb:'cake.jpg', last:true,
+   t:'나휘님, 입사 1주년 축하해요!', s:'To. 나휘님', shots:[['cake.jpg','우리 사랑 영원히..♡']],
+   note:'지난 1년 동안 현장 곳곳을 누비며<br><b>늘 웃으면서 함께해줘서 고마워요.</b><br>2년차에도 잘 부탁해요 🎄'},
+  {area:'i', lab:'MOTTO', art:'cane', ko:'뭉치면 주먹밥', thumb:'jumeok.jpg', row:true,
+   t:'앞으로도 꼭 붙어 있어요', s:'팀워크의 진리', shots:[['jumeok.jpg','뭉치면 주먹밥 🍙']],
+   note:'뭉치면 주먹밥, 흩어지면 볶음밥…<br><b>우리는 영원한 주먹밥 팀!</b>'}
+];
 
-  function go(i) {
-    idx = Math.max(0, Math.min(pages.length - 1, i));
-    track.style.transform = `translateX(${-idx * 100}%)`;
-    [...dotsEl.children].forEach((d, k) => d.classList.toggle('on', k === idx));
-    prev.disabled = idx === 0;
-    next.disabled = idx === pages.length - 1;
-    pages[idx].classList.add('seen');
-    if (pages[idx].contains(clip)) clip.play().catch(() => {}); else clip.pause();
-    if (idx === pages.length - 1) setTimeout(() => burst(140), 350);
-  }
+const grid = document.getElementById('grid'), house = document.getElementById('house');
+const modal = document.getElementById('modal'), card = document.getElementById('card');
+const KEY = 'nahwi-advent-v1';
+let opened = new Set();
+try { opened = new Set(JSON.parse(localStorage.getItem(KEY) || '[]')); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify([...opened])); } catch (e) {} };
 
-  // 표지 열기
-  function openAlbum() {
-    if (opened) return;
-    opened = true;
-    cover.classList.remove('hint');
-    cover.classList.add('open');
-    document.body.classList.add('opened');
-    go(0);
-    setTimeout(() => burst(180), 700);
-    setTimeout(() => cover.classList.add('gone'), 1350);
-  }
-  function closeAlbum() {
-    clip.pause();
-    go(0);
-    cover.classList.remove('gone');
-    requestAnimationFrame(() => {
-      cover.classList.remove('open');
-      document.body.classList.remove('opened');
-      opened = false;
-    });
-  }
-  cover.addEventListener('click', openAlbum);
-  cover.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openAlbum(); } });
+/* 톱니 가장자리 집 모양 */
+const pts = [];
+const seg = (x1, y1, x2, y2, n) => { for (let k = 0; k < n; k++) { const t = k / n, j = (Math.random() - .5) * .9;
+  pts.push(`${(x1 + (x2 - x1) * t + (x1 === x2 ? j : 0)).toFixed(2)}% ${(y1 + (y2 - y1) * t + (x1 === x2 ? 0 : j)).toFixed(2)}%`); } };
+seg(.5, 99.5, .5, 21, 60); seg(.5, 21, 50, .6, 46); seg(50, .6, 99.5, 21, 46); seg(99.5, 21, 99.5, 99.5, 60); seg(99.5, 99.5, .5, 99.5, 50);
+house.style.clipPath = `polygon(${pts.join(',')})`;
 
-  prev.onclick = () => go(idx - 1);
-  next.onclick = () => go(idx + 1);
-  document.addEventListener('keydown', e => {
-    if (!opened) { if (e.key === 'ArrowRight') openAlbum(); return; }
-    if (e.key === 'ArrowRight') go(idx + 1);
-    if (e.key === 'ArrowLeft') go(idx - 1);
-  });
+grid.innerHTML = DOORS.map((d, i) => `
+  <div class="cell${opened.has(i) ? ' open' : ''}" style="grid-area:${d.area}" data-i="${i}">
+    <div class="win" role="button" tabindex="${opened.has(i) ? 0 : -1}" aria-label="${d.t} 크게 보기" style="background-image:url(assets/${d.thumb})"></div>
+    <button class="door" type="button" aria-label="${d.lab} 문 열기" ${opened.has(i) ? 'disabled' : ''}>
+      <span class="face front"${d.row ? ' style="flex-direction:row;align-items:center;gap:4%"' : ''}>
+        <span class="lab">${d.lab}</span>
+        <span class="art">${d.front || ART[d.art]}</span>
+        <span class="ko"${d.row ? ' style="margin:0"' : ''}>${d.ko}</span>
+      </span>
+      <span class="face back"></span>
+    </button>
+  </div>`).join('');
 
-  // 스와이프
-  let sx = 0, sy = 0, dx = 0, dragging = false, locked = null;
-  const W = () => track.clientWidth;
-  track.addEventListener('pointerdown', e => {
-    if (!opened || e.target.closest('button')) return;
-    dragging = true; locked = null; sx = e.clientX; sy = e.clientY; dx = 0;
-  });
-  window.addEventListener('pointermove', e => {
-    if (!dragging) return;
-    dx = e.clientX - sx; const dy = e.clientY - sy;
-    if (locked === null && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) locked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
-    if (locked !== 'x') return;
-    track.classList.add('dragging');
-    let off = dx;
-    if ((idx === 0 && dx > 0) || (idx === pages.length - 1 && dx < 0)) off = dx * .3;
-    track.style.transform = `translateX(calc(${-idx * 100}% + ${off}px))`;
-  });
-  const end = () => {
-    if (!dragging) return;
-    dragging = false; track.classList.remove('dragging');
-    if (locked === 'x' && Math.abs(dx) > Math.min(60, W() * .15)) go(idx + (dx < 0 ? 1 : -1)); else go(idx);
-  };
-  window.addEventListener('pointerup', end);
-  window.addEventListener('pointercancel', end);
-  track.addEventListener('dragstart', e => e.preventDefault());
+const prog = document.getElementById('prog'), cnt = document.getElementById('cnt');
+prog.innerHTML = DOORS.map(() => '<i></i>').join('');
+function status() {
+  [...prog.children].forEach((el, i) => el.classList.toggle('on', opened.has(i)));
+  cnt.textContent = opened.size === 0 ? '문을 눌러 열어보세요' : opened.size === DOORS.length ? '모두 열었어요! 🎄' : `열린 문 ${opened.size} / ${DOORS.length}`;
+}
+status();
 
-  // 영상 소리
-  soundBtn.onclick = () => {
-    clip.muted = !clip.muted;
-    soundBtn.textContent = clip.muted ? '🔇 소리' : '🔊 소리';
-    clip.play().catch(() => {});
-  };
+let lastFocus = null;
+function show(i) {
+  const d = DOORS[i], n = d.shots.length + (d.video ? 1 : 0);
+  card.innerHTML = `<button class="x" id="x" type="button" aria-label="닫기">×</button>
+    <div class="lab">${d.lab}</div><h2 id="mt">${d.t}</h2><div class="sub">${d.s}</div>
+    <div class="shots n${n}">
+      ${d.video ? `<figure class="pol vid"><video id="clip" src="assets/${d.video}" poster="assets/clown_poster.jpg" muted loop playsinline autoplay></video><button class="snd" id="snd" type="button">🔇 소리 켜기</button><figcaption>▶ 그날의 현장</figcaption></figure>` : ''}
+      ${d.shots.map(([src, c]) => `<figure class="pol"><img src="assets/${src}" alt="${c}"><figcaption>${c}</figcaption></figure>`).join('')}
+    </div>${d.note ? `<p class="note">${d.note}</p>` : ''}`;
+  lastFocus = document.activeElement;
+  modal.classList.add('on'); card.scrollTop = 0;
+  document.getElementById('x').focus({ preventScroll: true });
+  const v = document.getElementById('clip'), b = document.getElementById('snd');
+  if (v) { v.play().catch(() => {}); b.onclick = () => { v.muted = !v.muted; b.textContent = v.muted ? '🔇 소리 켜기' : '🔊 소리 끄기'; v.play().catch(() => {}); }; }
+}
+function hide() {
+  const v = document.getElementById('clip'); if (v) v.pause();
+  modal.classList.remove('on'); if (lastFocus) lastFocus.focus({ preventScroll: true });
+}
 
-  document.getElementById('party').onclick = () => burst(220);
-  document.getElementById('restart').onclick = closeAlbum;
+grid.addEventListener('click', e => {
+  const cell = e.target.closest('.cell'); if (!cell) return;
+  const i = +cell.dataset.i;
+  if (e.target.closest('.door')) {
+    cell.classList.add('open'); cell.querySelector('.door').disabled = true; cell.querySelector('.win').tabIndex = 0;
+    opened.add(i); save(); status();
+    setTimeout(() => show(i), 850);
+    if (opened.size === DOORS.length || DOORS[i].last) setTimeout(() => burst(200), 900);
+  } else if (e.target.closest('.win')) show(i);
+});
+grid.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('win')) { e.preventDefault(); show(+e.target.parentNode.dataset.i); } });
+modal.addEventListener('click', e => { if (e.target === modal || e.target.id === 'x') hide(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('on')) hide(); });
 
-  // 컨페티
-  const cv = document.getElementById('confetti'), ctx = cv.getContext('2d');
-  let parts = [], raf = null;
-  const colors = ['#1f4a3a', '#9acd32', '#d8b46a', '#ffffff', '#2c6650', '#f3dc9c', '#c8e68a'];
-  function resize() { cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio; }
-  addEventListener('resize', resize); resize();
-  function burst(n) {
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const r = devicePixelRatio;
-    for (let i = 0; i < n; i++) {
-      parts.push({
-        x: innerWidth * (.5 + (Math.random() - .5) * .3) * r, y: innerHeight * .45 * r,
-        vx: (Math.random() - .5) * 16 * r, vy: (-Math.random() * 15 - 4) * r,
-        w: (5 + Math.random() * 6) * r, h: (8 + Math.random() * 8) * r,
-        a: Math.random() * 6.28, va: (Math.random() - .5) * .3,
-        c: colors[(Math.random() * colors.length) | 0], life: 0
-      });
-    }
-    if (!raf) loop();
-  }
-  function loop() {
-    ctx.clearRect(0, 0, cv.width, cv.height);
-    const r = devicePixelRatio;
-    parts = parts.filter(p => p.y < cv.height + 40 && p.life < 400);
-    for (const p of parts) {
-      p.life++; p.vy += .35 * r; p.vx *= .985; p.vy *= .985;
-      p.x += p.vx; p.y += p.vy; p.a += p.va;
-      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a);
-      ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h * Math.abs(Math.cos(p.a * 1.7)));
-      ctx.restore();
-    }
-    raf = parts.length ? requestAnimationFrame(loop) : (ctx.clearRect(0, 0, cv.width, cv.height), null);
-  }
-})();
+document.getElementById('reset').onclick = () => {
+  opened.clear(); save(); status();
+  grid.querySelectorAll('.cell').forEach(c => { c.classList.remove('open'); c.querySelector('.door').disabled = false; c.querySelector('.win').tabIndex = -1; });
+};
+
+/* 눈 + 컨페티 */
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const fx = document.getElementById('fx'), fc = fx.getContext('2d'), cf = document.getElementById('cf'), cc = cf.getContext('2d');
+let parts = [], craf = null;
+const flakes = Array.from({ length: 70 }, () => ({ x: Math.random(), y: Math.random(), r: Math.random() * 2.2 + .8, s: Math.random() * .0012 + .0006, w: Math.random() * 6.28 }));
+function size() { const r = devicePixelRatio || 1; for (const c of [fx, cf]) { c.width = innerWidth * r; c.height = innerHeight * r; } }
+addEventListener('resize', size); size();
+function snow() {
+  const r = devicePixelRatio || 1; fc.clearRect(0, 0, fx.width, fx.height); fc.fillStyle = 'rgba(255,255,255,.85)';
+  for (const f of flakes) { f.y += f.s; f.w += .01; if (f.y > 1.02) { f.y = -.02; f.x = Math.random(); }
+    fc.beginPath(); fc.arc((f.x + Math.sin(f.w) * .01) * fx.width, f.y * fx.height, f.r * r, 0, 6.28); fc.fill(); }
+  requestAnimationFrame(snow);
+}
+if (!reduce) snow();
+const COLS = ['#b5121b', '#ffffff', '#e8343c', '#1f6b45', '#f3d27a'];
+function burst(n) {
+  if (reduce) return; const r = devicePixelRatio || 1;
+  for (let k = 0; k < n; k++) parts.push({ x: cf.width * (.5 + (Math.random() - .5) * .3), y: cf.height * .42, vx: (Math.random() - .5) * 16 * r, vy: (-Math.random() * 15 - 4) * r,
+    w: (5 + Math.random() * 6) * r, h: (8 + Math.random() * 8) * r, a: Math.random() * 6.28, va: (Math.random() - .5) * .3, c: COLS[k % COLS.length], t: 0 });
+  if (!craf) conf();
+}
+function conf() {
+  const r = devicePixelRatio || 1; cc.clearRect(0, 0, cf.width, cf.height);
+  parts = parts.filter(p => p.y < cf.height + 40 && p.t < 400);
+  for (const p of parts) { p.t++; p.vy += .35 * r; p.vx *= .985; p.vy *= .985; p.x += p.vx; p.y += p.vy; p.a += p.va;
+    cc.save(); cc.translate(p.x, p.y); cc.rotate(p.a); cc.fillStyle = p.c; cc.fillRect(-p.w / 2, -p.h / 2, p.w, p.h * Math.abs(Math.cos(p.a * 1.7))); cc.restore(); }
+  craf = parts.length ? requestAnimationFrame(conf) : (cc.clearRect(0, 0, cf.width, cf.height), null);
+}
+}
 </script>
 </body>
 </html>
