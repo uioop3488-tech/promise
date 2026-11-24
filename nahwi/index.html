@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>나휘님 입사 1주년 축하해요 💚</title>
+<meta property="og:title" content="나휘님 입사 1주년 축하해요 💚">
+<meta property="og:description" content="우리의 1년을 앨범으로 담았어요. 표지를 눌러 열어보세요!">
+<meta property="og:image" content="assets/team.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#efe9df;
+    --paper:#fbf7ef;
+    --ink:#2f3a33;
+    --green:#1f4a3a;
+    --green-2:#2c6650;
+    --lime:#9acd32;
+    --gold:#d8b46a;
+    --tape:rgba(214,226,190,.75);
+    --pw:min(92vw, 440px);
+    --ph:min(calc(var(--pw) * 1.5), calc(100dvh - 120px));
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:
+      radial-gradient(ellipse at 20% 10%, #f8f3ea 0, transparent 60%),
+      radial-gradient(ellipse at 80% 90%, #e3dccd 0, transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Gowun Batang', serif;
+    overflow:hidden;
+    display:flex;align-items:center;justify-content:center;flex-direction:column;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;-webkit-user-select:none;
+  }
+
+  /* ---------- 앨범 ---------- */
+  .stage{position:relative;width:var(--pw);height:var(--ph);perspective:2200px}
+  .album{position:absolute;inset:0;border-radius:6px 14px 14px 6px;
+    box-shadow:0 30px 60px -20px rgba(40,30,20,.45), 0 8px 18px rgba(40,30,20,.18);}
+
+  /* 내지 (슬라이더) */
+  .inner{position:absolute;inset:0;border-radius:6px 14px 14px 6px;overflow:hidden;background:var(--paper)}
+  .inner::before{ /* 제본선 */
+    content:"";position:absolute;left:0;top:0;bottom:0;width:22px;z-index:5;pointer-events:none;
+    background:linear-gradient(90deg, rgba(0,0,0,.18), rgba(0,0,0,.04) 60%, transparent);
+  }
+  .track{display:flex;height:100%;transition:transform .55s cubic-bezier(.22,.8,.25,1);will-change:transform;touch-action:pan-y}
+  .track.dragging{transition:none}
+  .page{flex:0 0 100%;height:100%;position:relative;padding:26px 22px 22px 34px;
+    display:flex;flex-direction:column;align-items:center;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 27px, rgba(31,74,58,.05) 27px 28px),
+      var(--paper);
+  }
+  .page .no{position:absolute;bottom:12px;right:18px;font-family:'Nanum Pen Script';font-size:20px;color:#9a9283}
+  .eyebrow{font-size:11px;letter-spacing:.32em;color:var(--green-2);text-transform:uppercase;font-weight:700}
+  h2{font-size:clamp(22px, 6.4vw, 28px);margin:6px 0 4px;color:var(--green);text-align:center;line-height:1.25}
+  .sub{font-family:'Nanum Pen Script';font-size:clamp(20px,5.6vw,25px);color:#6b6457;text-align:center;line-height:1.15}
+
+  /* 폴라로이드 */
+  .pol{background:#fff;padding:8px 8px 34px;box-shadow:0 6px 14px rgba(0,0,0,.16), 0 1px 2px rgba(0,0,0,.1);
+    position:relative;display:inline-flex;flex-direction:column;align-items:center}
+  .pol img,.pol video{display:block;object-fit:cover;background:#ddd}
+  .pol figcaption{position:absolute;bottom:4px;left:0;right:0;text-align:center;
+    font-family:'Nanum Pen Script';font-size:21px;color:#444;line-height:1.1}
+  .tape::after{content:"";position:absolute;top:-11px;left:50%;width:70px;height:22px;margin-left:-35px;
+    background:var(--tape);transform:rotate(-4deg);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .tape.r::after{transform:rotate(5deg);left:70%}
+  .tape.l::after{transform:rotate(-8deg);left:28%}
+  .sticker{position:absolute;font-size:30px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15));pointer-events:none}
+
+  .photos{flex:1;width:100%;position:relative;margin-top:10px;min-height:0}
+  .photos > *{position:absolute}
+
+  /* 페이지별 배치 */
+  .p-intro .photos{display:flex;align-items:center;justify-content:center}
+  .p-intro .photos > .pol{position:relative;transform:rotate(-2.5deg)}
+  .p-intro .pol img{width:calc(var(--pw) * .72);aspect-ratio:4/3}
+  .dplus{font-family:'Gowun Batang';font-weight:700;font-size:clamp(46px,15vw,64px);color:var(--green);letter-spacing:-.02em;line-height:1;margin-top:4px}
+  .dplus small{font-size:.38em;color:var(--lime);vertical-align:super;margin-left:4px}
+
+  .p-team .photos{display:flex;align-items:center;justify-content:center}
+  .p-team .pol{position:relative;transform:rotate(1.5deg)}
+  .p-team .pol img{height:calc(var(--ph) * .6);aspect-ratio:3/4}
+
+  .p-class .a{left:0;top:4%;transform:rotate(-5deg);z-index:2}
+  .p-class .a img{width:calc(var(--pw) * .5);aspect-ratio:3/4}
+  .p-class .b{right:0;bottom:4%;transform:rotate(4deg);z-index:1}
+  .p-class .b img{width:calc(var(--pw) * .5);aspect-ratio:3/4}
+
+  .p-dessert .a{left:2%;top:0;transform:rotate(3deg);z-index:2}
+  .p-dessert .a img{width:calc(var(--pw) * .44);aspect-ratio:3/4}
+  .p-dessert .b{right:0;bottom:2%;transform:rotate(-3deg)}
+  .p-dessert .b img{width:calc(var(--pw) * .58);aspect-ratio:4/3}
+
+  .p-first .a{left:50%;top:0;transform:translateX(-50%) rotate(-1.5deg);z-index:1}
+  .p-first .a img{width:calc(var(--pw) * .48);aspect-ratio:3/4}
+  .p-first .b{left:0;bottom:2%;transform:rotate(-6deg);z-index:2}
+  .p-first .c{right:0;bottom:6%;transform:rotate(5deg);z-index:2}
+  .p-first .b img,.p-first .c img{width:calc(var(--pw) * .36);aspect-ratio:3/4}
+
+  .p-clown .a{left:0;top:2%;transform:rotate(-3deg);z-index:2}
+  .p-clown .a video{width:calc(var(--pw) * .48);aspect-ratio:9/16}
+  .p-clown .b{right:0;bottom:4%;transform:rotate(4deg);z-index:1}
+  .p-clown .b img{width:calc(var(--pw) * .42);aspect-ratio:3/4}
+  .sound{position:absolute;top:14px;right:14px;z-index:3;border:0;border-radius:99px;background:rgba(0,0,0,.55);color:#fff;
+    font-size:12px;padding:5px 9px;font-family:inherit;cursor:pointer}
+
+  .p-spot .a{left:0;top:3%;transform:rotate(4deg);z-index:3}
+  .p-spot .a img{width:calc(var(--pw) * .56);aspect-ratio:4/3}
+  .p-spot .b{right:2%;bottom:2%;transform:rotate(-4deg);z-index:2}
+  .p-spot .b img{width:calc(var(--pw) * .38);aspect-ratio:9/14}
+
+  .p-team2 .photos{display:flex;align-items:center;justify-content:center}
+  .p-team2 .pol{position:relative;transform:rotate(-1.5deg)}
+  .p-team2 .pol img{height:calc(var(--ph) * .58);aspect-ratio:3/4}
+
+  .p-rice .photos{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
+  .p-rice .photos > *{position:relative}
+  .p-rice .pol{transform:rotate(-2deg)}
+  .p-rice .pol img{width:calc(var(--pw) * .74);aspect-ratio:16/9}
+  .note{background:#fff8c9;padding:14px 16px 16px;width:calc(var(--pw) * .62);transform:rotate(2deg);
+    font-family:'Nanum Pen Script';font-size:23px;line-height:1.25;color:#4a4436;box-shadow:0 5px 12px rgba(0,0,0,.12);text-align:center}
+
+  .p-end .photos{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:16px}
+  .p-end .photos > *{position:relative}
+  .p-end .pol{transform:rotate(2deg)}
+  .p-end .pol img{width:calc(var(--pw) * .5);aspect-ratio:1}
+  .letter{font-family:'Nanum Pen Script';font-size:clamp(21px,5.8vw,25px);line-height:1.3;text-align:center;color:#3c4a40}
+  .letter b{color:var(--green);font-weight:400;background:linear-gradient(transparent 60%, rgba(154,205,50,.45) 0)}
+  .btns{display:flex;gap:8px;margin-top:2px}
+  .btn{border:0;border-radius:99px;padding:9px 16px;font-family:'Gowun Batang';font-weight:700;font-size:13px;cursor:pointer;
+    background:var(--green);color:#fff;box-shadow:0 4px 10px rgba(31,74,58,.3)}
+  .btn.ghost{background:transparent;color:var(--green);box-shadow:inset 0 0 0 1.5px var(--green)}
+
+  /* ---------- 표지 (오픈형) ---------- */
+  .cover{position:absolute;inset:0;z-index:20;transform-origin:left center;transform-style:preserve-3d;
+    transition:transform 1.3s cubic-bezier(.55,.05,.25,1);cursor:pointer}
+  .cover.open{transform:rotateY(-168deg)}
+  .cover.gone{visibility:hidden}
+  .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:6px 14px 14px 6px}
+  .front{
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.12), transparent 55%),
+      repeating-linear-gradient(45deg, rgba(255,255,255,.018) 0 2px, transparent 2px 5px),
+      linear-gradient(160deg, #2a5c48, #173b2e 70%, #12302a);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.06), inset 14px 0 18px -10px rgba(0,0,0,.6);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--gold);text-align:center;padding:30px;
+  }
+  .front::before{content:"";position:absolute;left:16px;top:0;bottom:0;width:2px;background:linear-gradient(transparent, rgba(0,0,0,.35), transparent)}
+  .frame{position:absolute;inset:26px 22px 26px 34px;border:1.5px solid rgba(216,180,106,.55);border-radius:4px}
+  .frame::after{content:"";position:absolute;inset:6px;border:1px solid rgba(216,180,106,.3);border-radius:2px}
+  .front .label{font-size:11px;letter-spacing:.5em;opacity:.85}
+  .front .big{font-size:clamp(84px,26vw,120px);font-weight:700;line-height:1;margin:14px 0 2px;
+    background:linear-gradient(180deg,#f3dc9c,#c39a4c 60%,#e9cf8b);-webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 2px 0 rgba(0,0,0,.08)}
+  .front .yr{font-size:15px;letter-spacing:.42em;margin-bottom:22px}
+  .front .name{font-size:clamp(26px,7.6vw,34px);font-weight:700;color:#f1e3bd}
+  .front .name span{font-family:'Nanum Pen Script';font-weight:400;font-size:1.1em;color:var(--gold)}
+  .front .tap{position:absolute;bottom:46px;left:0;right:0;font-family:'Nanum Pen Script';font-size:22px;color:#e8d6a6;animation:bob 1.6s ease-in-out infinite}
+  .ribbon{position:absolute;right:46px;top:-6px;width:26px;height:110px;background:linear-gradient(90deg,#8fbf2f,#a9d84a,#8fbf2f);
+    clip-path:polygon(0 0,100% 0,100% 100%,50% 86%,0 100%);box-shadow:0 2px 4px rgba(0,0,0,.2)}
+  .back{transform:rotateY(180deg);
+    background:linear-gradient(90deg, #efe6d4, #f7f1e5);
+    box-shadow:inset -14px 0 18px -10px rgba(0,0,0,.35);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .back p{font-family:'Nanum Pen Script';font-size:22px;color:#8a8170;transform:rotateY(0)}
+  @keyframes bob{0%,100%{transform:translateY(0);opacity:.75}50%{transform:translateY(-6px);opacity:1}}
+
+  /* 흔들림 힌트 */
+  .cover:not(.open):hover{transform:rotateY(-12deg)}
+  .cover.hint{animation:peek 2.6s ease-in-out 1.2s 2}
+  @keyframes peek{0%,100%{transform:rotateY(0)}25%{transform:rotateY(-14deg)}45%{transform:rotateY(0)}}
+
+  /* ---------- 내비 ---------- */
+  .nav{display:flex;align-items:center;gap:14px;margin-top:18px;height:34px;opacity:0;transition:opacity .6s .9s}
+  body.opened .nav{opacity:1}
+  .arrow{width:34px;height:34px;border-radius:50%;border:0;background:#fff;color:var(--green);font-size:16px;cursor:pointer;
+    box-shadow:0 3px 8px rgba(0,0,0,.12);display:grid;place-items:center}
+  .arrow:disabled{opacity:.3;cursor:default}
+  .dots{display:flex;gap:6px}
+  .dot{width:7px;height:7px;border-radius:99px;background:#c8c0b0;transition:all .3s;border:0;padding:0;cursor:pointer}
+  .dot.on{width:20px;background:var(--green)}
+
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+
+  /* 페이지 진입 애니메이션 */
+  .page .pol,.page .note{opacity:0;transition:opacity .5s, translate .6s cubic-bezier(.2,.8,.2,1);translate:0 14px}
+  .page.seen .pol,.page.seen .note{opacity:1;translate:0 0}
+  .page.seen .pol:nth-child(2){transition-delay:.12s}
+  .page.seen .pol:nth-child(3){transition-delay:.24s}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="album">
+    <!-- 내지 -->
+    <div class="inner">
+      <div class="track" id="track">
+
+        <!-- 1 -->
+        <section class="page p-intro">
+          <div class="eyebrow">Happy Work Anniversary</div>
+          <div class="dplus">D+365<small>✦</small></div>
+          <div class="sub">나휘님이 우리 회사에 온 지 딱 1년!</div>
+          <div class="photos">
+            <figure class="pol tape"><img src="assets/oneyear.jpg" alt="진짜 1년 된 거야 그러면?"><figcaption>벌써…? 진짜로…?</figcaption></figure>
+            <span class="sticker" style="right:4%;top:6%">🎉</span>
+            <span class="sticker" style="left:2%;bottom:10%">✨</span>
+          </div>
+          <span class="no">1</span>
+        </section>
+
+        <!-- 2 -->
+        <section class="page p-team">
+          <div class="eyebrow">Team Zeroid</div>
+          <h2>우리의 1위 모먼트</h2>
+          <div class="sub">이 팀, 이 사진, 이 순간 💚</div>
+          <div class="photos">
+            <figure class="pol tape r"><img src="assets/team.jpg" alt="제로이드 팀 단체사진"><figcaption>NO.1은 역시 우리 팀</figcaption></figure>
+            <span class="sticker" style="left:0;top:4%">🥇</span>
+          </div>
+          <span class="no">2</span>
+        </section>
+
+        <!-- 3 -->
+        <section class="page p-class">
+          <div class="eyebrow">No.1 Derma Class</div>
+          <h2>현장 출근 도장 쾅!</h2>
+          <div class="sub">간판 찍고, 얼굴 가리고(?) 인증샷까지</div>
+          <div class="photos">
+            <figure class="pol tape a"><img src="assets/sign.jpg" alt="더마 클래스 입구 간판" style="object-position:30% center"><figcaption>CLASS ENTRANCE →</figcaption></figure>
+            <figure class="pol tape r b"><img src="assets/booth.jpg" alt="포토존 인증샷"><figcaption>얼굴은 크림으로 대신합니다</figcaption></figure>
+          </div>
+          <span class="no">3</span>
+        </section>
+
+        <!-- 4 -->
+        <section class="page p-dessert">
+          <div class="eyebrow">Behind the Scenes</div>
+          <h2>세팅도 우리가, 사진도 우리가</h2>
+          <div class="sub">디테일 장인 나휘님의 손길 🍰</div>
+          <div class="photos">
+            <figure class="pol tape l a"><img src="assets/dessert.jpg" alt="디저트 세팅"><figcaption>마카롱 하나하나</figcaption></figure>
+            <figure class="pol tape b"><img src="assets/buffet.jpg" alt="케이터링 테이블 촬영"><figcaption>기록은 필수 📸</figcaption></figure>
+          </div>
+          <span class="no">4</span>
+        </section>
+
+        <!-- 5 -->
+        <section class="page p-first">
+          <div class="eyebrow">Zeroid First Class</div>
+          <h2>퍼스트 클래스 탑승 완료 ✈️</h2>
+          <div class="photos">
+            <figure class="pol tape a"><img src="assets/firstclass.jpg" alt="제로이드 퍼스트클래스 팝업 단체사진"><figcaption>팝업 오픈 날</figcaption></figure>
+            <figure class="pol tape l b"><img src="assets/seat1.jpg" alt="비행기 좌석 포토존"><figcaption>기내 독서 중</figcaption></figure>
+            <figure class="pol tape r c"><img src="assets/seat2.jpg" alt="비행기 창문 포토존"><figcaption>창밖은 구름</figcaption></figure>
+          </div>
+          <span class="no">5</span>
+        </section>
+
+        <!-- 6 -->
+        <section class="page p-clown">
+          <div class="eyebrow">Special Guest</div>
+          <h2>키다리 아저씨와의 만남 🎈</h2>
+          <div class="sub">풍선 선물에 미소 한가득</div>
+          <div class="photos">
+            <figure class="pol tape a">
+              <video id="clip" src="assets/clown.mp4" poster="assets/clown_poster.jpg" muted loop playsinline preload="metadata"></video>
+              <button class="sound" id="soundBtn" type="button">🔇 소리</button>
+              <figcaption>▶ 그날의 현장</figcaption>
+            </figure>
+            <figure class="pol tape r b"><img src="assets/clown2.jpg" alt="풍선 아트 퍼포머와 함께"><figcaption>초록 풍선 get!</figcaption></figure>
+          </div>
+          <span class="no">6</span>
+        </section>
+
+        <!-- 7 -->
+        <section class="page p-spot">
+          <div class="eyebrow">Everywhere</div>
+          <h2>곳곳에 남긴 나휘님의 흔적</h2>
+          <div class="sub">지하상가 광고부터 체험존까지</div>
+          <div class="photos">
+            <figure class="pol tape a"><img src="assets/mh.jpg" alt="지하상가 광고 앞"><figcaption>광고 앞 인증샷</figcaption></figure>
+            <figure class="pol tape l b"><img src="assets/game.jpg" alt="체험존 게임"><figcaption>열정 MAX</figcaption></figure>
+            <span class="sticker" style="right:6%;top:2%">🔥</span>
+          </div>
+          <span class="no">7</span>
+        </section>
+
+        <!-- 8 -->
+        <section class="page p-rice">
+          <div class="eyebrow">Our Motto</div>
+          <h2>앞으로도 꼭 붙어 있어요</h2>
+          <div class="photos">
+            <figure class="pol tape"><img src="assets/jumeok.jpg" alt="뭉치면 주먹밥 흩어지면 볶음밥"><figcaption>팀워크의 진리 🍙</figcaption></figure>
+            <div class="note">뭉치면 주먹밥,<br>흩어지면 볶음밥…<br>우리는 영원한 주먹밥 팀!</div>
+          </div>
+          <span class="no">8</span>
+        </section>
+
+        <!-- 9 -->
+        <section class="page p-end">
+          <div class="eyebrow">To. 나휘님</div>
+          <h2>입사 1주년 축하해요!</h2>
+          <div class="photos">
+            <figure class="pol tape"><img src="assets/cake.jpg" alt="우리 사랑 영원히 케이크"><figcaption>우리 사랑 영원히..♡</figcaption></figure>
+            <p class="letter">지난 1년 동안 현장 곳곳을 누비며<br>
+              <b>늘 웃으면서 함께해줘서 고마워요.</b><br>
+              2년차에도 잘 부탁해요 💚</p>
+            <div class="btns">
+              <button class="btn" id="party" type="button">🎉 축하 한 번 더</button>
+              <button class="btn ghost" id="restart" type="button">처음부터</button>
+            </div>
+          </div>
+          <span class="no">9</span>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- 표지 -->
+    <div class="cover hint" id="cover" role="button" aria-label="앨범 열기" tabindex="0">
+      <div class="face front">
+        <div class="frame"></div>
+        <div class="ribbon"></div>
+        <div class="label">OUR ALBUM</div>
+        <div class="big">1</div>
+        <div class="yr">YEAR</div>
+        <div class="name">나휘님 <span>입사 1주년</span></div>
+        <div class="tap">눌러서 앨범 열기 ✦</div>
+      </div>
+      <div class="face back"><p>with love, from our team</p></div>
+    </div>
+  </div>
+</div>
+
+<nav class="nav" aria-label="앨범 넘기기">
+  <button class="arrow" id="prev" type="button" aria-label="이전">‹</button>
+  <div class="dots" id="dots"></div>
+  <button class="arrow" id="next" type="button" aria-label="다음">›</button>
+</nav>
+
+<canvas id="confetti"></canvas>
+
+<script>
+(() => {
+  const track = document.getElementById('track');
+  const pages = [...track.children];
+  const cover = document.getElementById('cover');
+  const dotsEl = document.getElementById('dots');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const clip = document.getElementById('clip');
+  const soundBtn = document.getElementById('soundBtn');
+  let idx = 0, opened = false;
+
+  pages.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'dot'; d.type = 'button'; d.setAttribute('aria-label', (i + 1) + '페이지');
+    d.onclick = () => go(i);
+    dotsEl.appendChild(d);
+  });
+
+  function go(i) {
+    idx = Math.max(0, Math.min(pages.length - 1, i));
+    track.style.transform = `translateX(${-idx * 100}%)`;
+    [...dotsEl.children].forEach((d, k) => d.classList.toggle('on', k === idx));
+    prev.disabled = idx === 0;
+    next.disabled = idx === pages.length - 1;
+    pages[idx].classList.add('seen');
+    if (pages[idx].contains(clip)) clip.play().catch(() => {}); else clip.pause();
+    if (idx === pages.length - 1) setTimeout(() => burst(140), 350);
+  }
+
+  // 표지 열기
+  function openAlbum() {
+    if (opened) return;
+    opened = true;
+    cover.classList.remove('hint');
+    cover.classList.add('open');
+    document.body.classList.add('opened');
+    go(0);
+    setTimeout(() => burst(180), 700);
+    setTimeout(() => cover.classList.add('gone'), 1350);
+  }
+  function closeAlbum() {
+    clip.pause();
+    go(0);
+    cover.classList.remove('gone');
+    requestAnimationFrame(() => {
+      cover.classList.remove('open');
+      document.body.classList.remove('opened');
+      opened = false;
+    });
+  }
+  cover.addEventListener('click', openAlbum);
+  cover.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openAlbum(); } });
+
+  prev.onclick = () => go(idx - 1);
+  next.onclick = () => go(idx + 1);
+  document.addEventListener('keydown', e => {
+    if (!opened) { if (e.key === 'ArrowRight') openAlbum(); return; }
+    if (e.key === 'ArrowRight') go(idx + 1);
+    if (e.key === 'ArrowLeft') go(idx - 1);
+  });
+
+  // 스와이프
+  let sx = 0, sy = 0, dx = 0, dragging = false, locked = null;
+  const W = () => track.clientWidth;
+  track.addEventListener('pointerdown', e => {
+    if (!opened || e.target.closest('button')) return;
+    dragging = true; locked = null; sx = e.clientX; sy = e.clientY; dx = 0;
+  });
+  window.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    dx = e.clientX - sx; const dy = e.clientY - sy;
+    if (locked === null && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) locked = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+    if (locked !== 'x') return;
+    track.classList.add('dragging');
+    let off = dx;
+    if ((idx === 0 && dx > 0) || (idx === pages.length - 1 && dx < 0)) off = dx * .3;
+    track.style.transform = `translateX(calc(${-idx * 100}% + ${off}px))`;
+  });
+  const end = () => {
+    if (!dragging) return;
+    dragging = false; track.classList.remove('dragging');
+    if (locked === 'x' && Math.abs(dx) > Math.min(60, W() * .15)) go(idx + (dx < 0 ? 1 : -1)); else go(idx);
+  };
+  window.addEventListener('pointerup', end);
+  window.addEventListener('pointercancel', end);
+  track.addEventListener('dragstart', e => e.preventDefault());
+
+  // 영상 소리
+  soundBtn.onclick = () => {
+    clip.muted = !clip.muted;
+    soundBtn.textContent = clip.muted ? '🔇 소리' : '🔊 소리';
+    clip.play().catch(() => {});
+  };
+
+  document.getElementById('party').onclick = () => burst(220);
+  document.getElementById('restart').onclick = closeAlbum;
+
+  // 컨페티
+  const cv = document.getElementById('confetti'), ctx = cv.getContext('2d');
+  let parts = [], raf = null;
+  const colors = ['#1f4a3a', '#9acd32', '#d8b46a', '#ffffff', '#2c6650', '#f3dc9c', '#c8e68a'];
+  function resize() { cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio; }
+  addEventListener('resize', resize); resize();
+  function burst(n) {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const r = devicePixelRatio;
+    for (let i = 0; i < n; i++) {
+      parts.push({
+        x: innerWidth * (.5 + (Math.random() - .5) * .3) * r, y: innerHeight * .45 * r,
+        vx: (Math.random() - .5) * 16 * r, vy: (-Math.random() * 15 - 4) * r,
+        w: (5 + Math.random() * 6) * r, h: (8 + Math.random() * 8) * r,
+        a: Math.random() * 6.28, va: (Math.random() - .5) * .3,
+        c: colors[(Math.random() * colors.length) | 0], life: 0
+      });
+    }
+    if (!raf) loop();
+  }
+  function loop() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    const r = devicePixelRatio;
+    parts = parts.filter(p => p.y < cv.height + 40 && p.life < 400);
+    for (const p of parts) {
+      p.life++; p.vy += .35 * r; p.vx *= .985; p.vy *= .985;
+      p.x += p.vx; p.y += p.vy; p.a += p.va;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a);
+      ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h * Math.abs(Math.cos(p.a * 1.7)));
+      ctx.restore();
+    }
+    raf = parts.length ? requestAnimationFrame(loop) : (ctx.clearRect(0, 0, cv.width, cv.height), null);
+  }
+})();
+</script>
+</body>
+</html>
